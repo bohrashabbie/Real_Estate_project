@@ -17,7 +17,9 @@ from typing import Any
 from sqlalchemy import Select, tuple_
 from sqlalchemy.orm import Session
 
-_ARABIC_DIACRITICS = re.compile(r"[ؗ-ًؚ-ْٰۖ-ۭ]")
+# Tashkeel/Quranic annotation ranges only — must not overlap the letters
+# block (U+0621-U+064A), or slugs collapse to "".
+_ARABIC_DIACRITICS = re.compile(r"[\u0610-\u061A\u064B-\u0652\u0670\u06D6-\u06ED]")
 _NON_SLUG_ASCII = re.compile(r"[^a-z0-9]+")
 _NON_SLUG_ARABIC = re.compile(r"[^\w؀-ۿ]+", re.UNICODE)
 
