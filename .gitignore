@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+Api/.env
+Api/uploads/
+
+# Node
+node_modules/
+.next/
+*.tsbuildinfo
+admin/.env.local
+storefront/.env.local
+
+# misc
+.DS_Store
+*.log
+.env

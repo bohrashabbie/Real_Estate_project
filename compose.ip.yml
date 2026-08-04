@@ -1,0 +1,38 @@
+# Temporary IP-only override (no DNS yet). Serves plain HTTP on the VPS IP:
+#   storefront -> http://<VPS_IP>:8080      admin -> http://<VPS_IP>:8081
+# 80/443 stay with the GRC caddy. Once DNS exists, drop this file and deploy
+# with compose.yml + deploy/Caddyfile alone.
+#   docker compose -f compose.yml -f compose.ip.yml --env-file .env.vps up -d --build
+
+services:
+  api:
+    environment:
+      PUBLIC_MEDIA_BASE_URL: http://187.127.146.84:8080
+      ADMIN_CORS_ORIGINS: '["http://187.127.146.84:8081"]'
+      STOREFRONT_CORS_ORIGINS: '["http://187.127.146.84:8080"]'
+
+  admin:
+    build:
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://187.127.146.84:8081/api/v1
+    environment:
+      # HTTP-only deploy: a Secure refresh cookie would never be sent back.
+      AUTH_COOKIE_SECURE: ""
+
+  storefront:
+    build:
+      args:
+        # Same-origin through caddy, which routes /public/v1/* to the api.
+        NEXT_PUBLIC_API_URL: http://187.127.146.84:8080/public/v1
+        NEXT_PUBLIC_SITE_URL: http://187.127.146.84:8080
+    environment:
+      NEXT_PUBLIC_SITE_URL: http://187.127.146.84:8080
+
+  caddy:
+    ports: !override
+      - "8080:80"
+      - "8081:81"
+    volumes: !override
+      - ./deploy/Caddyfile.ip:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config

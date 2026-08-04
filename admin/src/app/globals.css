@@ -1,0 +1,192 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-status-success: var(--status-success);
+  --color-status-success-foreground: var(--status-success-foreground);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-foreground: var(--status-warning-foreground);
+  --color-status-info: var(--status-info);
+  --color-status-info-foreground: var(--status-info-foreground);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-delta-up: var(--delta-up);
+  --color-delta-down: var(--delta-down);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* kwt25 brand palette — from the old kwt25.com and shared with the storefront:
+   cream #FAF6EC background, navy #152A3D ink, gold #B8934B accent (hover
+   #a37f3d), white cards. Tuned here for dense, data-heavy admin screens. */
+:root {
+  --background: #faf6ec; /* cream */
+  --foreground: #152a3d; /* navy */
+  --card: #ffffff;
+  --card-foreground: #152a3d;
+  --popover: #ffffff;
+  --popover-foreground: #152a3d;
+  --primary: #152a3d; /* navy */
+  --primary-foreground: #faf6ec; /* cream */
+  --secondary: #f0e9d8; /* cream-200 */
+  --secondary-foreground: #152a3d;
+  --muted: #f5efe1; /* cream-100 */
+  --muted-foreground: #5c6b7a; /* navy-500 */
+  --accent: #f0e9d8;
+  --accent-foreground: #152a3d;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e3d9c2; /* cream-300 */
+  --input: #e3d9c2;
+  --ring: #b8934b; /* gold */
+  --gold: #b8934b;
+  --gold-foreground: #ffffff;
+  --status-success: #16a34a;
+  --status-success-foreground: #15803d;
+  --status-warning: #d97706;
+  --status-warning-foreground: #b45309;
+  --status-info: #0284c7;
+  --status-info-foreground: #0369a1;
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  --delta-up: #006300;
+  --delta-down: #d03b3b;
+  --radius: 0.75rem; /* rounded, pill-leaning per the brand */
+  /* Sidebar: one shade lighter than the page so it reads as its own panel,
+     gold doing the brand work via ring/accent. */
+  --sidebar: #fffdf7;
+  --sidebar-foreground: #152a3d;
+  --sidebar-primary: #152a3d;
+  --sidebar-primary-foreground: #faf6ec;
+  --sidebar-accent: #f0e9d8;
+  --sidebar-accent-foreground: #152a3d;
+  --sidebar-border: #e3d9c2;
+  --sidebar-ring: #b8934b;
+}
+
+.dark {
+  --background: #0e1c2a; /* navy-950 */
+  --foreground: #faf6ec; /* cream */
+  --card: #152a3d; /* navy */
+  --card-foreground: #faf6ec;
+  --popover: #152a3d;
+  --popover-foreground: #faf6ec;
+  --primary: #d3b678; /* gold-300 */
+  --primary-foreground: #152a3d;
+  --secondary: #1f3850; /* navy-700 */
+  --secondary-foreground: #faf6ec;
+  --muted: #1f3850;
+  --muted-foreground: #cfd8e0;
+  --accent: #1f3850;
+  --accent-foreground: #fffdf7;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgb(250 246 236 / 12%);
+  --input: rgb(250 246 236 / 15%);
+  --ring: #c8a55e; /* gold-400 */
+  --gold: #c8a55e;
+  --gold-foreground: #152a3d;
+  --status-success: #22c55e;
+  --status-success-foreground: #4ade80;
+  --status-warning: #f59e0b;
+  --status-warning-foreground: #fbbf24;
+  --status-info: #38bdf8;
+  --status-info-foreground: #7dd3fc;
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --delta-up: #0ca30c;
+  --delta-down: #d03b3b;
+  --sidebar: #0a1520; /* darkest surface */
+  --sidebar-foreground: #faf6ec;
+  --sidebar-primary: #d3b678;
+  --sidebar-primary-foreground: #152a3d;
+  --sidebar-accent: #1f3850;
+  --sidebar-accent-foreground: #fffdf7;
+  --sidebar-border: rgb(250 246 236 / 10%);
+  --sidebar-ring: #c8a55e;
+}
+
+/* Type scale, bumped ~1 step above Tailwind's defaults.
+   The admin is dense, data-heavy, and read in two scripts — Arabic in
+   particular needs more vertical room than the stock scale gives it. */
+@theme {
+  --text-xs: 0.8125rem; /* 13px */
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.9375rem; /* 15px */
+  --text-sm--line-height: 1.375rem;
+  --text-base: 1.0625rem; /* 17px */
+  --text-base--line-height: 1.625rem;
+  --text-lg: 1.1875rem; /* 19px */
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.375rem; /* 22px */
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.625rem; /* 26px */
+  --text-2xl--line-height: 2.125rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* The stock control heights are tuned to the smaller scale; nudge them up
+     so the larger text isn't cramped inside buttons, inputs, and selects. */
+  [data-slot="button"]:not([data-size="xs"]):not([data-size="icon-xs"]) {
+    min-height: 2.25rem;
+  }
+  [data-slot="input"],
+  [data-slot="select-trigger"][data-size="default"] {
+    height: 2.25rem;
+  }
+}

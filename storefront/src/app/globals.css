@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   kwt25 storefront — design tokens (from the old kwt25.com)
+   ---------------------------------------------------------------------------
+   Cream ground, navy ink, gold accent. White rounded-2xl cards, pill buttons.
+   Status: available = green, rented/sold = red/neutral, reserved = amber.
+--------------------------------------------------------------------------- */
+
+@theme {
+  /* -- Cream: page ground, tint surfaces, chips --------------------------- */
+  --color-cream: #faf6ec;
+  --color-cream-100: #f4edda;
+  --color-cream-200: #eae0c5;
+  --color-cream-300: #dcceab;
+
+  /* -- Navy: text, dark surfaces, dark pills ------------------------------ */
+  --color-navy: #152a3d;
+  --color-navy-800: #1b3450;
+  --color-navy-700: #234260;
+  --color-navy-600: #2e5175;
+  --color-navy-100: #e6ebf1;
+
+  /* -- Gold: the brand accent --------------------------------------------- */
+  --color-gold: #b8934b;
+  --color-gold-dark: #a37f3d;
+  --color-gold-100: #f3ead4;
+  --color-gold-200: #e9dab5;
+
+  /* -- Muted ink on cream -------------------------------------------------- */
+  --color-muted: #5d6b78;
+
+  /* -- Semantic aliases ----------------------------------------------------- */
+  --color-background: var(--color-cream);
+  --color-surface: #ffffff;
+  --color-foreground: var(--color-navy);
+
+  /* -- WhatsApp green ------------------------------------------------------ */
+  --color-whatsapp: #25a95d;
+  --color-whatsapp-dark: #1e8f4e;
+
+  --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 10px 30px -14px rgb(21 42 61 / 0.18);
+  --shadow-float: 0 14px 34px -12px rgb(21 42 61 / 0.35);
+
+  --container-site: 74rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-gold);
+  color: #ffffff;
+}
+
+/* MapLibre popups pick up the site look. */
+.maplibregl-popup-content {
+  border-radius: 1rem;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-float);
+  font-family: var(--font-sans);
+}
+.maplibregl-popup-close-button {
+  font-size: 1.1rem;
+  padding: 0.15rem 0.45rem;
+  color: var(--color-navy);
+  z-index: 5;
+}

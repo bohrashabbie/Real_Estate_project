@@ -1,0 +1,486 @@
+{
+  "app": {
+    "name": "Kuwait Real Estate",
+    "shortName": "kwt25 Admin",
+    "designedBy": "Designed & developed by"
+  },
+  "common": {
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "create": "Create",
+    "creating": "Creating…",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "actions": "Actions",
+    "search": "Search",
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "loadMore": "Load more",
+    "allLoaded": "All results loaded",
+    "showing": "Showing {count} {count, plural, one {result} other {results}}",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None",
+    "never": "Never",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "status": "Status",
+    "optional": "optional",
+    "required": "required",
+    "deactivate": "Deactivate",
+    "add": "Add",
+    "remove": "Remove",
+    "view": "View",
+    "unknownError": "Something went wrong. Please try again."
+  },
+  "states": {
+    "errorTitle": "Couldn't load this",
+    "emptyTitle": "Nothing here yet",
+    "emptyDescription": "No records match the current filters.",
+    "accessDeniedTitle": "You don't have access",
+    "accessDeniedDescription": "This page needs the \"{permission}\" permission. Ask an owner or admin to grant it to one of your roles.",
+    "notFoundTitle": "Not found",
+    "notFoundDescription": "The record you're looking for doesn't exist or was removed."
+  },
+  "nav": {
+    "sectionOverview": "Overview",
+    "sectionListings": "Listings",
+    "sectionCustomers": "Customers",
+    "sectionTaxonomy": "Taxonomy",
+    "sectionAdministration": "Administration",
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "inquiries": "Inquiries",
+    "requests": "Property requests",
+    "areas": "Areas",
+    "propertyTypes": "Property types",
+    "amenities": "Amenities",
+    "users": "Staff users",
+    "roles": "Roles & permissions",
+    "settings": "Settings",
+    "audit": "Audit log",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "openMenu": "Open menu"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "loginSubtitle": "Admin panel access for Kuwait Real Estate staff.",
+    "email": "Email",
+    "emailPlaceholder": "you@kwt25.com",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "myAccount": "My account",
+    "sessionExpired": "Your session expired. Please sign in again.",
+    "mfaUnsupported": "This account requires two-factor authentication, which this admin panel doesn't support.",
+    "invalidCredentials": "Invalid email or password.",
+    "checkingSession": "Checking your session…",
+    "signedInAs": "Signed in as",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "validation": {
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter a valid email address.",
+    "passwordRequired": "Password is required.",
+    "passwordMin": "Password must be at least {min} characters.",
+    "fullNameRequired": "Full name is required.",
+    "phoneE164": "Use international format, e.g. +965XXXXXXXX.",
+    "required": "This field is required.",
+    "tooLong": "Too long.",
+    "money": "Enter an amount in KD, e.g. 650 or 85000.500.",
+    "integer": "Enter a whole number.",
+    "decimal": "Enter a number, e.g. 250 or 250.5.",
+    "coordinate": "Enter a coordinate, e.g. 29.3759.",
+    "titleRequired": "Enter a title in at least one language."
+  },
+  "dashboard": {
+    "kpi": {
+      "totalProperties": "Total properties",
+      "publishedProperties": "Published",
+      "availableProperties": "Available",
+      "byPurpose": "Rent / Sale",
+      "byPurposeValue": "{rent} / {sale}",
+      "newInquiries7d": "New inquiries (7 days)",
+      "newRequests7d": "New requests (7 days)"
+    },
+    "recentInquiries": "Recent inquiries",
+    "viewAllInquiries": "View all inquiries"
+  },
+  "properties": {
+    "title": "Properties",
+    "description": "All listings — drafts and published, for rent and for sale.",
+    "new": "New property",
+    "newDescription": "Create the listing first, then upload photos and publish.",
+    "detailTitle": "Property",
+    "searchPlaceholder": "Search title or ref no…",
+    "allPurposes": "All purposes",
+    "allStatuses": "All statuses",
+    "allTypes": "All types",
+    "allAreas": "All areas",
+    "blockShort": "Block {block}",
+    "perMonth": "/ month",
+    "featured": "Featured",
+    "premium": "Premium",
+    "publishedLabel": "Published",
+    "draftLabel": "Draft",
+    "archived": "Archived",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "published": "Property published.",
+    "unpublished": "Property unpublished.",
+    "delete": "Delete",
+    "deleted": "Property archived.",
+    "deleteTitle": "Archive this property?",
+    "deleteDescription": "\"{title}\" will be hidden everywhere. Nothing is hard-deleted — it can be restored from the database.",
+    "created": "Property created. Now add photos and publish.",
+    "updated": "Property updated.",
+    "empty": "No properties match these filters.",
+    "selectType": "Select a type",
+    "selectArea": "Select an area",
+    "noAmenities": "No amenities defined yet.",
+    "columns": {
+      "refNo": "Ref no",
+      "title": "Title",
+      "type": "Type",
+      "area": "Area",
+      "purpose": "Purpose",
+      "price": "Price (KD)",
+      "status": "Status",
+      "flags": "Badges",
+      "published": "Published"
+    },
+    "purposes": {
+      "rent": "For rent",
+      "sale": "For sale"
+    },
+    "statuses": {
+      "available": "Available",
+      "rented": "Rented",
+      "sold": "Sold",
+      "reserved": "Reserved"
+    },
+    "sections": {
+      "content": "Title & description",
+      "details": "Details & location",
+      "amenities": "Amenities & services",
+      "visibility": "Highlighting"
+    },
+    "tabs": {
+      "arabic": "العربية",
+      "english": "English"
+    },
+    "fields": {
+      "title_ar": "Title (Arabic)",
+      "title_en": "Title (English)",
+      "description_ar": "Description (Arabic)",
+      "description_en": "Description (English)",
+      "purpose": "Purpose",
+      "status": "Status",
+      "type": "Property type",
+      "area": "Area",
+      "block": "Block",
+      "addressNote": "Address note",
+      "priceRent": "Monthly rent (KD)",
+      "priceSale": "Sale price (KD)",
+      "areaSqm": "Area (m²)",
+      "rooms": "Rooms",
+      "bathrooms": "Bathrooms",
+      "floors": "Floors",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "isFeatured": "Featured property",
+      "isPremium": "Premium (distinct) badge"
+    },
+    "hints": {
+      "featured": "Shown in \"Our distinctive properties\" on the home page.",
+      "premium": "Shows the gold ★ distinct badge on the card."
+    },
+    "media": {
+      "title": "Photos",
+      "description": "Upload photos, pick the main one, and drag the order the visitors will see.",
+      "dropHint": "Drag & drop images here, or choose files.",
+      "upload": "Upload images",
+      "uploading": "Uploading ({count})…",
+      "uploaded": "Images uploaded.",
+      "empty": "No photos yet. Listings publish without photos, but shouldn't.",
+      "main": "Main",
+      "setMain": "Set main",
+      "mainSet": "Main photo updated.",
+      "moveUp": "Move earlier",
+      "moveDown": "Move later",
+      "deleted": "Photo removed.",
+      "deleteTitle": "Remove this photo?",
+      "deleteDescription": "The photo will be removed from this property's gallery."
+    }
+  },
+  "inquiries": {
+    "title": "Inquiries",
+    "description": "Messages from visitors — property pages, the contact page, and the home page.",
+    "empty": "No inquiries match these filters.",
+    "statusUpdated": "Inquiry status updated.",
+    "columns": {
+      "from": "From",
+      "property": "Property",
+      "message": "Message",
+      "source": "Source",
+      "status": "Status",
+      "received": "Received"
+    },
+    "sources": {
+      "property": "Property page",
+      "contact": "Contact page",
+      "home": "Home page"
+    },
+    "statuses": {
+      "new": "New",
+      "contacted": "Contacted",
+      "closed": "Closed"
+    }
+  },
+  "requests": {
+    "title": "Property requests",
+    "description": "\"Request your property\" submissions — what visitors are looking for.",
+    "empty": "No requests match these filters.",
+    "statusUpdated": "Request status updated.",
+    "columns": {
+      "from": "From",
+      "purpose": "Purpose",
+      "type": "Type",
+      "area": "Area",
+      "budget": "Budget (KD)",
+      "rooms": "Rooms",
+      "notes": "Notes",
+      "status": "Status",
+      "received": "Received"
+    },
+    "statuses": {
+      "new": "New",
+      "in_progress": "In progress",
+      "matched": "Matched",
+      "closed": "Closed"
+    }
+  },
+  "taxonomy": {
+    "fields": {
+      "name_ar": "Name (Arabic)",
+      "name_en": "Name (English)",
+      "key": "Key",
+      "slug": "Slug",
+      "sortOrder": "Sort order",
+      "isActive": "Active"
+    },
+    "hints": {
+      "code": "A stable identifier used in URLs and the API. Leave empty to generate from the name."
+    },
+    "columns": {
+      "name": "Name",
+      "sortOrder": "Sort order",
+      "status": "Status"
+    },
+    "validation": {
+      "nameRequired": "Enter a name in at least one language."
+    }
+  },
+  "areas": {
+    "title": "Areas",
+    "description": "Kuwait areas visitors can filter by (Salmiya, Hawally, …).",
+    "new": "New area",
+    "createTitle": "Create area",
+    "editTitle": "Edit area",
+    "formDescription": "Name in both languages; the slug appears in storefront URLs.",
+    "created": "Area created.",
+    "updated": "Area updated.",
+    "deactivated": "Area deactivated.",
+    "deactivateTitle": "Deactivate this area?",
+    "deactivateDescription": "\"{name}\" will disappear from filters and forms. Existing properties keep it.",
+    "empty": "No areas match these filters."
+  },
+  "propertyTypes": {
+    "title": "Property types",
+    "description": "Villa, apartment, floor, land, office, chalet, commercial…",
+    "new": "New type",
+    "createTitle": "Create property type",
+    "editTitle": "Edit property type",
+    "formDescription": "Name in both languages; the key is a stable identifier.",
+    "created": "Property type created.",
+    "updated": "Property type updated.",
+    "deactivated": "Property type deactivated.",
+    "deactivateTitle": "Deactivate this type?",
+    "deactivateDescription": "\"{name}\" will disappear from filters and forms. Existing properties keep it.",
+    "empty": "No property types match these filters."
+  },
+  "amenities": {
+    "title": "Amenities",
+    "description": "Features shown as a checklist on property pages (central A/C, balcony, …).",
+    "new": "New amenity",
+    "createTitle": "Create amenity",
+    "editTitle": "Edit amenity",
+    "formDescription": "Name in both languages; the key is a stable identifier.",
+    "created": "Amenity created.",
+    "updated": "Amenity updated.",
+    "deactivated": "Amenity deactivated.",
+    "deactivateTitle": "Deactivate this amenity?",
+    "deactivateDescription": "\"{name}\" will disappear from the property form. Existing properties keep it.",
+    "empty": "No amenities match these filters."
+  },
+  "users": {
+    "title": "Staff users",
+    "description": "Accounts that can sign in to this admin panel.",
+    "newUser": "New user",
+    "createTitle": "Create staff user",
+    "createDescription": "The account is created first, then you assign roles to it.",
+    "editTitle": "Edit user",
+    "detailTitle": "User",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "status": "Status",
+      "lastLogin": "Last sign-in",
+      "created": "Created"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "isActive": "Account active"
+    },
+    "hints": {
+      "emailImmutable": "Email can't be changed after the account is created.",
+      "passwordOnCreate": "Set an initial password. The user should change it after first sign-in.",
+      "isActive": "Inactive accounts can't sign in. Accounts are deactivated, never deleted, because they're referenced by audit history."
+    },
+    "empty": "No staff users match these filters.",
+    "created": "User created.",
+    "updated": "User updated.",
+    "deactivated": "User deactivated.",
+    "filterStatus": "Account status",
+    "noSearchHint": "Filter by account status; there is no name search.",
+    "roles": {
+      "title": "Assigned roles",
+      "description": "Roles grant permissions across the whole office.",
+      "assign": "Assign role",
+      "assignTitle": "Assign a role",
+      "role": "Role",
+      "selectRole": "Select a role",
+      "expiresAt": "Expires at",
+      "grantedAt": "Granted",
+      "empty": "No roles assigned. This user can sign in but won't see anything.",
+      "assigned": "Role assigned.",
+      "revoked": "Role revoked.",
+      "revoke": "Revoke",
+      "revokeTitle": "Revoke this role?",
+      "revokeDescription": "{role} will be removed from {name}. They immediately lose every permission it granted.",
+      "assignAtCreationHint": "Tick any roles to grant immediately. You can add or remove roles later from the user's page.",
+      "assignFailedOnCreate": "The user was created, but these roles couldn't be assigned: {roles}. Try assigning them again from the user's page."
+    }
+  },
+  "roles": {
+    "title": "Roles & permissions",
+    "description": "Create roles and control which permissions each one grants.",
+    "systemRole": "System role",
+    "detailTitle": "Role",
+    "columns": {
+      "name": "Role",
+      "code": "Code",
+      "permissions": "Permissions",
+      "type": "Type"
+    },
+    "permissionCount": "{count} of {total}",
+    "matrixTitle": "Permission matrix",
+    "matrixDescription": "Tick a permission to grant it to this role. Changes apply to everyone holding the role as soon as you save.",
+    "dangerous": "Sensitive",
+    "dangerousHint": "This permission allows destructive or privilege changes.",
+    "saveChanges": "Save permissions",
+    "unsavedChanges": "{count} unsaved {count, plural, one {change} other {changes}}",
+    "discard": "Discard changes",
+    "saved": "Permissions updated.",
+    "confirmTitle": "Update permissions for {role}?",
+    "confirmDescription": "You're granting {granted} and revoking {revoked}. Everyone holding this role is affected immediately.",
+    "selectAll": "Select all in group",
+    "clearGroup": "Clear group",
+    "noRolesTitle": "No roles",
+    "newRole": "New role",
+    "createTitle": "Create role",
+    "createDescription": "Set the role's name and starting permissions. You can change permissions later from the role's page.",
+    "created": "Role created.",
+    "codeMin": "Enter at least 2 characters.",
+    "codePattern": "Lowercase letters, numbers, and underscores only, starting with a letter (e.g. senior_agent).",
+    "fields": {
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
+      "code": "Code",
+      "description": "Description"
+    },
+    "hints": {
+      "code": "A stable identifier used internally — can't be changed after the role is created."
+    }
+  },
+  "permissionGroups": {
+    "properties": "Properties",
+    "inquiries": "Inquiries",
+    "requests": "Property requests",
+    "taxonomy": "Taxonomy",
+    "users": "Users",
+    "roles": "Roles",
+    "settings": "Settings",
+    "audit": "Audit",
+    "analytics": "Analytics"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Office contact details shown across the public website.",
+    "updated": "Settings saved.",
+    "siteTitle": "Site & contact",
+    "siteDescription": "Phone, WhatsApp, and the site name in both languages. Saving updates the storefront immediately.",
+    "fields": {
+      "phone": "Phone",
+      "whatsapp": "WhatsApp number",
+      "email": "Email",
+      "instagram": "Instagram",
+      "name_ar": "Site name (Arabic)",
+      "name_en": "Site name (English)"
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "description": "Every write to properties, settings, roles, and permissions.",
+    "empty": "No audit entries match these filters.",
+    "readOnly": "This log is read-only.",
+    "columns": {
+      "when": "When",
+      "actor": "Actor",
+      "action": "Action",
+      "entity": "Entity",
+      "entityId": "ID"
+    },
+    "filters": {
+      "entityType": "Entity type",
+      "action": "Action",
+      "actor": "Actor user ID",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "anyEntity": "Any entity",
+      "anyAction": "Any action"
+    },
+    "diff": {
+      "before": "Before",
+      "after": "After",
+      "noBefore": "No previous value (record created).",
+      "noAfter": "No new value (record removed).",
+      "changedOnly": "Only the fields that changed are recorded."
+    },
+    "system": "System"
+  }
+}
