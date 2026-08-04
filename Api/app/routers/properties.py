@@ -68,7 +68,7 @@ def update_property(
     return property_service.update_property(db, property_id, payload, current_user.id)
 
 
-@router.delete("/{property_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{property_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 def delete_property(
     property_id: int,
     db: Session = Depends(get_db),
@@ -124,7 +124,7 @@ def update_property_media(
     return property_service.update_media_link(db, property_id, property_media_id, payload, current_user.id)
 
 
-@router.delete("/{property_id}/media/{property_media_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{property_id}/media/{property_media_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 def delete_property_media(
     property_id: int,
     property_media_id: int,

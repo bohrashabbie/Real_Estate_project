@@ -57,7 +57,7 @@ def _build_router(model, create_schema, update_schema) -> APIRouter:
     ) -> dict:
         return taxonomy_service.update_row(db, model, row_id, payload, current_user.id)
 
-    @router.delete("/{row_id}", status_code=status.HTTP_204_NO_CONTENT)
+    @router.delete("/{row_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
     def soft_delete_row(
         row_id: int,
         db: Session = Depends(get_db),
