@@ -175,32 +175,21 @@ export default async function HomePage({
       ) : null}
 
       {/* ------------------------------------------------------------------ */}
-      {/* Smart search promo                                                   */}
+      {/* Smart search promo banner                                            */}
       {/* ------------------------------------------------------------------ */}
       <section className="mx-auto max-w-(--container-site) px-4 pt-20 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl bg-navy-950 p-8 text-white shadow-float sm:p-12">
-          <div className="hero-grid absolute inset-0" aria-hidden />
-          <div className="gold-glow absolute -end-24 -top-24 h-80 w-80" aria-hidden />
-          <div className="relative flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-xl">
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gold-gradient text-white shadow-gold">
-                <SparkleIcon width={26} height={26} />
-              </span>
-              <p className="mt-5 text-sm font-bold text-gold-light">{t("smartEyebrow")}</p>
-              <h2 className="mt-1 font-display text-2xl font-extrabold sm:text-3xl">
-                {t("smartTitle")}
-              </h2>
-              <p className="mt-2 text-white/65">{t("smartSubtitle")}</p>
-            </div>
-            <Link
-              href="/smart-search"
-              className="bg-gold-gradient inline-flex shrink-0 items-center gap-2.5 rounded-full px-8 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
-            >
-              {tCommon("menu.smartSearch")}
-              <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
-            </Link>
-          </div>
-        </div>
+        <Link
+          href="/smart-search"
+          aria-label={tCommon("menu.smartSearch")}
+          className="group block overflow-hidden rounded-3xl shadow-float ring-1 ring-cream-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-gold"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/promo-banner.jpeg"
+            alt={t("smartTitle")}
+            className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.015]"
+          />
+        </Link>
       </section>
 
       {/* ------------------------------------------------------------------ */}

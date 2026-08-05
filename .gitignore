@@ -17,3 +17,6 @@ storefront/.env.local
 .DS_Store
 *.log
 .env
+
+# Source images already uploaded via the admin API (live in the uploads volume)
+media/
