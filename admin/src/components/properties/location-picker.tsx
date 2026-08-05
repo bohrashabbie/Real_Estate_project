@@ -33,7 +33,7 @@ export function LocationPicker({
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      const maplibregl = await import("maplibre-gl")
+      const maplibregl = (await import("maplibre-gl")).default
       if (cancelled || !container.current || map.current) return
 
       const lat = Number(latitude)
