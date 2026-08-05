@@ -133,7 +133,10 @@
     "emptyTitle": "لا توجد نتائج بهذه الفلاتر",
     "emptyBody": "جرّب توسيع نطاق البحث أو مسح بعض الفلاتر.",
     "loadMore": "عرض المزيد",
-    "loadingMore": "جارٍ التحميل…"
+    "loadingMore": "جارٍ التحميل…",
+    "viewGrid": "القائمة",
+    "viewMap": "الخريطة",
+    "mapNote": "الخريطة تعرض جميع العقارات المثبّتة من المكتب."
   },
   "filters": {
     "title": "الفلاتر",
@@ -149,6 +152,10 @@
     "allRooms": "كل الغرف",
     "roomsAtLeast": "{count}+ غرف",
     "sqmMin": "مساحة العقار (م²)",
+    "any": "الكل",
+    "sqmAtLeast": "{value}+ م²",
+    "priceUpTo": "حتى {value}",
+    "priceAtLeast": "{value}+",
     "status": "الحالة",
     "premiumOnly": "العقارات المميزة فقط",
     "clear": "مسح الفلاتر",

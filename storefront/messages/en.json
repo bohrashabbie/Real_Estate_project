@@ -133,7 +133,10 @@
     "emptyTitle": "No results with these filters",
     "emptyBody": "Try widening your search or clearing some filters.",
     "loadMore": "Load more",
-    "loadingMore": "Loading…"
+    "loadingMore": "Loading…",
+    "viewGrid": "List",
+    "viewMap": "Map",
+    "mapNote": "The map shows all properties pinned by the office."
   },
   "filters": {
     "title": "Filters",
@@ -149,6 +152,10 @@
     "allRooms": "All rooms",
     "roomsAtLeast": "{count}+ rooms",
     "sqmMin": "Property area (m²)",
+    "any": "Any",
+    "sqmAtLeast": "{value}+ m²",
+    "priceUpTo": "Up to {value}",
+    "priceAtLeast": "{value}+",
     "status": "Status",
     "premiumOnly": "Premium properties only",
     "clear": "Clear filters",

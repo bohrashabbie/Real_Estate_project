@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -21,10 +22,18 @@ import {
   CheckIcon,
   ChevronDownIcon,
   CloseIcon,
+  HomeIcon,
+  MapIcon,
   PinIcon,
   ResetIcon,
   SearchIcon,
 } from "@/components/ui/icons";
+
+// Map view is heavy (maplibre) — load it only when the visitor switches to it.
+const MapExplorer = dynamic(
+  () => import("@/components/map/map-explorer").then((m) => m.MapExplorer),
+  { ssr: false },
+);
 
 /**
  * /properties — client-filterable list.
@@ -110,6 +119,7 @@ export function ListingView({
 
   const [filters, setFilters] = useState<Filters>(() => fromSearchParams(new URLSearchParams(searchParams)));
   const [panelOpen, setPanelOpen] = useState(true);
+  const [view, setView] = useState<"grid" | "map">("grid");
 
   // State → URL, debounced so the price/sqm inputs don't churn history.
   const firstRender = useRef(true);
@@ -173,6 +183,30 @@ export function ListingView({
 
   const activePurposeTab =
     filters.purposes.length === 1 ? filters.purposes[0] : "all";
+
+  // Tap-first price brackets — sale money is a different order of magnitude
+  // than rent, so the presets follow the active purpose tab.
+  const priceBrackets: { min: string; max: string }[] =
+    activePurposeTab === "sale"
+      ? [
+          { min: "", max: "100000" },
+          { min: "100000", max: "250000" },
+          { min: "250000", max: "500000" },
+          { min: "500000", max: "" },
+        ]
+      : [
+          { min: "", max: "300" },
+          { min: "300", max: "500" },
+          { min: "500", max: "1000" },
+          { min: "1000", max: "" },
+        ];
+  const formatBracketValue = (value: string) => Number(value).toLocaleString();
+  const bracketLabel = (bracket: { min: string; max: string }) =>
+    bracket.min && bracket.max
+      ? `${formatBracketValue(bracket.min)} – ${formatBracketValue(bracket.max)}`
+      : bracket.max
+        ? t("filters.priceUpTo", { value: formatBracketValue(bracket.max) })
+        : t("filters.priceAtLeast", { value: formatBracketValue(bracket.min) });
 
   // Selected-filter chips.
   const chips: { key: string; label: string; onRemove: () => void }[] = [];
@@ -371,12 +405,29 @@ export function ListingView({
               </div>
             </fieldset>
 
-            {/* Price */}
+            {/* Price — tap a bracket (KD); custom range stays available. */}
             <fieldset className="border-t border-cream-200 pt-5">
               <legend className="float-start mb-3 text-base font-bold text-navy">
                 {t("filters.price")}
               </legend>
-              <div className="grid grid-cols-2 gap-3 clear-both pt-1">
+              <div className="flex flex-wrap gap-2.5 clear-both pt-1">
+                <ChipButton
+                  label={t("filters.any")}
+                  selected={!filters.priceMin && !filters.priceMax}
+                  onClick={() => setFilters((f) => ({ ...f, priceMin: "", priceMax: "" }))}
+                />
+                {priceBrackets.map((bracket) => (
+                  <ChipButton
+                    key={`${bracket.min}-${bracket.max}`}
+                    label={bracketLabel(bracket)}
+                    selected={filters.priceMin === bracket.min && filters.priceMax === bracket.max}
+                    onClick={() =>
+                      setFilters((f) => ({ ...f, priceMin: bracket.min, priceMax: bracket.max }))
+                    }
+                  />
+                ))}
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
                 <input
                   type="number"
                   min={0}
@@ -402,33 +453,47 @@ export function ListingView({
               </div>
             </fieldset>
 
-            {/* Rooms & space */}
+            {/* Rooms — tap a count. */}
             <fieldset className="border-t border-cream-200 pt-5">
               <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.roomsAndSpace")}
+                {t("filters.allRooms")}
               </legend>
-              <div className="grid grid-cols-2 gap-3 clear-both pt-1">
-                <select
-                  value={filters.rooms}
-                  onChange={(event) => setFilters((f) => ({ ...f, rooms: event.target.value }))}
-                  className="appearance-none rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
-                >
-                  <option value="">{t("filters.allRooms")}</option>
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <option key={n} value={n}>
-                      {t("filters.roomsAtLeast", { count: n })}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  min={0}
-                  inputMode="numeric"
-                  placeholder={t("filters.sqmMin")}
-                  value={filters.sqm}
-                  onChange={(event) => setFilters((f) => ({ ...f, sqm: event.target.value }))}
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
+              <div className="flex flex-wrap gap-2.5 clear-both pt-1">
+                <ChipButton
+                  label={t("filters.any")}
+                  selected={!filters.rooms}
+                  onClick={() => setFilters((f) => ({ ...f, rooms: "" }))}
                 />
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <ChipButton
+                    key={n}
+                    label={t("filters.roomsAtLeast", { count: n })}
+                    selected={filters.rooms === String(n)}
+                    onClick={() => setFilters((f) => ({ ...f, rooms: String(n) }))}
+                  />
+                ))}
+              </div>
+            </fieldset>
+
+            {/* Space — tap a minimum size. */}
+            <fieldset className="border-t border-cream-200 pt-5">
+              <legend className="float-start mb-3 text-base font-bold text-navy">
+                {t("filters.sqmMin")}
+              </legend>
+              <div className="flex flex-wrap gap-2.5 clear-both pt-1">
+                <ChipButton
+                  label={t("filters.any")}
+                  selected={!filters.sqm}
+                  onClick={() => setFilters((f) => ({ ...f, sqm: "" }))}
+                />
+                {[100, 200, 400, 600, 1000].map((n) => (
+                  <ChipButton
+                    key={n}
+                    label={t("filters.sqmAtLeast", { value: n })}
+                    selected={filters.sqm === String(n)}
+                    onClick={() => setFilters((f) => ({ ...f, sqm: String(n) }))}
+                  />
+                ))}
               </div>
             </fieldset>
 
@@ -531,19 +596,50 @@ export function ListingView({
         ))}
       </div>
 
-      {/* Count + share note */}
+      {/* View toggle + count */}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted">{t("listing.shareNote")}</p>
-        <p className="text-end">
-          <span className="block text-sm font-semibold text-muted">{t("listing.results")}</span>
-          <span className="text-2xl font-bold text-navy">
-            {t("listing.count", { count: items.length })}
-          </span>
-        </p>
+        <div className="inline-flex rounded-full bg-white p-1 shadow-card ring-1 ring-cream-200">
+          <button
+            type="button"
+            onClick={() => setView("grid")}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-colors",
+              view === "grid" ? "bg-navy text-white shadow-card" : "text-muted hover:text-navy",
+            )}
+          >
+            <HomeIcon width={16} height={16} />
+            {t("listing.viewGrid")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("map")}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-colors",
+              view === "map" ? "bg-navy text-white shadow-card" : "text-muted hover:text-navy",
+            )}
+          >
+            <MapIcon width={16} height={16} />
+            {t("listing.viewMap")}
+          </button>
+        </div>
+        {view === "grid" ? (
+          <p className="text-end">
+            <span className="block text-sm font-semibold text-muted">{t("listing.results")}</span>
+            <span className="font-display text-2xl font-extrabold text-navy">
+              {t("listing.count", { count: items.length })}
+            </span>
+          </p>
+        ) : (
+          <p className="text-sm text-muted">{t("listing.mapNote")}</p>
+        )}
       </div>
 
       {/* Results */}
-      {isLoading ? (
+      {view === "map" ? (
+        <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-cream-200">
+          <MapExplorer locale={locale} />
+        </div>
+      ) : isLoading ? (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <div
@@ -596,6 +692,32 @@ export function ListingView({
       )}
       </div>
     </div>
+  );
+}
+
+function ChipButton({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={cn(
+        "rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
+        selected
+          ? "border-gold bg-gold-100 text-navy"
+          : "border-cream-200 bg-white text-navy hover:border-gold/60",
+      )}
+    >
+      {label}
+    </button>
   );
 }
 
