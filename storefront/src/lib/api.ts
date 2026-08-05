@@ -14,13 +14,19 @@ export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ??
   "http://localhost:8000/public/v1";
 
-/** Origin the API serves `/uploads/*` from — media URLs may be relative. */
-const API_ORIGIN = API_BASE.replace(/\/public\/v1\/?$/, "");
+/** Origin the browser loads `/uploads/*` from — media URLs may be relative.
+ *  Always derived from the build-time NEXT_PUBLIC_API_URL, never from the
+ *  server-side PUBLIC_API_URL: server components render <img src> into HTML
+ *  the *browser* fetches, so an internal origin like http://api:8000 would
+ *  ship broken image URLs. */
+const MEDIA_ORIGIN = (
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/public/v1"
+).replace(/\/public\/v1\/?$/, "");
 
 export function mediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (/^https?:\/\//.test(path)) return path;
-  return `${API_ORIGIN}${path.startsWith("/") ? "" : "/"}${path}`;
+  return `${MEDIA_ORIGIN}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
 // ---------------------------------------------------------------------------
