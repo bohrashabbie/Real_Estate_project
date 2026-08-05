@@ -1,9 +1,12 @@
-import { IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Cairo, IBM_Plex_Sans_Arabic } from "next/font/google";
 
 /**
- * One face for both scripts. IBM Plex Sans Arabic has a genuinely well-drawn
- * Arabic and a matching Latin, so the bilingual UI keeps a single texture
- * instead of visibly switching families on a ref number or "KD".
+ * Two-tier bilingual pairing. IBM Plex Sans Arabic carries body text — a
+ * genuinely well-drawn Arabic with a matching Latin, so running text keeps a
+ * single texture in both scripts. Cairo (geometric, high contrast at heavy
+ * weights, also dual-script) carries display headlines and prices, giving
+ * headings a distinct premium voice without switching mid-word on "KD" or a
+ * ref number.
  */
 export const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
@@ -12,4 +15,11 @@ export const plexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
-export const fontVariables = plexArabic.variable;
+export const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["600", "700", "800", "900"],
+  variable: "--font-cairo",
+  display: "swap",
+});
+
+export const fontVariables = `${plexArabic.variable} ${cairo.variable}`;

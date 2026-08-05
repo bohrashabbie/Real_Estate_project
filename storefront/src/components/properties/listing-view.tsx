@@ -252,15 +252,27 @@ export function ListingView({
   }
 
   return (
-    <div className="mx-auto max-w-(--container-site) px-4 py-10 sm:px-6">
-      <header className="text-center">
-        <p className="text-sm font-bold tracking-wide text-gold">{t("listing.eyebrow")}</p>
-        <h1 className="mt-2 text-3xl font-bold text-navy sm:text-4xl">{t("listing.title")}</h1>
-        <p className="mx-auto mt-2 max-w-xl text-muted">{t("listing.subtitle")}</p>
-      </header>
+    <div>
+      {/* Page banner */}
+      <section className="relative overflow-hidden bg-navy-950 text-white">
+        <div className="hero-grid absolute inset-0" aria-hidden />
+        <div className="gold-glow absolute -top-32 start-1/2 h-72 w-[36rem] -translate-x-1/2 rtl:translate-x-1/2" aria-hidden />
+        <header className="relative mx-auto max-w-(--container-site) px-4 pb-20 pt-14 text-center sm:px-6 sm:pb-24 sm:pt-16">
+          <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-gold-light">
+            <span className="h-px w-8 bg-gold" aria-hidden />
+            {t("listing.eyebrow")}
+            <span className="h-px w-8 bg-gold" aria-hidden />
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-extrabold sm:text-5xl">
+            {t("listing.title")}
+          </h1>
+          <p className="mx-auto mt-3 max-w-xl text-white/65">{t("listing.subtitle")}</p>
+        </header>
+      </section>
 
+      <div className="mx-auto max-w-(--container-site) px-4 pb-14 sm:px-6">
       {/* Filter panel */}
-      <section className="mt-8 rounded-3xl bg-white shadow-card ring-1 ring-cream-200">
+      <section className="relative z-10 -mt-8 rounded-3xl bg-white shadow-float ring-1 ring-cream-200">
         <button
           type="button"
           onClick={() => setPanelOpen((open) => !open)}
@@ -582,6 +594,7 @@ export function ListingView({
           ) : null}
         </>
       )}
+      </div>
     </div>
   );
 }

@@ -10,16 +10,15 @@ import {
   BathIcon,
   BedIcon,
   BuildingIcon,
-  CompareIcon,
   ExpandIcon,
   PinIcon,
   StarIcon,
 } from "@/components/ui/icons";
 import { StatusPill } from "@/components/property/status-pill";
 
-/** The premium listing card from the old site: image with distinct★ badge and
- *  availability pill, gold price + purpose/type eyebrow, navy title, area,
- *  stats row, then compare (placeholder) / view-details footer. */
+/** Premium listing card: photo with soft gradient, gold-gradient distinct★
+ *  badge and availability pill, purpose/type eyebrow, display-font title,
+ *  area, spec strip, then price + arrow footer. The whole card lifts on hover. */
 export function PropertyCard({
   property,
   locale,
@@ -32,10 +31,10 @@ export function PropertyCard({
   const sqm = formatSqm(property.area_sqm);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-cream-200">
+    <article className="group flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-cream-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-float hover:ring-gold/40">
       <Link
         href={`/properties/${property.slug}`}
-        className="relative block aspect-[4/3] overflow-hidden bg-cream-100"
+        className="relative block aspect-[16/10] overflow-hidden bg-cream-100"
       >
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -43,79 +42,80 @@ export function PropertyCard({
             src={image}
             alt={property.title}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
-          <span className="flex h-full w-full items-center justify-center text-cream-300">
+          <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cream-100 to-cream-200 text-cream-300">
             <BuildingIcon width={56} height={56} strokeWidth={1.2} />
           </span>
         )}
+        {/* Soft legibility gradient over the photo bottom. */}
+        <span
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-navy-950/70 to-transparent"
+          aria-hidden
+        />
         {property.is_premium ? (
-          <span className="absolute end-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-semibold text-white shadow-float">
+          <span className="bg-gold-gradient absolute end-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-white shadow-gold">
             {t("card.distinct")}
-            <StarIcon width={14} height={14} className="text-gold" fill="currentColor" />
+            <StarIcon width={13} height={13} fill="currentColor" />
           </span>
         ) : null}
         <span className="absolute bottom-3 start-3">
           <StatusPill status={property.status} />
         </span>
+        <span className="absolute bottom-3 end-3 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white backdrop-blur">
+          {t(`purpose.${property.purpose}`)}
+        </span>
       </Link>
 
       <div className="flex flex-1 flex-col gap-2 p-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-          <p className="text-lg font-bold text-gold">
-            {formatPrice(property.price, property.purpose, locale)}
-          </p>
-          <p className="text-sm font-semibold text-gold-dark">
-            {t(`purpose.${property.purpose}`)} · {property.type.name}
-          </p>
-        </div>
+        <p className="text-xs font-bold uppercase tracking-wider text-gold-dark">
+          {property.type.name}
+          {property.ref_no ? <span className="text-muted/70"> · {property.ref_no}</span> : null}
+        </p>
 
-        <h3 className="text-lg font-bold leading-snug text-navy">
-          <Link href={`/properties/${property.slug}`} className="hover:text-gold-dark">
+        <h3 className="font-display text-lg font-bold leading-snug text-navy">
+          <Link href={`/properties/${property.slug}`} className="transition-colors hover:text-gold-dark">
             {property.title}
           </Link>
         </h3>
 
         <p className="flex items-center gap-1.5 text-sm text-muted">
-          <PinIcon width={16} height={16} className="shrink-0 text-gold" />
+          <PinIcon width={15} height={15} className="shrink-0 text-gold" />
           {property.area.name}
           {property.block ? ` — ${t("card.block", { block: property.block })}` : null}
         </p>
 
-        <div className="mt-2 flex items-center justify-between gap-2 border-t border-cream-200 pt-3 text-sm text-navy">
+        <div className="mt-2 flex items-center gap-4 rounded-2xl bg-cream-50 px-4 py-2.5 text-sm ring-1 ring-cream-100">
           <CardStat
-            icon={<ExpandIcon width={17} height={17} className="text-gold" />}
-            label={t("card.sqm")}
-            value={sqm}
-          />
-          <CardStat
-            icon={<BathIcon width={17} height={17} className="text-gold" />}
-            label={t("card.bathrooms")}
-            value={property.bathrooms}
-          />
-          <CardStat
-            icon={<BedIcon width={17} height={17} className="text-gold" />}
+            icon={<BedIcon width={16} height={16} className="text-gold" />}
             label={t("card.rooms")}
             value={property.rooms}
           />
+          <span className="h-4 w-px bg-cream-200" aria-hidden />
+          <CardStat
+            icon={<BathIcon width={16} height={16} className="text-gold" />}
+            label={t("card.bathrooms")}
+            value={property.bathrooms}
+          />
+          <span className="h-4 w-px bg-cream-200" aria-hidden />
+          <CardStat
+            icon={<ExpandIcon width={16} height={16} className="text-gold" />}
+            label={t("card.sqm")}
+            value={sqm}
+          />
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-cream-200 pt-3">
-          {/* Comparison shipped later — the old site showed the affordance. */}
-          <span
-            className="inline-flex cursor-not-allowed items-center gap-1.5 text-sm font-semibold text-muted/70"
-            title={t("card.compareSoon")}
-          >
-            {t("card.compare")}
-            <CompareIcon width={16} height={16} />
-          </span>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-3">
+          <p className="font-display text-lg font-extrabold text-navy">
+            {formatPrice(property.price, property.purpose, locale)}
+          </p>
           <Link
             href={`/properties/${property.slug}`}
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-navy transition-colors hover:text-gold-dark"
+            aria-label={t("card.viewDetails")}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream text-navy ring-1 ring-cream-200 transition-all group-hover:bg-gold-gradient group-hover:text-white group-hover:ring-transparent group-hover:shadow-gold"
           >
-            {t("card.viewDetails")}
-            <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
+            <ArrowIcon width={17} height={17} className="rtl:rotate-180" />
           </Link>
         </div>
       </div>
@@ -135,13 +135,13 @@ function CardStat({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5",
+        "inline-flex min-w-0 items-center gap-1.5",
         value === null || value === undefined ? "opacity-40" : undefined,
       )}
     >
       {icon}
-      <span className="text-muted">{label}</span>
-      <span className="font-bold">{value ?? "—"}</span>
+      <span className="font-bold text-navy">{value ?? "—"}</span>
+      <span className="truncate text-muted">{label}</span>
     </span>
   );
 }
