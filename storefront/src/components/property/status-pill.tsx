@@ -4,7 +4,7 @@ import type { PropertyStatus } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 const STYLES: Record<PropertyStatus, { pill: string; dot: string }> = {
-  available: { pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+  available: { pill: "bg-green-50 text-green-700", dot: "bg-green-500" },
   rented: { pill: "bg-red-50 text-red-600", dot: "bg-red-500" },
   sold: { pill: "bg-slate-100 text-slate-600", dot: "bg-slate-500" },
   reserved: { pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },

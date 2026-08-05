@@ -1,39 +1,41 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   kwt25 storefront — design tokens v2 (premium refresh)
+   kwt25 storefront — design tokens v3 (emerald + copper)
    ---------------------------------------------------------------------------
-   Cream ground, deep navy ink, layered gold accent. White rounded-3xl cards,
-   pill buttons, gradient gold CTAs, soft layered shadows, subtle motion.
+   Porcelain ground, deep emerald ink, copper accent. White rounded-3xl cards,
+   pill buttons, gradient copper CTAs, soft layered shadows, subtle motion.
+   NOTE: utility names (cream/navy/gold) are historical — they now map to
+   porcelain / emerald / copper. Retheme by swapping values here only.
    Status: available = green, rented/sold = red/neutral, reserved = amber.
 --------------------------------------------------------------------------- */
 
 @theme {
-  /* -- Cream: page ground, tint surfaces, chips --------------------------- */
-  --color-cream: #faf6ec;
-  --color-cream-50: #fdfbf4;
-  --color-cream-100: #f4edda;
-  --color-cream-200: #eae0c5;
-  --color-cream-300: #dcceab;
+  /* -- "cream" = porcelain: page ground, tint surfaces, chips -------------- */
+  --color-cream: #f5f7f4;
+  --color-cream-50: #fbfcfa;
+  --color-cream-100: #ecf0ea;
+  --color-cream-200: #dde4da;
+  --color-cream-300: #c3cfc0;
 
-  /* -- Navy: text, dark surfaces, dark pills ------------------------------ */
-  --color-navy: #152a3d;
-  --color-navy-950: #081521;
-  --color-navy-900: #0d1f2f;
-  --color-navy-800: #1b3450;
-  --color-navy-700: #234260;
-  --color-navy-600: #2e5175;
-  --color-navy-100: #e6ebf1;
+  /* -- "navy" = deep emerald: text, dark surfaces, dark pills -------------- */
+  --color-navy: #0f3d33;
+  --color-navy-950: #062019;
+  --color-navy-900: #0a2b23;
+  --color-navy-800: #12463a;
+  --color-navy-700: #175447;
+  --color-navy-600: #1e6a59;
+  --color-navy-100: #e2ede8;
 
-  /* -- Gold: the brand accent ---------------------------------------------- */
-  --color-gold: #b8934b;
-  --color-gold-light: #d4b36a;
-  --color-gold-dark: #a37f3d;
-  --color-gold-100: #f3ead4;
-  --color-gold-200: #e9dab5;
+  /* -- "gold" = copper: the brand accent ------------------------------------ */
+  --color-gold: #c0764a;
+  --color-gold-light: #da9a6e;
+  --color-gold-dark: #a55e37;
+  --color-gold-100: #f8ebe1;
+  --color-gold-200: #efd7c3;
 
-  /* -- Muted ink on cream --------------------------------------------------- */
-  --color-muted: #5d6b78;
+  /* -- Muted ink on porcelain ------------------------------------------------ */
+  --color-muted: #5c6b64;
 
   /* -- Semantic aliases ------------------------------------------------------ */
   --color-background: var(--color-cream);
@@ -47,9 +49,9 @@
   --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cairo), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-card: 0 10px 30px -14px rgb(21 42 61 / 0.18);
-  --shadow-float: 0 18px 44px -16px rgb(21 42 61 / 0.32);
-  --shadow-gold: 0 12px 32px -12px rgb(184 147 75 / 0.55);
+  --shadow-card: 0 10px 30px -14px rgb(15 61 51 / 0.18);
+  --shadow-float: 0 18px 44px -16px rgb(15 61 51 / 0.32);
+  --shadow-gold: 0 12px 32px -12px rgb(192 118 74 / 0.55);
 
   --container-site: 78rem;
 
@@ -96,14 +98,14 @@ body {
 
 /* -- Premium helpers -------------------------------------------------------- */
 
-/* Gold gradient fill for CTAs and badges. */
+/* Copper gradient fill for CTAs and badges. */
 .bg-gold-gradient {
-  background-image: linear-gradient(135deg, #d4b36a 0%, #b8934b 55%, #a37f3d 100%);
+  background-image: linear-gradient(135deg, #da9a6e 0%, #c0764a 55%, #a55e37 100%);
 }
 
-/* Gold gradient headline text. */
+/* Copper gradient headline text. */
 .text-gold-gradient {
-  background-image: linear-gradient(120deg, #e6cd93 0%, #d4b36a 40%, #b8934b 100%);
+  background-image: linear-gradient(120deg, #f0c29e 0%, #da9a6e 40%, #c9834f 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -117,9 +119,9 @@ body {
   background-size: 44px 44px;
 }
 
-/* Soft radial gold glow, positioned by the parent. */
+/* Soft radial copper glow, positioned by the parent. */
 .gold-glow {
-  background: radial-gradient(closest-side, rgb(184 147 75 / 0.35), transparent 70%);
+  background: radial-gradient(closest-side, rgb(192 118 74 / 0.32), transparent 70%);
 }
 
 /* Frosted panel on dark surfaces. */
