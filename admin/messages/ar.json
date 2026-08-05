@@ -198,6 +198,8 @@
       "floors": "الأدوار",
       "latitude": "خط العرض",
       "longitude": "خط الطول",
+      "locationPicker": "الموقع على الخريطة",
+      "locationPickerHint": "اضغط على الخريطة لتثبيت الدبوس أو اسحبه — وتُعبّأ الإحداثيات تلقائياً.",
       "isFeatured": "عقار مميز",
       "isPremium": "شارة distinct المميزة"
     },

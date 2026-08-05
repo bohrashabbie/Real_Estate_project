@@ -35,6 +35,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { LocationPicker } from "@/components/properties/location-picker"
 import { usePermission } from "@/hooks/use-permission"
 import {
   useAmenityOptions,
@@ -525,6 +526,22 @@ export function PropertyForm({
                     <FormMessage />
                   </FormItem>
                 )}
+              />
+            </div>
+
+            {/* Pick the location visually — clicking/dragging fills the
+                latitude/longitude fields; typing there moves the pin. */}
+            <div className="mt-4 space-y-1.5">
+              <Label>{t("fields.locationPicker")}</Label>
+              <p className="text-xs text-muted-foreground">{t("fields.locationPickerHint")}</p>
+              <LocationPicker
+                latitude={form.watch("latitude") ?? ""}
+                longitude={form.watch("longitude") ?? ""}
+                disabled={!canWrite}
+                onChange={(latitude, longitude) => {
+                  form.setValue("latitude", latitude, { shouldDirty: true, shouldValidate: true })
+                  form.setValue("longitude", longitude, { shouldDirty: true, shouldValidate: true })
+                }}
               />
             </div>
           </CardContent>

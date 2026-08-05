@@ -198,6 +198,8 @@
       "floors": "Floors",
       "latitude": "Latitude",
       "longitude": "Longitude",
+      "locationPicker": "Location on map",
+      "locationPickerHint": "Click the map to drop the pin, or drag it — the coordinates fill in automatically.",
       "isFeatured": "Featured property",
       "isPremium": "Premium (distinct) badge"
     },

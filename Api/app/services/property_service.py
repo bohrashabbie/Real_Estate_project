@@ -217,6 +217,8 @@ def detail_out(db: Session, prop: Property) -> dict:
         "status": prop.status,
         "area": area,
         "type": ptype,
+        "property_type_id": prop.property_type_id,
+        "area_id": prop.area_id,
         "block": prop.block,
         "address_note": prop.address_note,
         "price": _jsonable(prop.price),
@@ -265,13 +267,20 @@ def list_item_out(db: Session, prop: Property) -> dict:
         "price": _jsonable(prop.price),
         "area": area,
         "type": ptype,
+        "property_type_id": prop.property_type_id,
+        "area_id": prop.area_id,
+        "block": prop.block,
         "rooms": prop.rooms,
         "bathrooms": prop.bathrooms,
         "is_featured": prop.is_featured,
         "is_premium": prop.is_premium,
         "published_at": prop.published_at,
         "main_image": media[0]["url"] if media else None,
+        "main_image_key": media[0]["media"]["storage_key"] if media else None,
         "images_count": len(media),
+        "translations": [
+            {"locale": t.locale, "title": t.title, "slug": t.slug} for t in prop.translations
+        ],
         "created_at": prop.created_at,
     }
 
