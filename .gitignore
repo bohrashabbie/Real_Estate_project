@@ -20,3 +20,7 @@ storefront/.env.local
 
 # Source images already uploaded via the admin API (live in the uploads volume)
 media/
+
+# This repo is public on GitHub — credential dumps dropped into reference/
+# must never be pushed. Keep them local.
+reference/*Credentials*

@@ -36,7 +36,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
           {/* The brand mark lives on black, so it only appears on dark surfaces. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.jpg"
+            src="/logo-mark.png"
             alt={siteName}
             className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/15"
           />

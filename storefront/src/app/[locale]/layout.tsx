@@ -10,6 +10,7 @@ import { FloatingContact } from "@/components/layout/floating-contact";
 import { QueryProvider } from "@/providers/query-provider";
 import { getSettings } from "@/lib/api";
 import { fontVariables } from "@/lib/fonts";
+import { SITE_URL } from "@/lib/site";
 import { localeAlternates, localeDirection, routing, type Locale } from "@/i18n/routing";
 import "../globals.css";
 
@@ -22,9 +23,21 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "app" });
 
   return {
+    // Without a metadataBase every `alternates`/`openGraph` URL below stays
+    // path-relative, which crawlers and social scrapers cannot resolve.
+    metadataBase: new URL(SITE_URL),
     title: { default: t("name"), template: `%s — ${t("name")}` },
     description: t("tagline"),
-    alternates: { languages: localeAlternates("") },
+    alternates: { canonical: `/${locale}`, languages: localeAlternates("") },
+    openGraph: {
+      type: "website",
+      siteName: t("name"),
+      locale,
+      title: t("name"),
+      description: t("tagline"),
+      url: `/${locale}`,
+      images: [{ url: "/logo-mark.png", width: 512, height: 512, alt: t("name") }],
+    },
   };
 }
 

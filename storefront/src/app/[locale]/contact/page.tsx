@@ -85,7 +85,7 @@ export default async function ContactPage({
   ].filter((card) => card !== null);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <header className="text-center">
         <p className="text-sm font-bold tracking-wide text-gold">{t("eyebrow")}</p>
         <h1 className="mt-2 text-3xl font-bold text-navy sm:text-4xl">{t("title")}</h1>
@@ -131,7 +131,7 @@ export default async function ContactPage({
         <h2 className="text-center text-2xl font-bold text-navy">{t("formTitle")}</h2>
         <p className="mt-2 text-center text-muted">{t("formSubtitle")}</p>
         <div className="mt-6">
-          <InquiryForm source="contact" />
+          <InquiryForm source="contact" wide />
         </div>
       </section>
     </div>

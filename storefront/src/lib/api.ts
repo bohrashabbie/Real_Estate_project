@@ -177,8 +177,12 @@ export async function safeGet<T>(path: string, searchParams: Query | undefined, 
   }
 }
 
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  const response = await fetch(buildUrl(path), {
+export async function apiPost<T>(
+  path: string,
+  body: unknown,
+  searchParams?: Query,
+): Promise<T> {
+  const response = await fetch(buildUrl(path, searchParams), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -203,8 +207,16 @@ export function getPropertyTypes(locale: Locale): Promise<PropertyType[]> {
   return safeGet<PropertyType[]>("/property-types", { locale }, []);
 }
 
-export function getFeaturedProperties(locale: Locale): Promise<PropertyListItem[]> {
-  return safeGet<PropertyListItem[]>("/properties/featured", { locale }, []);
+/** `/properties/featured` answers `{items:[…]}`, not a bare array — reading it
+ *  as an array made `.length` undefined, so "Our distinctive properties" showed
+ *  its empty state even with featured listings published. */
+export async function getFeaturedProperties(locale: Locale): Promise<PropertyListItem[]> {
+  const result = await safeGet<{ items: PropertyListItem[] }>(
+    "/properties/featured",
+    { locale },
+    { items: [] },
+  );
+  return result.items ?? [];
 }
 
 export function getProperties(
@@ -218,9 +230,24 @@ export function getProperties(
   );
 }
 
+/** Arabic slugs travel percent-encoded, and Next hands the route segment over
+ *  still encoded. Encoding that again yields `%25D8%25B4…`, which matches no
+ *  row — decode first, then encode exactly once. Slugify strips `%`, so a real
+ *  slug can never be mangled by the decode. */
+export function decodeSlugParam(slug: string): string {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+}
+
 export async function getProperty(locale: Locale, slug: string): Promise<PropertyDetail | null> {
   try {
-    return await apiGet<PropertyDetail>(`/properties/${encodeURIComponent(slug)}`, { locale });
+    return await apiGet<PropertyDetail>(
+      `/properties/${encodeURIComponent(decodeSlugParam(slug))}`,
+      { locale },
+    );
   } catch {
     return null;
   }

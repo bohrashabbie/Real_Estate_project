@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Link } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import { localeAlternates, type Locale } from "@/i18n/routing";
-import { getProperty, getSettings, mediaUrl } from "@/lib/api";
+import { decodeSlugParam, getProperty, getSettings, mediaUrl } from "@/lib/api";
 import { formatPrice, formatSqm, telLink } from "@/lib/format";
 import { Gallery } from "@/components/property/gallery";
 import { InquiryForm } from "@/components/property/inquiry-form";
@@ -40,7 +40,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title: property.title,
     description,
-    alternates: { languages: localeAlternates(`/properties/${slug}`) },
+    alternates: {
+      canonical: `/${locale}/properties/${encodeURIComponent(property.slug ?? slug)}`,
+      languages: localeAlternates(`/properties/${slug}`),
+    },
     openGraph: {
       title: property.title,
       description,
@@ -62,6 +65,16 @@ export default async function PropertyDetailPage({ params }: { params: Params })
     getSettings(),
   ]);
   if (!property) notFound();
+
+  // Slugs are per-locale, so switching language (or following a link written
+  // in the other locale) lands here with a slug that belongs to the *other*
+  // translation. The API resolves it either way, but leaving it in the URL
+  // means two addresses for one page — send the visitor to the canonical one.
+  // `ref_no` stays as-is: SPEC makes it a first-class way to reach a listing.
+  const requested = decodeSlugParam(slug);
+  if (property.slug && requested !== property.slug && requested !== property.ref_no) {
+    redirect({ href: `/properties/${property.slug}`, locale: typedLocale });
+  }
 
   const latitude = property.latitude === null ? null : Number(property.latitude);
   const longitude = property.longitude === null ? null : Number(property.longitude);

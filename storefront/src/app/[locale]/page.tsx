@@ -16,7 +16,6 @@ import {
   BuildingIcon,
   ClipboardIcon,
   PinIcon,
-  SparkleIcon,
   StarIcon,
 } from "@/components/ui/icons";
 
@@ -45,7 +44,6 @@ export default async function HomePage({
   setRequestLocale(locale);
   const typedLocale = locale as Locale;
   const t = await getTranslations({ locale, namespace: "home" });
-  const tCommon = await getTranslations({ locale });
 
   // All reads degrade to empty lists when the API is down — the page still renders.
   const [featured, latest, areas, types] = await Promise.all([
@@ -55,61 +53,35 @@ export default async function HomePage({
     getPropertyTypes(typedLocale),
   ]);
 
-  const stats = [
-    { value: `${latest.items.length}${latest.next_cursor ? "+" : ""}`, label: t("stats.listings") },
-    { value: `${areas.length}+`, label: t("stats.areas") },
-    { value: "24/7", label: t("stats.support") },
-  ];
-
   return (
     <div>
       {/* ------------------------------------------------------------------ */}
-      {/* Hero banner — deep navy, blueprint grid, gold glow, skyline.        */}
+      {/* Hero — the promo artwork itself, full-bleed. The headline is baked   */}
+      {/* into the image, so the page's own h1 is kept for screen readers and  */}
+      {/* search engines only; a second visible headline would fight it.       */}
+      {/* Sits outside the page container on purpose to span the viewport.     */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative overflow-hidden bg-navy-950 text-white">
-        <div className="hero-grid absolute inset-0" aria-hidden />
-        <div className="gold-glow absolute -top-40 start-1/2 h-[34rem] w-[44rem] -translate-x-1/2 rtl:translate-x-1/2" aria-hidden />
-        <div className="gold-glow animate-float-slow absolute -bottom-24 -end-32 h-96 w-96 opacity-60" aria-hidden />
-        <HeroSkyline className="absolute inset-x-0 bottom-0 h-28 w-full text-navy-900 sm:h-40" />
-
-        <div className="relative mx-auto max-w-(--container-site) px-4 pb-44 pt-16 text-center sm:px-6 sm:pb-52 sm:pt-24">
-          <p className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/5 px-5 py-2 text-sm font-bold text-gold-light backdrop-blur">
-            <SparkleIcon width={16} height={16} />
-            {t("heroEyebrow")}
-          </p>
-          <h1
-            className="animate-fade-up mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-[1.15] sm:text-6xl"
-            style={{ animationDelay: "0.1s" }}
-          >
-            {t("heroTitleLead")}{" "}
-            <span className="text-gold-gradient">{t("heroTitleAccent")}</span>
-          </h1>
-          <p
-            className="animate-fade-up mx-auto mt-5 max-w-xl text-base text-white/65 sm:text-lg"
-            style={{ animationDelay: "0.2s" }}
-          >
-            {t("heroSubtitle")}
-          </p>
-
-          {/* Stats band */}
-          <div
-            className="animate-fade-up mx-auto mt-9 flex max-w-lg items-stretch justify-center divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur rtl:divide-x-reverse"
-            style={{ animationDelay: "0.3s" }}
-          >
-            {stats.map((stat) => (
-              <div key={stat.label} className="flex-1 px-4 py-4 sm:px-6">
-                <p className="font-display text-2xl font-extrabold text-gold-light sm:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-0.5 text-xs font-semibold text-white/60 sm:text-sm">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <section>
+        <h1 className="sr-only">{t("heroTitle")}</h1>
+        <Link
+          href="/smart-search"
+          // 15/8 on phones matches the artwork's own ratio, so the baked-in
+          // text is never cropped; wider viewports settle into a letterbox
+          // rectangle rather than a very tall band.
+          className="block aspect-[15/8] w-full overflow-hidden bg-navy-950 sm:aspect-[2/1] lg:aspect-[3/1]"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/banners/01-smart-search.jpeg"
+            alt={t("heroBannerAlt")}
+            className="h-full w-full object-cover"
+            fetchPriority="high"
+          />
+        </Link>
       </section>
 
-      {/* Search panel overlapping the hero */}
-      <section className="relative z-10 mx-auto -mt-28 max-w-4xl px-4 sm:-mt-32 sm:px-6">
+      {/* Search panel */}
+      <section className="relative z-10 mx-auto mt-10 max-w-4xl px-4 sm:mt-12 sm:px-6">
         <QuickSearch areas={areas} types={types} />
       </section>
 
@@ -173,24 +145,6 @@ export default async function HomePage({
           </div>
         </section>
       ) : null}
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Smart search promo banner                                            */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="mx-auto max-w-(--container-site) px-4 pt-20 sm:px-6">
-        <Link
-          href="/smart-search"
-          aria-label={tCommon("menu.smartSearch")}
-          className="group block overflow-hidden rounded-3xl shadow-float ring-1 ring-cream-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-gold"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/promo-banner.jpeg"
-            alt={t("smartTitle")}
-            className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.015]"
-          />
-        </Link>
-      </section>
 
       {/* ------------------------------------------------------------------ */}
       {/* Latest listings                                                      */}
@@ -291,20 +245,5 @@ function SectionHeader({
       </div>
       {action}
     </div>
-  );
-}
-
-/** Flat city-skyline silhouette anchoring the hero to real estate. */
-function HeroSkyline({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 1440 160"
-      preserveAspectRatio="none"
-      fill="currentColor"
-      className={className}
-      aria-hidden
-    >
-      <path d="M0 160V120h40V80h24v40h30V60h14V40h14v20h14v60h36V90h44v30h20V50h16V30h16v20h16v70h30V85h40v35h28V70h12V50h12v20h12v50h42V95h38v25h26V55h14V25h6V10h6v15h6v30h14v65h36V90h40v30h24V45h16V20h16v25h16v75h32V85h36v35h26V65h12V45h12v20h12v55h40V95h36v25h30V60h14V38h14v22h14v60h34V90h42v30h24V55h16V35h16v20h16v50h30V85h38v75H0Z" />
-    </svg>
   );
 }

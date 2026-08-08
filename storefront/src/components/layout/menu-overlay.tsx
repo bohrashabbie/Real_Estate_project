@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -10,6 +11,7 @@ import {
   BuildingIcon,
   ClipboardIcon,
   CloseIcon,
+  GlobeIcon,
   HomeIcon,
   MapIcon,
   PhoneIcon,
@@ -32,6 +34,7 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!open) return;
@@ -149,7 +152,10 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
               <ArrowIcon
                 width={20}
                 height={20}
-                className="rotate-180 text-gold transition-transform group-hover:translate-x-1 rtl:rotate-0 rtl:group-hover:-translate-x-1"
+                // ArrowIcon ships pointing inline-end; the site convention is
+                // `rtl:rotate-180`. This row had it inverted, so in Arabic the
+                // "go to page" arrow pointed backwards.
+                className="text-gold transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
               />
             </Link>
           ))}
@@ -157,12 +163,19 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
 
         <button
           type="button"
+          lang={locale === "ar" ? "en" : "ar"}
           onClick={() => {
             onClose();
-            router.replace(pathname, { locale: locale === "ar" ? "en" : "ar" });
+            // Carry the query string over, so switching language from a
+            // filtered listing does not silently drop the filters.
+            const query = searchParams.toString();
+            router.replace(query ? `${pathname}?${query}` : pathname, {
+              locale: locale === "ar" ? "en" : "ar",
+            });
           }}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 hover:bg-cream-100"
         >
+          <GlobeIcon width={18} height={18} className="text-gold" />
           {locale === "ar" ? "English" : "العربية"}
         </button>
       </div>

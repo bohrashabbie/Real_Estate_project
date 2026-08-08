@@ -58,13 +58,17 @@ export function SmartSearchWizard({
   async function submit(finalAnswers: Answers) {
     setPhase("loading");
     try {
-      const payload: Record<string, unknown> = { locale };
+      // `locale` is a *query* param on /smart-search, like every other public
+      // endpoint — the body schema is `{purpose,type,area,budget_max,rooms}`
+      // only. Sending it in the body left the API on its "ar" default, so the
+      // English wizard returned Arabic titles.
+      const payload: Record<string, unknown> = {};
       if (finalAnswers.purpose) payload.purpose = finalAnswers.purpose;
       if (finalAnswers.type) payload.type = finalAnswers.type;
       if (finalAnswers.area) payload.area = finalAnswers.area;
       if (finalAnswers.budget_max) payload.budget_max = Number(finalAnswers.budget_max);
       if (finalAnswers.rooms) payload.rooms = Number(finalAnswers.rooms);
-      const response = await apiPost<SmartSearchResult>("/smart-search", payload);
+      const response = await apiPost<SmartSearchResult>("/smart-search", payload, { locale });
       setResult(response);
       setPhase("results");
     } catch {
@@ -81,7 +85,7 @@ export function SmartSearchWizard({
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <header className="text-center">
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navy text-gold">
           <SparkleIcon width={26} height={26} />
@@ -91,7 +95,7 @@ export function SmartSearchWizard({
       </header>
 
       {phase === "wizard" ? (
-        <section className="mt-8 rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
+        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
           {/* Progress dots */}
           <div className="flex items-center justify-center gap-2.5" aria-hidden>
             {STEPS.map((name, index) => (
@@ -204,7 +208,7 @@ export function SmartSearchWizard({
       ) : null}
 
       {phase === "loading" ? (
-        <section className="mt-8 rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
+        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
           <span className="mx-auto flex h-14 w-14 animate-pulse items-center justify-center rounded-full bg-cream-100 text-gold">
             <SearchIcon width={26} height={26} />
           </span>
@@ -213,7 +217,7 @@ export function SmartSearchWizard({
       ) : null}
 
       {phase === "error" ? (
-        <section className="mt-8 rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
+        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
           <p className="text-lg font-bold text-navy">{t("smart.errorTitle")}</p>
           <p className="mt-2 text-muted">{t("smart.errorBody")}</p>
           <button
@@ -254,7 +258,7 @@ export function SmartSearchWizard({
               </Link>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {result.items.map((property) => (
                 <PropertyCard key={property.id} property={property} locale={locale} />
               ))}

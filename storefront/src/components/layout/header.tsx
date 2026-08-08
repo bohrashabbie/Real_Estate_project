@@ -9,6 +9,7 @@ import { telLink } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { MenuIcon, PhoneIcon } from "@/components/ui/icons";
 import { MenuOverlay } from "@/components/layout/menu-overlay";
+import { LocaleToggle } from "@/components/layout/locale-toggle";
 
 const NAV_ITEMS = [
   { href: "/", key: "home" },
@@ -30,13 +31,25 @@ export function Header({ settings }: { settings: SiteSettings }) {
     <>
       <header className="sticky top-0 z-40 border-b border-cream-200/70 bg-cream/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-(--container-site) items-center gap-3 px-4 py-3 sm:px-6">
-          {/* Wordmark */}
-          <Link href="/" className="leading-tight">
-            <span className="block font-display text-lg font-extrabold text-navy sm:text-xl">
-              {siteName}
-            </span>
-            <span className="block text-[11px] font-semibold tracking-wide text-gold-dark">
-              {siteNameAlt}
+          {/* Brand mark + wordmark */}
+          <Link href="/" className="flex shrink-0 items-center gap-2.5 leading-tight">
+            {/* The mark is gold-on-black artwork, so it keeps its own dark
+                tile rather than sitting bare on the cream bar. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-mark.png"
+              alt=""
+              width={44}
+              height={44}
+              className="h-10 w-10 rounded-xl object-cover ring-1 ring-cream-300 sm:h-11 sm:w-11"
+            />
+            <span>
+              <span className="block font-display text-base font-extrabold text-navy sm:text-xl">
+                {siteName}
+              </span>
+              <span className="block text-[11px] font-semibold tracking-wide text-gold-dark">
+                {siteNameAlt}
+              </span>
             </span>
           </Link>
 
@@ -62,7 +75,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
             })}
           </nav>
 
-          <div className="ms-auto flex items-center gap-2.5 lg:ms-0">
+          <div className="ms-auto flex items-center gap-2 lg:ms-0 sm:gap-2.5">
+            <LocaleToggle />
+
             {settings.phone ? (
               <a
                 href={telLink(settings.phone)}

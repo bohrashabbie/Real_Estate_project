@@ -10,6 +10,11 @@ WORKDIR /app
 # prerendered against a build-time API here.
 ARG NEXT_PUBLIC_API_URL=http://localhost:8000/public/v1
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# Next inlines every NEXT_PUBLIC_* reference at build time, including the ones
+# read in server code (metadataBase, robots.txt, sitemap.xml) — so passing this
+# only as a runtime env would silently leave the localhost fallback baked in.
+ARG NEXT_PUBLIC_SITE_URL=http://localhost:3100
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

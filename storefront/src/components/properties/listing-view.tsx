@@ -16,6 +16,7 @@ import {
   type PropertyStatus,
   type PropertyType,
 } from "@/lib/api";
+import { formatAmount } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { PropertyCard } from "@/components/property/property-card";
 import {
@@ -200,7 +201,12 @@ export function ListingView({
           { min: "500", max: "1000" },
           { min: "1000", max: "" },
         ];
-  const formatBracketValue = (value: string) => Number(value).toLocaleString();
+  // Must not be `toLocaleString()` with no locale: Node picks the server's
+  // default locale and the browser picks the visitor's, so an ar-KW visitor
+  // got Arabic-Indic digits client-side against Latin digits in the HTML and
+  // React threw a hydration mismatch. `formatAmount` pins en-US, matching how
+  // prices are rendered everywhere else on the site.
+  const formatBracketValue = (value: string) => formatAmount(value);
   const bracketLabel = (bracket: { min: string; max: string }) =>
     bracket.min && bracket.max
       ? `${formatBracketValue(bracket.min)} – ${formatBracketValue(bracket.max)}`

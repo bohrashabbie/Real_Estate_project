@@ -23,4 +23,8 @@ export const routing = defineRouting({
   // Arabic is the default but still carries its prefix — an unprefixed `/`
   // that silently means Arabic makes canonical URLs and hreflang ambiguous.
   localePrefix: "always",
+  // The office is Kuwaiti and the site is Arabic-first: `/` must always land
+  // on `/ar`, even for a browser sending `Accept-Language: en`. English is
+  // opt-in through the header toggle, which writes the locale into the URL.
+  localeDetection: false,
 });

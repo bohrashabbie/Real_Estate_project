@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 
 import { apiPost } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import { CheckIcon, SendIcon } from "@/components/ui/icons";
 
 /** Inquiry form → POST /public/v1/inquiries. Used on the property detail page
@@ -12,10 +13,15 @@ export function InquiryForm({
   propertyId,
   source,
   initialMessage = "",
+  wide = false,
 }: {
   propertyId?: number;
   source: "property" | "contact" | "home";
   initialMessage?: string;
+  /** Lay name and phone side by side and stretch the submit button across the
+   *  full width. For the contact page, where the card is much wider than the
+   *  narrow column the property detail page gives this form. */
+  wide?: boolean;
 }) {
   const t = useTranslations("inquiry");
   const [name, setName] = useState("");
@@ -53,37 +59,42 @@ export function InquiryForm({
     );
   }
 
+  const field =
+    "w-full rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold";
+
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
-      <label className="block">
-        <span className="mb-1.5 block text-sm font-bold text-navy">{t("name")}</span>
-        <input
-          type="text"
-          required
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          className="w-full rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
-        />
-      </label>
-      <label className="block">
-        <span className="mb-1.5 block text-sm font-bold text-navy">{t("phone")}</span>
-        <input
-          type="tel"
-          required
-          dir="ltr"
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
-          className="w-full rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
-        />
-      </label>
+      <div className={cn("grid gap-4", wide ? "sm:grid-cols-2" : undefined)}>
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-bold text-navy">{t("name")}</span>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            className={field}
+          />
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-bold text-navy">{t("phone")}</span>
+          <input
+            type="tel"
+            required
+            dir="ltr"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            className={field}
+          />
+        </label>
+      </div>
       <label className="block">
         <span className="mb-1.5 block text-sm font-bold text-navy">{t("message")}</span>
         <textarea
           required
-          rows={4}
+          rows={wide ? 6 : 4}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          className="w-full resize-y rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
+          className={cn(field, "resize-y")}
         />
       </label>
 
