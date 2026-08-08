@@ -90,8 +90,10 @@ export default async function HomePage({
         <HeroBanner slides={slides} />
       </section>
 
-      {/* Search panel */}
-      <section className="relative z-10 mx-auto mt-10 max-w-4xl px-4 sm:mt-12 sm:px-6">
+      {/* Search panel, floating over the banner's lower edge. The negative
+          margin is mirrored by the slider's dot offset in `hero-banner.tsx` —
+          change one and the dots end up underneath this card. */}
+      <section className="relative z-10 mx-auto -mt-14 max-w-4xl px-4 sm:-mt-20 sm:px-6">
         <QuickSearch areas={areas} types={types} />
       </section>
 

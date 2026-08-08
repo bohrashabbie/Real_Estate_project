@@ -132,28 +132,31 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
           <>
             <SliderArrow side="start" label={t("previous")} onClick={() => go(index - 1)} />
             <SliderArrow side="end" label={t("next")} onClick={() => go(index + 1)} />
+
+            {/* Dots sit *inside* the artwork rather than below it: the quick
+                search panel floats over the banner's lower edge, and a dot row
+                in normal flow would end up hidden behind that card. The offset
+                clears the panel's negative margin in `page.tsx`. */}
+            <div className="absolute inset-x-0 bottom-16 z-10 flex justify-center sm:bottom-24">
+              <div className="flex gap-2 rounded-full bg-navy-950/40 px-3 py-2 backdrop-blur">
+                {slides.map((slide, i) => (
+                  <button
+                    key={slide.key}
+                    type="button"
+                    onClick={() => go(i)}
+                    aria-label={t("goTo", { number: i + 1 })}
+                    aria-current={i === index}
+                    className={cn(
+                      "h-2.5 rounded-full transition-all",
+                      i === index ? "w-7 bg-gold" : "w-2.5 bg-white/70 hover:bg-gold/70",
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
           </>
         ) : null}
       </div>
-
-      {/* Dots */}
-      {count > 1 ? (
-        <div className="mt-4 flex justify-center gap-2">
-          {slides.map((slide, i) => (
-            <button
-              key={slide.key}
-              type="button"
-              onClick={() => go(i)}
-              aria-label={t("goTo", { number: i + 1 })}
-              aria-current={i === index}
-              className={cn(
-                "h-2.5 rounded-full transition-all",
-                i === index ? "w-7 bg-gold" : "w-2.5 bg-cream-300 hover:bg-gold/60",
-              )}
-            />
-          ))}
-        </div>
-      ) : null}
     </div>
   );
 }
