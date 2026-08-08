@@ -232,7 +232,7 @@
     "relaxedNote": "We couldn't find enough exact matches, so we widened the search on: {filters}",
     "relaxedFilters": {
       "rooms": "number of rooms",
-      "budget": "budget",
+      "budget_max": "budget",
       "area": "area"
     },
     "noMatchTitle": "No exact match",

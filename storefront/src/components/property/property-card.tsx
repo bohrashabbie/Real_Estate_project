@@ -86,19 +86,24 @@ export function PropertyCard({
           {property.block ? ` — ${t("card.block", { block: property.block })}` : null}
         </p>
 
-        <div className="mt-2 flex items-center gap-4 rounded-2xl bg-cream-50 px-4 py-2.5 text-sm ring-1 ring-cream-100">
+        {/* Three equal columns rather than one inline row: "bathrooms" is long
+            enough that a single line ran out of card and truncated every label
+            to "2 bath…". Stacking the label under the value gives each stat the
+            full third of the strip, and the separators are flow elements rather
+            than `divide-x` so they stay between the cells under RTL. */}
+        <div className="mt-2 flex items-stretch rounded-2xl bg-cream-50 px-2 py-2.5 text-sm ring-1 ring-cream-100">
           <CardStat
             icon={<BedIcon width={16} height={16} className="text-gold" />}
             label={t("card.rooms")}
             value={property.rooms}
           />
-          <span className="h-4 w-px bg-cream-200" aria-hidden />
+          <span className="w-px self-stretch bg-cream-200" aria-hidden />
           <CardStat
             icon={<BathIcon width={16} height={16} className="text-gold" />}
             label={t("card.bathrooms")}
             value={property.bathrooms}
           />
-          <span className="h-4 w-px bg-cream-200" aria-hidden />
+          <span className="w-px self-stretch bg-cream-200" aria-hidden />
           <CardStat
             icon={<ExpandIcon width={16} height={16} className="text-gold" />}
             label={t("card.sqm")}
@@ -135,13 +140,17 @@ function CardStat({
   return (
     <span
       className={cn(
-        "inline-flex min-w-0 items-center gap-1.5",
+        "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1.5 text-center",
         value === null || value === undefined ? "opacity-40" : undefined,
       )}
     >
-      {icon}
-      <span className="font-bold text-navy">{value ?? "—"}</span>
-      <span className="truncate text-muted">{label}</span>
+      <span className="inline-flex items-center gap-1.5">
+        {icon}
+        <span className="font-bold text-navy">{value ?? "—"}</span>
+      </span>
+      <span className="w-full truncate text-[11px] font-semibold uppercase tracking-wide text-muted">
+        {label}
+      </span>
     </span>
   );
 }

@@ -233,15 +233,24 @@ export function SmartSearchWizard({
 
       {phase === "results" && result ? (
         <section className="mt-8">
+          {/* A widened search is good news, not a failure — the old full-width
+              gold slab read as an error banner. Keep it to the width of its own
+              text, lead with the sparkle the wizard already uses, and let the
+              results start right underneath. */}
           {result.relaxed.length > 0 ? (
-            <p className="rounded-2xl bg-gold-100 px-5 py-4 text-sm font-semibold text-navy ring-1 ring-gold/40">
-              {t("smart.relaxedNote", {
-                filters: result.relaxed
-                  .map((key) => t.has(`smart.relaxedFilters.${key}`)
-                    ? t(`smart.relaxedFilters.${key}`)
-                    : key)
-                  .join(locale === "ar" ? "، " : ", "),
-              })}
+            <p className="mb-6 inline-flex max-w-full items-start gap-2.5 rounded-2xl bg-gold-100/70 px-4 py-3 text-sm font-semibold leading-relaxed text-navy ring-1 ring-gold/30">
+              <SparkleIcon width={16} height={16} className="mt-0.5 shrink-0 text-gold-dark" />
+              <span>
+                {t("smart.relaxedNote", {
+                  filters: result.relaxed
+                    .map((key) =>
+                      t.has(`smart.relaxedFilters.${key}`)
+                        ? t(`smart.relaxedFilters.${key}`)
+                        : key,
+                    )
+                    .join(locale === "ar" ? "، " : ", "),
+                })}
+              </span>
             </p>
           ) : null}
 

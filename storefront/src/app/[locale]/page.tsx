@@ -83,11 +83,12 @@ export default async function HomePage({
         <HeroBanner slides={slides} />
       </section>
 
-      {/* Search panel, floating over the banner's lower edge. The negative
-          margin is mirrored by the slider's dot offset in `hero-banner.tsx` —
-          change one and the dots end up underneath this card. With every
-          banner hidden there is nothing to overlap, and pulling the card up
-          into the header would look like a bug. */}
+      {/* Search panel, floating over the navy band's bottom padding rather
+          than over the artwork — the pull-up here must stay smaller than the
+          band's `pb-*` in `hero-banner.tsx`, or the card starts covering the
+          banner's own call-to-action again. With every banner hidden there is
+          nothing to overlap, and pulling the card up into the header would
+          look like a bug. */}
       <section
         className={cn(
           "relative z-10 mx-auto max-w-4xl px-4 sm:px-6",

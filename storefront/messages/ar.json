@@ -232,7 +232,7 @@
     "relaxedNote": "لم نجد نتائج كافية مطابقة تماماً، لذا وسّعنا البحث في: {filters}",
     "relaxedFilters": {
       "rooms": "عدد الغرف",
-      "budget": "الميزانية",
+      "budget_max": "الميزانية",
       "area": "المنطقة"
     },
     "noMatchTitle": "لا توجد نتائج مطابقة",
