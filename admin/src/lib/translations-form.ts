@@ -1,7 +1,6 @@
 import { locales, type Locale } from "@/i18n/routing"
 import type {
-  NameTranslationIn,
-  NameTranslationOut,
+  NameTranslations,
   PropertyTranslationIn,
   PropertyTranslationOut,
 } from "@/lib/api/types"
@@ -20,22 +19,26 @@ export type PropertyTranslationForm = Record<
 >
 
 export function toNameTranslationForm(
-  translations: NameTranslationOut[] | undefined
+  translations: NameTranslations | undefined
 ): NameTranslationForm {
   const form = {} as NameTranslationForm
   for (const locale of locales) {
-    const row = translations?.find((t) => t.locale === locale)
-    form[locale] = { name: row?.name ?? "" }
+    form[locale] = { name: translations?.[locale] ?? "" }
   }
   return form
 }
 
 export function fromNameTranslationForm(
   form: NameTranslationForm
-): NameTranslationIn[] {
-  return locales
-    .filter((locale) => form[locale]?.name?.trim())
-    .map((locale) => ({ locale, name: form[locale].name.trim() }))
+): NameTranslations {
+  const out: NameTranslations = {}
+  for (const locale of locales) {
+    const name = form[locale]?.name?.trim()
+    // Locales left blank are omitted rather than sent empty: the API upserts
+    // by locale, so an empty string would overwrite a good translation.
+    if (name) out[locale] = name
+  }
+  return out
 }
 
 export function toPropertyTranslationForm(

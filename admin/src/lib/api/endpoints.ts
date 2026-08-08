@@ -122,17 +122,18 @@ export const rolesApi = {
 /* Taxonomy — areas, property types, amenities                                 */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Taxonomy lists are *not* cursor-paginated: 27 areas / 8 types / 16 amenities
+ * are reference data the API returns whole, ordered by sort_order. It answers
+ * a bare array and understands one filter, `include_inactive`.
+ */
 function taxonomyQuery(params: TaxonomyListParams) {
-  return {
-    cursor: params.cursor ?? undefined,
-    limit: params.limit,
-    is_active: params.is_active ?? undefined,
-  }
+  return { include_inactive: params.include_inactive ?? true }
 }
 
 export const areasApi = {
   list: (params: TaxonomyListParams = {}, signal?: AbortSignal) =>
-    api.get<CursorPage<AreaOut>>("/areas", {
+    api.get<AreaOut[]>("/areas", {
       query: taxonomyQuery(params),
       signal,
     }),
@@ -145,7 +146,7 @@ export const areasApi = {
 
 export const propertyTypesApi = {
   list: (params: TaxonomyListParams = {}, signal?: AbortSignal) =>
-    api.get<CursorPage<PropertyTypeOut>>("/property-types", {
+    api.get<PropertyTypeOut[]>("/property-types", {
       query: taxonomyQuery(params),
       signal,
     }),
@@ -158,7 +159,7 @@ export const propertyTypesApi = {
 
 export const amenitiesApi = {
   list: (params: TaxonomyListParams = {}, signal?: AbortSignal) =>
-    api.get<CursorPage<AmenityOut>>("/amenities", {
+    api.get<AmenityOut[]>("/amenities", {
       query: taxonomyQuery(params),
       signal,
     }),

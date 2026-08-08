@@ -1,7 +1,7 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import { useQueryClient, type QueryKey } from "@tanstack/react-query"
+import { useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -16,16 +16,10 @@ import { RequirePermission } from "@/components/permission/require-permission"
 import { RequireRoutePermission } from "@/components/permission/require-route-permission"
 import { StatusFilter, useStatusFilter } from "@/components/status-filter"
 import { TaxonomyFormDialog } from "./taxonomy-form-dialog"
-import { useCursorList } from "@/hooks/use-cursor-list"
 import { getErrorMessage } from "@/lib/api/error-message"
 import { translatedName } from "@/lib/format"
 import { PERMISSIONS } from "@/lib/permissions"
-import type {
-  CursorPage,
-  NameTranslationIn,
-  NameTranslationOut,
-  TaxonomyListParams,
-} from "@/lib/api/types"
+import type { NameTranslations, TaxonomyListParams } from "@/lib/api/types"
 
 /** Common row shape across areas / property types / amenities. */
 export type TaxonomyItem = {
@@ -34,7 +28,7 @@ export type TaxonomyItem = {
   slug?: string
   sort_order: number
   is_active: boolean
-  translations: NameTranslationOut[]
+  translations: NameTranslations
 }
 
 /** What the shared dialog hands back; each page maps `code` onto key/slug. */
@@ -42,14 +36,14 @@ export type TaxonomyFormPayload = {
   code: string | null
   sort_order: number
   is_active: boolean
-  translations: NameTranslationIn[]
+  translations: NameTranslations
 }
 
 export type TaxonomyAdapter = {
   list: (
     params: TaxonomyListParams,
     signal?: AbortSignal
-  ) => Promise<CursorPage<TaxonomyItem>>
+  ) => Promise<TaxonomyItem[]>
   create: (payload: TaxonomyFormPayload) => Promise<unknown>
   update: (id: number, payload: TaxonomyFormPayload) => Promise<unknown>
   deactivate: (id: number) => Promise<unknown>
@@ -70,7 +64,7 @@ export function TaxonomyPage({
   codeField: "key" | "slug" | null
   adapter: TaxonomyAdapter
   queryKeyAll: QueryKey
-  listKey: (params: { is_active?: boolean | null }) => QueryKey
+  listKey: (params: { include_inactive?: boolean }) => QueryKey
 }) {
   return (
     <RequireRoutePermission permission={PERMISSIONS.taxonomyView}>
@@ -96,7 +90,7 @@ function TaxonomyContent({
   codeField: "key" | "slug" | null
   adapter: TaxonomyAdapter
   queryKeyAll: QueryKey
-  listKey: (params: { is_active?: boolean | null }) => QueryKey
+  listKey: (params: { include_inactive?: boolean }) => QueryKey
 }) {
   const t = useTranslations(namespace)
   const tax = useTranslations("taxonomy")
@@ -109,11 +103,18 @@ function TaxonomyContent({
   const [editing, setEditing] = useState<TaxonomyItem | undefined>()
   const [deactivating, setDeactivating] = useState<TaxonomyItem | null>(null)
 
-  const list = useCursorList<TaxonomyItem>({
-    queryKey: listKey({ is_active: isActive }),
-    fetchPage: (cursor, signal) =>
-      adapter.list({ cursor, limit: 50, is_active: isActive }, signal),
+  // One request for the whole table — these are reference lists of tens of
+  // rows, so the API returns them unpaginated and the active/inactive filter
+  // is applied here rather than round-tripping for a narrowing the endpoint
+  // cannot express (it only knows `include_inactive`).
+  const list = useQuery({
+    queryKey: listKey({ include_inactive: true }),
+    queryFn: ({ signal }) => adapter.list({ include_inactive: true }, signal),
   })
+
+  const items = (list.data ?? []).filter((item) =>
+    isActive === undefined ? true : item.is_active === isActive
+  )
 
   function openCreate() {
     setEditing(undefined)
@@ -225,15 +226,12 @@ function TaxonomyContent({
 
       <DataTable
         columns={columns}
-        data={list.items}
+        data={items}
         isLoading={list.isLoading}
         isError={list.isError}
         error={list.error}
         onRetry={() => list.refetch()}
         emptyDescription={t("empty")}
-        hasNextPage={list.hasNextPage}
-        isFetchingNextPage={list.isFetchingNextPage}
-        onLoadMore={() => list.fetchNextPage()}
       />
 
       {formOpen && (

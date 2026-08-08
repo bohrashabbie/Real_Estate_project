@@ -14,9 +14,10 @@ const adapter: TaxonomyAdapter = {
       is_active: payload.is_active,
       translations: payload.translations,
     }),
+  // `key` is intentionally absent: it is immutable once created (properties
+  // reference it), and the backend's update schema drops it.
   update: (id, payload) =>
     amenitiesApi.update(id, {
-      key: payload.code,
       sort_order: payload.sort_order,
       is_active: payload.is_active,
       translations: payload.translations,

@@ -283,7 +283,8 @@
       "isActive": "Active"
     },
     "hints": {
-      "code": "A stable identifier used in URLs and the API. Leave empty to generate from the name."
+      "code": "A stable identifier used in URLs and the API. Leave empty to generate from the name.",
+      "keyLocked": "The key can't be changed after creation — the website filters on it. Rename the display name instead."
     },
     "columns": {
       "name": "Name",

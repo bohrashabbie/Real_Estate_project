@@ -83,6 +83,11 @@ export function TaxonomyFormDialog({
   const c = useTranslations("common")
   const schema = useTaxonomySchema()
   const isEdit = !!item
+  // `key` is the stable identifier the storefront filters on
+  // (/properties?type=villa) and the seed data references, so the backend's
+  // update schema deliberately has no `key` field. Showing an editable input
+  // that is silently discarded on save is worse than showing it locked.
+  const codeLocked = isEdit && codeField === "key"
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -150,9 +155,11 @@ export function TaxonomyFormDialog({
                           : tax("fields.slug")}
                       </FormLabel>
                       <FormControl>
-                        <Input dir="ltr" {...field} />
+                        <Input dir="ltr" disabled={codeLocked} {...field} />
                       </FormControl>
-                      <FormDescription>{tax("hints.code")}</FormDescription>
+                      <FormDescription>
+                        {codeLocked ? tax("hints.keyLocked") : tax("hints.code")}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

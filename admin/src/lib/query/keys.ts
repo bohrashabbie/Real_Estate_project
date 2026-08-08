@@ -30,19 +30,19 @@ export const queryKeys = {
 
   areas: {
     all: ["areas"] as const,
-    list: (params: { is_active?: boolean | null } = {}) =>
+    list: (params: { include_inactive?: boolean } = {}) =>
       ["areas", "list", params] as const,
   },
 
   propertyTypes: {
     all: ["property-types"] as const,
-    list: (params: { is_active?: boolean | null } = {}) =>
+    list: (params: { include_inactive?: boolean } = {}) =>
       ["property-types", "list", params] as const,
   },
 
   amenities: {
     all: ["amenities"] as const,
-    list: (params: { is_active?: boolean | null } = {}) =>
+    list: (params: { include_inactive?: boolean } = {}) =>
       ["amenities", "list", params] as const,
   },
 

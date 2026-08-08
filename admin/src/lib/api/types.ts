@@ -147,16 +147,13 @@ export type UserRoleAssignIn = {
 /**
  * Translations are rows keyed by locale — never JSON blobs, never name_ar /
  * name_en columns (CLAUDE.md rule 3). Slugs are unique per locale.
+ *
+ * Taxonomy names are the one place the wire format differs from the storage
+ * format: the CRUD endpoints project those rows as a single object keyed by
+ * locale, `{"ar": "السالمية", "en": "Salmiya"}`, and accept the same shape
+ * back. Properties still send and receive an array of translation rows.
  */
-export type NameTranslationIn = {
-  locale: string
-  name: string
-}
-
-export type NameTranslationOut = {
-  locale: string
-  name: string
-}
+export type NameTranslations = Partial<Record<string, string>>
 
 export type PropertyTranslationIn = {
   locale: string
@@ -181,21 +178,21 @@ export type AreaOut = {
   slug: string
   sort_order: number
   is_active: boolean
-  translations: NameTranslationOut[]
+  translations: NameTranslations
 }
 
 export type AreaCreate = {
   slug?: string | null
   sort_order?: number
   is_active?: boolean
-  translations: NameTranslationIn[]
+  translations: NameTranslations
 }
 
 export type AreaUpdate = {
   slug?: string | null
   sort_order?: number | null
   is_active?: boolean | null
-  translations?: NameTranslationIn[] | null
+  translations?: NameTranslations | null
 }
 
 export type PropertyTypeOut = {
@@ -204,7 +201,7 @@ export type PropertyTypeOut = {
   slug: string
   sort_order: number
   is_active: boolean
-  translations: NameTranslationOut[]
+  translations: NameTranslations
 }
 
 export type PropertyTypeCreate = {
@@ -212,7 +209,7 @@ export type PropertyTypeCreate = {
   slug?: string | null
   sort_order?: number
   is_active?: boolean
-  translations: NameTranslationIn[]
+  translations: NameTranslations
 }
 
 export type PropertyTypeUpdate = {
@@ -220,7 +217,7 @@ export type PropertyTypeUpdate = {
   slug?: string | null
   sort_order?: number | null
   is_active?: boolean | null
-  translations?: NameTranslationIn[] | null
+  translations?: NameTranslations | null
 }
 
 export type AmenityOut = {
@@ -228,27 +225,28 @@ export type AmenityOut = {
   key: string
   sort_order: number
   is_active: boolean
-  translations: NameTranslationOut[]
+  translations: NameTranslations
 }
 
 export type AmenityCreate = {
   key: string
   sort_order?: number
   is_active?: boolean
-  translations: NameTranslationIn[]
+  translations: NameTranslations
 }
 
 export type AmenityUpdate = {
   key?: string | null
   sort_order?: number | null
   is_active?: boolean | null
-  translations?: NameTranslationIn[] | null
+  translations?: NameTranslations | null
 }
 
+/** Taxonomies are small reference tables: the API returns every row ordered
+ *  by sort_order, with no cursor. `include_inactive` is the only filter it
+ *  understands — active/inactive narrowing happens client-side. */
 export type TaxonomyListParams = {
-  cursor?: string | null
-  limit?: number
-  is_active?: boolean | null
+  include_inactive?: boolean
 }
 
 /* -------------------------------------------------------------------------- */

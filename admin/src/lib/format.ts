@@ -1,5 +1,5 @@
 import type {
-  NameTranslationOut,
+  NameTranslations,
   PropertyTranslationOut,
 } from "@/lib/api/types"
 
@@ -56,11 +56,15 @@ export function pickTranslation<T extends AnyTranslation>(
 
 /** Display name for taxonomy records (areas / property types / amenities). */
 export function translatedName(
-  translations: NameTranslationOut[] | undefined,
+  translations: NameTranslations | undefined,
   locale: string,
   fallback = "—"
 ): string {
-  return pickTranslation(translations, locale)?.name ?? fallback
+  if (!translations) return fallback
+  // Fall back to the other language rather than showing a dash: a row named
+  // only in Arabic is still better identified by that name on the English UI.
+  const first = Object.values(translations).find((name) => name?.trim())
+  return translations[locale]?.trim() || first?.trim() || fallback
 }
 
 /** Display title for a property. */
