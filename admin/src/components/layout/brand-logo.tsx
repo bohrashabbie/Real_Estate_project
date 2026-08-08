@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * kwt25 brand mark: a gold building glyph + the localized wordmark
- * (عقار الكويت / Kuwait Real Estate). Pure text+icon, no artwork, so it works
+ * (عقار الكويت / Kuwait 25). Pure text+icon, no artwork, so it works
  * in both locales and both themes. The collapsed sidebar rail shows only the
  * glyph.
  */

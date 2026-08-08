@@ -181,7 +181,7 @@ SETTINGS: list[tuple[str, str]] = [
     ("site.email", "info@kwt25.com"),
     ("site.instagram", "kwt25_realestate"),
     ("site.name_ar", "عقار الكويت"),
-    ("site.name_en", "Kuwait Real Estate"),
+    ("site.name_en", "Kuwait 25"),
 ]
 
 

@@ -1,4 +1,4 @@
-# kwt25 — Kuwait Real Estate — Build Specification
+# kwt25 — Kuwait 25 — Build Specification
 
 Single source of truth for the schema, API contract, and page inventory.
 All three apps (Api/, admin/, storefront/) are built against THIS file.
@@ -7,7 +7,7 @@ from `d:\dumbstack\GRC` — read its `CLAUDE.md` and copy its patterns.
 
 ## Product
 
-**kwt25 — عقار الكويت / Kuwait Real Estate.** A Kuwaiti real-estate office
+**kwt25 — عقار الكويت / Kuwait 25.** A Kuwaiti real-estate office
 website + admin panel. Visitors browse properties for rent/sale, filter by
 area/type/price/rooms, view details with photos + map, and contact the office
 by phone / WhatsApp / inquiry form. Staff manage listings through the admin.
@@ -52,7 +52,7 @@ are rows in `*_translations` keyed by `locale`, slugs unique per locale):
 - **inquiries** — id, property_id FK nullable, name, phone, message, source ENUM `property|contact|home`, status ENUM `new|contacted|closed` default new, created_at. Public insert; admin list/update-status.
 - **property_requests** — "Request your property": id, name, phone, purpose ENUM `rent|sale` null, property_type_id FK null, area_id FK null, budget_min NUMERIC(12,3) null, budget_max NUMERIC(12,3) null, rooms SMALLINT null, notes TEXT null, status ENUM `new|in_progress|matched|closed` default new, created_at.
 
-Settings seeded keys: `site.phone` (+965 XXXXXXXX), `site.whatsapp`, `site.email`, `site.instagram`, `site.name_ar` (عقار الكويت), `site.name_en` (Kuwait Real Estate).
+Settings seeded keys: `site.phone` (+965 XXXXXXXX), `site.whatsapp`, `site.email`, `site.instagram`, `site.name_ar` (عقار الكويت), `site.name_en` (Kuwait 25).
 
 ## API (FastAPI, port 8000)
 
@@ -121,7 +121,7 @@ server components + fetch from `PUBLIC_API_URL=http://localhost:8000/public/v1`,
 TanStack Query only where client interactivity needs it). No auth, no cart.
 Add dependency `maplibre-gl` for maps (tiles: `https://tiles.openfreemap.org/styles/liberty`).
 
-Layout (all pages): header — logo (text wordmark عقار الكويت / Kuwait Real Estate),
+Layout (all pages): header — logo (text wordmark عقار الكويت / Kuwait 25),
 burger menu, phone icon button, gold pill CTA "اعرض عقارك معنا / List your property with us"
 (→ /request). Full-screen menu overlay exactly like reference: Home, Real Estate (all
 properties), Our distinctive properties (featured, dark card), Smart Search (dark card),

@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Kuwait Real Estate",
+    "name": "Kuwait 25",
     "shortName": "kwt25 Admin",
     "designedBy": "Designed & developed by"
   },
@@ -72,7 +72,7 @@
   },
   "auth": {
     "loginTitle": "Sign in",
-    "loginSubtitle": "Admin panel access for Kuwait Real Estate staff.",
+    "loginSubtitle": "Admin panel access for Kuwait 25 staff.",
     "email": "Email",
     "emailPlaceholder": "you@kwt25.com",
     "password": "Password",

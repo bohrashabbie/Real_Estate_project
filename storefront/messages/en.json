@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Kuwait Real Estate",
+    "name": "Kuwait 25",
     "tagline": "Your ideal property, closer to you — properties for sale and rent across all areas of Kuwait."
   },
   "nav": {
@@ -76,7 +76,7 @@
   },
   "home": {
     "metaTitle": "Your ideal property, closer to you",
-    "metaDescription": "Kuwait Real Estate — properties for sale and rent across all areas of Kuwait. Quick search, smart search, and direct contact with the office.",
+    "metaDescription": "Kuwait 25 — properties for sale and rent across all areas of Kuwait. Quick search, smart search, and direct contact with the office.",
     "heroTitle": "Your ideal property, closer to you",
     "rooms": "Rooms",
     "anyRooms": "Any number",
@@ -273,7 +273,7 @@
   },
   "contact": {
     "metaTitle": "Contact us",
-    "metaDescription": "Contact the Kuwait Real Estate office by phone, WhatsApp, email or Instagram.",
+    "metaDescription": "Contact the Kuwait 25 office by phone, WhatsApp, email or Instagram.",
     "eyebrow": "At your service",
     "title": "Contact us",
     "subtitle": "Our team is ready to answer your inquiries through the channel that suits you.",
@@ -289,7 +289,7 @@
     "formSubtitle": "Leave your message and we'll get back to you shortly."
   },
   "hero": {
-    "label": "Kuwait Real Estate banners",
+    "label": "Kuwait 25 banners",
     "previous": "Previous slide",
     "next": "Next slide",
     "goTo": "Go to slide {number}"
