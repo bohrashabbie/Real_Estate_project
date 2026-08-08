@@ -64,14 +64,6 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
 
   return (
     <div
-      // The navy band is full-bleed; the artwork inside it is not. A banner
-      // stretched edge-to-edge can only keep its proportions by growing
-      // absurdly tall on a desktop, so the previous letterbox ratios cropped
-      // it instead — and the first thing a crop eats is the margin the
-      // designer left around the headline and the call-to-action. Capping the
-      // width keeps every pixel of the artwork at a height that still leaves
-      // room for the search panel below the fold.
-      className="bg-navy-950 px-4 pb-16 pt-4 sm:px-6 sm:pb-24 sm:pt-6"
       aria-roledescription={count > 1 ? "carousel" : undefined}
       aria-label={count > 1 ? t("label") : undefined}
       onMouseEnter={() => setPaused(true)}
@@ -80,10 +72,15 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
       onBlurCapture={() => setPaused(false)}
     >
       <div
-        // 15/8 is the ratio of the office's artwork, and `object-contain`
-        // below means an upload of any other shape letterboxes onto the navy
-        // rather than losing the text baked into it.
-        className="relative mx-auto aspect-[15/8] w-full max-w-[72rem] overflow-hidden rounded-2xl sm:rounded-3xl"
+        // Edge-to-edge, so `object-cover` and a crop are unavoidable — the
+        // only question is how deep. The office's artwork carries its headline
+        // between roughly 20% and 76% of its height, so these ratios are the
+        // widest ones that still keep that band on screen: phones show the
+        // artwork whole, and 5/2 on desktop trims only the decorative gold
+        // frame, which reads as a deliberate bleed rather than a bad crop.
+        // Going wider (the old 3/1) is what pushed the headline flush against
+        // the top edge and cut the call-to-action in half.
+        className="relative aspect-[16/9] w-full overflow-hidden bg-navy-950 sm:aspect-[2/1] lg:aspect-[5/2]"
         onTouchStart={(event) => {
           touchStart.current = event.touches[0]?.clientX ?? null;
         }}
@@ -103,7 +100,7 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
             <img
               src={slide.src}
               alt={slide.alt}
-              className="h-full w-full object-contain"
+              className="h-full w-full object-cover"
               // The first slide is the largest thing above the fold; the rest
               // can wait until the visitor is actually shown them.
               loading={i === 0 ? "eager" : "lazy"}
@@ -141,10 +138,11 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
             <SliderArrow side="start" label={t("previous")} onClick={() => go(index - 1)} />
             <SliderArrow side="end" label={t("next")} onClick={() => go(index + 1)} />
 
-            {/* Dots sit inside the artwork. The quick search panel now floats
-                over the navy band's bottom padding rather than over the image,
-                so they no longer need to dodge it. */}
-            <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center">
+            {/* Dots sit *inside* the artwork rather than below it: the quick
+                search panel floats over the banner's lower edge, and a dot row
+                in normal flow would end up hidden behind that card. The offset
+                clears the panel's negative margin in `page.tsx`. */}
+            <div className="absolute inset-x-0 bottom-16 z-10 flex justify-center sm:bottom-24">
               <div className="flex gap-2 rounded-full bg-navy-950/40 px-3 py-2 backdrop-blur">
                 {slides.map((slide, i) => (
                   <button
