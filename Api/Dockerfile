@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY alembic.ini ./
 COPY migrations ./migrations
+COPY seed_assets ./seed_assets
 COPY app ./app
 
 RUN mkdir -p /app/uploads && chown -R kwt:kwt /app

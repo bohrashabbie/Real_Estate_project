@@ -7,8 +7,11 @@ Idempotent — safe to re-run; existing rows are left alone.
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime, timezone
 from decimal import Decimal
+from pathlib import Path
+from uuid import uuid4
 
 from sqlalchemy import select
 
@@ -21,14 +24,17 @@ from app.models.realestate import (
     AmenityTranslation,
     Area,
     AreaTranslation,
+    Banner,
+    BannerTranslation,
     Property,
     PropertyAmenity,
     PropertyTranslation,
     PropertyType,
     PropertyTypeTranslation,
 )
-from app.models.system import Setting
+from app.models.system import Media, Setting
 from app.permissions import DEFAULT_ROLES, PERMISSIONS, ROLE_PERMISSIONS
+from app.storage import storage
 from app.utils import slugify
 
 OWNER_EMAIL = settings.owner_email.strip().lower()
@@ -230,6 +236,69 @@ def seed_settings(db) -> None:
     for key, value in SETTINGS:
         if db.get(Setting, key) is None:
             db.add(Setting(key=key, value=value, group="site", is_public=True, updated_at=now))
+
+
+# ---------------------------------------------------------------------------
+# Home-page banners
+# ---------------------------------------------------------------------------
+
+SEED_ASSETS = Path(__file__).resolve().parent.parent / "seed_assets"
+
+# The office's launch artwork. Seeded exactly like areas or property types:
+# the row exists so the site has something to show on day one, and from then
+# on it belongs to the admin panel — nothing here is re-applied on re-runs.
+BANNERS: list[dict] = [
+    {
+        "file": "01-smart-search.jpeg",
+        "mime": "image/jpeg",
+        "href": "/smart-search",
+        "alt_ar": "لا تبحث بين العقارات… خلّ عقارك المناسب يوصلك — البحث الذكي",
+        "alt_en": "Stop scrolling listings — let smart search bring the right property to you",
+    },
+]
+
+
+def seed_banners(db, owner: User) -> None:
+    if db.execute(select(Banner.id).limit(1)).scalar_one_or_none() is not None:
+        return  # already seeded — never overwrite what staff have since edited
+
+    for order, spec in enumerate(BANNERS):
+        source = SEED_ASSETS / spec["file"]
+        if not source.exists():
+            print(f"Skipped banner {spec['file']}: asset missing.")
+            continue
+
+        data = source.read_bytes()
+        now = datetime.now(timezone.utc)
+        # Same storage path convention as a real admin upload, so a seeded
+        # banner is indistinguishable from one the office uploads later.
+        key = storage.build_key(f"{now:%Y}/{now:%m}", f"{uuid4().hex}.jpg")
+        storage.save_bytes(key, data)
+
+        media = Media(
+            storage_key=key,
+            original_filename=spec["file"],
+            mime_type=spec["mime"],
+            bytes=len(data),
+            checksum_sha256=hashlib.sha256(data).hexdigest(),
+            uploaded_by_user_id=owner.id,
+        )
+        db.add(media)
+        db.flush()
+
+        banner = Banner(
+            media_id=media.id,
+            href=spec["href"],
+            sort_order=order,
+            is_active=True,
+            created_by=owner.id,
+        )
+        db.add(banner)
+        db.flush()
+        db.add(BannerTranslation(banner_id=banner.id, locale="ar", alt_text=spec["alt_ar"]))
+        db.add(BannerTranslation(banner_id=banner.id, locale="en", alt_text=spec["alt_en"]))
+
+    print(f"Seeded {len(BANNERS)} banner(s).")
 
 
 # ---------------------------------------------------------------------------
@@ -567,6 +636,7 @@ def run() -> None:
         types = seed_property_types(db)
         amenities = seed_amenities(db)
         seed_settings(db)
+        seed_banners(db, owner)
         seed_properties(db, owner, areas, types, amenities)
         db.commit()
         print("Seed complete.")

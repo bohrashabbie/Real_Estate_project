@@ -11,6 +11,7 @@ import {
   getPropertyTypes,
   mediaUrl,
 } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import { HeroBanner, type HeroSlide } from "@/components/home/hero-banner";
 import { QuickSearch } from "@/components/home/quick-search";
 import { PropertyCard } from "@/components/property/property-card";
@@ -57,25 +58,17 @@ export default async function HomePage({
     getBanners(typedLocale),
   ]);
 
-  // Banners are admin-managed, but the home page must never be headless: with
-  // nothing uploaded (a fresh install) or the API down, it falls back to the
-  // artwork shipped in `public/banners/`.
-  const slides: HeroSlide[] =
-    banners.length > 0
-      ? banners.map((banner) => ({
-          key: String(banner.id),
-          src: mediaUrl(banner.image_url) ?? banner.image_url,
-          alt: banner.alt,
-          href: banner.href,
-        }))
-      : [
-          {
-            key: "fallback",
-            src: "/banners/01-smart-search.jpeg",
-            alt: t("heroBannerAlt"),
-            href: "/smart-search",
-          },
-        ];
+  // Every value here comes from the admin panel — image, alt text and link
+  // target alike. There is deliberately no bundled fallback artwork: a banner
+  // baked into the build is one the office cannot change, which is the whole
+  // problem this replaced. The launch banner is a seeded row (see
+  // `Api/app/seed.py`), exactly like the seeded areas and property types.
+  const slides: HeroSlide[] = banners.map((banner) => ({
+    key: String(banner.id),
+    src: mediaUrl(banner.image_url) ?? banner.image_url,
+    alt: banner.alt,
+    href: banner.href,
+  }));
 
   return (
     <div>
@@ -92,8 +85,15 @@ export default async function HomePage({
 
       {/* Search panel, floating over the banner's lower edge. The negative
           margin is mirrored by the slider's dot offset in `hero-banner.tsx` —
-          change one and the dots end up underneath this card. */}
-      <section className="relative z-10 mx-auto -mt-14 max-w-4xl px-4 sm:-mt-20 sm:px-6">
+          change one and the dots end up underneath this card. With every
+          banner hidden there is nothing to overlap, and pulling the card up
+          into the header would look like a bug. */}
+      <section
+        className={cn(
+          "relative z-10 mx-auto max-w-4xl px-4 sm:px-6",
+          slides.length > 0 ? "-mt-14 sm:-mt-20" : "mt-8",
+        )}
+      >
         <QuickSearch areas={areas} types={types} />
       </section>
 

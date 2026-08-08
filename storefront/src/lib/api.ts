@@ -217,8 +217,9 @@ export function getPropertyTypes(locale: Locale): Promise<PropertyType[]> {
 }
 
 /** Live hero slides, in the order the office arranged them in the admin.
- *  Empty (API down, or nothing uploaded yet) means the home page falls back to
- *  the artwork bundled in `public/banners/`. */
+ *  Image, alt text and link target all come from here — the storefront ships
+ *  no banner artwork of its own. Empty means the hero renders nothing, which
+ *  is the correct reading of "every banner is hidden". */
 export function getBanners(locale: Locale): Promise<Banner[]> {
   return safeGet<Banner[]>("/banners", { locale }, []);
 }
