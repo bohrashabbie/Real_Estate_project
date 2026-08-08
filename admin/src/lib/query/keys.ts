@@ -46,6 +46,12 @@ export const queryKeys = {
       ["amenities", "list", params] as const,
   },
 
+  banners: {
+    all: ["banners"] as const,
+    list: (params: { include_inactive?: boolean } = {}) =>
+      ["banners", "list", params] as const,
+  },
+
   properties: {
     all: ["properties"] as const,
     list: (params: Omit<PropertyListParams, "cursor" | "limit">) =>

@@ -504,3 +504,58 @@ export type DashboardOut = {
   new_requests_7d: number
   recent_inquiries: InquiryOut[]
 }
+
+/* -------------------------------------------------------------------------- */
+/* Banners — home-page hero slides                                             */
+/* -------------------------------------------------------------------------- */
+
+export type BannerTranslationIn = {
+  locale: string
+  alt_text: string
+  /** Locale-specific artwork; null uses the banner's own image. */
+  media_id?: number | null
+}
+
+export type BannerTranslationOut = {
+  locale: string
+  alt_text: string
+  media_id: number | null
+  /** Resolved `/uploads/...` path, null when this locale has no override. */
+  image_url: string | null
+}
+
+export type BannerOut = {
+  id: number
+  media_id: number
+  image_url: string | null
+  href: string | null
+  sort_order: number
+  is_active: boolean
+  starts_at: string | null
+  ends_at: string | null
+  /** Active *and* inside its scheduling window — what the storefront shows. */
+  is_live: boolean
+  translations: BannerTranslationOut[]
+  created_at: string
+  updated_at: string
+}
+
+export type BannerCreate = {
+  media_id: number
+  href?: string | null
+  sort_order?: number
+  is_active?: boolean
+  starts_at?: string | null
+  ends_at?: string | null
+  translations: BannerTranslationIn[]
+}
+
+export type BannerUpdate = {
+  media_id?: number | null
+  href?: string | null
+  sort_order?: number | null
+  is_active?: boolean | null
+  starts_at?: string | null
+  ends_at?: string | null
+  translations?: BannerTranslationIn[] | null
+}

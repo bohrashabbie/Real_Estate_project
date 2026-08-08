@@ -56,6 +56,7 @@
     "sectionAdministration": "Administration",
     "dashboard": "Dashboard",
     "properties": "Properties",
+    "banners": "Home banners",
     "inquiries": "Inquiries",
     "requests": "Property requests",
     "areas": "Areas",
@@ -335,6 +336,61 @@
     "deactivateDescription": "\"{name}\" will disappear from the property form. Existing properties keep it.",
     "empty": "No amenities match these filters."
   },
+  "banners": {
+    "title": "Home banners",
+    "description": "The hero artwork at the top of the public home page.",
+    "new": "New banner",
+    "createTitle": "New banner",
+    "editTitle": "Edit banner",
+    "formDescription": "Upload the artwork, describe it for screen readers, and choose where it links.",
+    "created": "Banner created.",
+    "updated": "Banner updated.",
+    "hidden": "Banner hidden.",
+    "shown": "Banner is live again.",
+    "hide": "Hide",
+    "show": "Show",
+    "hideTitle": "Hide this banner?",
+    "hideDescription": "It disappears from the home page immediately. The artwork is kept, so you can show it again later.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "upload": "Upload image",
+    "replace": "Replace",
+    "uploading": "Uploading…",
+    "ownArtwork": "(own artwork)",
+    "noAltText": "No alt text yet",
+    "emptyTitle": "No banners yet",
+    "emptyDescription": "Upload one to take over the home-page hero. Until then the site shows its built-in artwork.",
+    "summaryNone": "No banner is live — the home page is showing its built-in artwork.",
+    "summaryStatic": "One live banner: the home page shows it as a static hero.",
+    "summarySlider": "{count} live banners: the home page rotates them as a slider.",
+    "perLocaleTitle": "Per language",
+    "perLocaleHint": "Alt text describes the image for screen readers and search engines. Only upload a per-language image when the artwork has text baked into it.",
+    "status": {
+      "live": "Live",
+      "scheduled": "Scheduled",
+      "expired": "Expired",
+      "hidden": "Hidden"
+    },
+    "fields": {
+      "image": "Artwork",
+      "localeImage": "{locale} artwork (optional)",
+      "altText": "Alt text ({locale})",
+      "href": "Links to",
+      "startsAt": "Starts",
+      "endsAt": "Ends",
+      "isActive": "Visible on the site"
+    },
+    "hints": {
+      "image": "Full-bleed at up to 3:1 — supply around 1920×640 so it stays sharp on a desktop monitor.",
+      "href": "A path on this site such as /smart-search, or a full URL. Leave empty for a banner that isn't clickable.",
+      "window": "Leave both empty to run the banner until you hide it."
+    },
+    "validation": {
+      "altRequired": "Add alt text in at least one language.",
+      "imageRequired": "Upload the banner artwork first.",
+      "windowOrder": "The end date must come after the start date."
+    }
+  },
   "users": {
     "title": "Staff users",
     "description": "Accounts that can sign in to this admin panel.",
@@ -434,6 +490,7 @@
     "inquiries": "Inquiries",
     "requests": "Property requests",
     "taxonomy": "Taxonomy",
+    "banners": "Banners",
     "users": "Users",
     "roles": "Roles",
     "settings": "Settings",

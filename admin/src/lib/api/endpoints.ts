@@ -8,6 +8,9 @@ import type {
   AreaUpdate,
   AuditListParams,
   AuditLogOut,
+  BannerCreate,
+  BannerOut,
+  BannerUpdate,
   CurrentUserOut,
   CursorPage,
   DashboardOut,
@@ -316,4 +319,37 @@ export const auditApi = {
 export const analyticsApi = {
   dashboard: (signal?: AbortSignal) =>
     api.get<DashboardOut>("/analytics/dashboard", { signal }),
+}
+
+/* -------------------------------------------------------------------------- */
+/* Banners — home-page hero slides                                             */
+/* -------------------------------------------------------------------------- */
+
+export const bannersApi = {
+  list: (params: { include_inactive?: boolean } = {}, signal?: AbortSignal) =>
+    api.get<BannerOut[]>("/banners", {
+      query: { include_inactive: params.include_inactive ?? true },
+      signal,
+    }),
+
+  create: (payload: BannerCreate) => api.post<BannerOut>("/banners", payload),
+
+  update: (bannerId: number, payload: BannerUpdate) =>
+    api.patch<BannerOut>(`/banners/${bannerId}`, payload),
+
+  /** Soft-delete: hides the slide, keeps the row and its audit trail. */
+  deactivate: (bannerId: number) => api.del(`/banners/${bannerId}`),
+
+  /** Artwork upload. Separate from /media/upload so running marketing doesn't
+   *  require property-editing permissions. */
+  upload: (file: File) => {
+    const formData = new FormData()
+    formData.append("file", file)
+    return apiUpload<MediaOut>("/banners/upload", formData)
+  },
+
+  /** Whole new order in one request — moving slides one at a time would leave
+   *  the list briefly inconsistent for anyone else looking at it. */
+  reorder: (items: { id: number; sort_order: number }[]) =>
+    api.post<BannerOut[]>("/banners/reorder", { items }),
 }

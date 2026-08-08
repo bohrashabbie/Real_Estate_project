@@ -86,9 +86,20 @@ export function bilingualName(
  * assuming the admin and the API share a host.
  */
 export function mediaUrl(storageKey: string): string {
-  const base = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(
-    /\/api\/v1\/?$/,
-    ""
-  )
-  return `${base}/uploads/${storageKey}`
+  return `${apiOrigin()}/uploads/${storageKey}`
+}
+
+/**
+ * Same idea for endpoints that hand back an already-rooted path (`/uploads/…`)
+ * rather than a bare storage key — banners resolve their per-locale artwork
+ * server-side, so the admin only ever sees the finished path.
+ */
+export function uploadUrl(path: string | null | undefined): string | null {
+  if (!path) return null
+  if (/^https?:\/\//.test(path)) return path
+  return `${apiOrigin()}${path.startsWith("/") ? "" : "/"}${path}`
+}
+
+function apiOrigin(): string {
+  return (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/api\/v1\/?$/, "")
 }

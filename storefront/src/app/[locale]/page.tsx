@@ -5,10 +5,13 @@ import { Link } from "@/i18n/navigation";
 import { localeAlternates, type Locale } from "@/i18n/routing";
 import {
   getAreas,
+  getBanners,
   getFeaturedProperties,
   getProperties,
   getPropertyTypes,
+  mediaUrl,
 } from "@/lib/api";
+import { HeroBanner, type HeroSlide } from "@/components/home/hero-banner";
 import { QuickSearch } from "@/components/home/quick-search";
 import { PropertyCard } from "@/components/property/property-card";
 import {
@@ -46,38 +49,45 @@ export default async function HomePage({
   const t = await getTranslations({ locale, namespace: "home" });
 
   // All reads degrade to empty lists when the API is down — the page still renders.
-  const [featured, latest, areas, types] = await Promise.all([
+  const [featured, latest, areas, types, banners] = await Promise.all([
     getFeaturedProperties(typedLocale),
     getProperties(typedLocale, {}),
     getAreas(typedLocale),
     getPropertyTypes(typedLocale),
+    getBanners(typedLocale),
   ]);
+
+  // Banners are admin-managed, but the home page must never be headless: with
+  // nothing uploaded (a fresh install) or the API down, it falls back to the
+  // artwork shipped in `public/banners/`.
+  const slides: HeroSlide[] =
+    banners.length > 0
+      ? banners.map((banner) => ({
+          key: String(banner.id),
+          src: mediaUrl(banner.image_url) ?? banner.image_url,
+          alt: banner.alt,
+          href: banner.href,
+        }))
+      : [
+          {
+            key: "fallback",
+            src: "/banners/01-smart-search.jpeg",
+            alt: t("heroBannerAlt"),
+            href: "/smart-search",
+          },
+        ];
 
   return (
     <div>
       {/* ------------------------------------------------------------------ */}
-      {/* Hero — the promo artwork itself, full-bleed. The headline is baked   */}
-      {/* into the image, so the page's own h1 is kept for screen readers and  */}
-      {/* search engines only; a second visible headline would fight it.       */}
-      {/* Sits outside the page container on purpose to span the viewport.     */}
+      {/* Hero — the banners the office uploaded in the admin panel. The       */}
+      {/* headline is baked into the artwork, so the page's own h1 is kept for */}
+      {/* screen readers and search engines only; a second visible headline    */}
+      {/* would fight it. Sits outside the page container to span the viewport.*/}
       {/* ------------------------------------------------------------------ */}
       <section>
         <h1 className="sr-only">{t("heroTitle")}</h1>
-        <Link
-          href="/smart-search"
-          // 15/8 on phones matches the artwork's own ratio, so the baked-in
-          // text is never cropped; wider viewports settle into a letterbox
-          // rectangle rather than a very tall band.
-          className="block aspect-[15/8] w-full overflow-hidden bg-navy-950 sm:aspect-[2/1] lg:aspect-[3/1]"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/banners/01-smart-search.jpeg"
-            alt={t("heroBannerAlt")}
-            className="h-full w-full object-cover"
-            fetchPriority="high"
-          />
-        </Link>
+        <HeroBanner slides={slides} />
       </section>
 
       {/* Search panel */}

@@ -112,6 +112,15 @@ export interface PropertyDetail extends PropertyListItem {
   created_at: string;
 }
 
+/** A home-page hero slide, flattened for one locale by the API. */
+export interface Banner {
+  id: number;
+  /** `/uploads/…` — run it through `mediaUrl` before rendering. */
+  image_url: string;
+  alt: string;
+  href: string | null;
+}
+
 export interface Paginated<T> {
   items: T[];
   next_cursor: string | null;
@@ -205,6 +214,13 @@ export function getAreas(locale: Locale): Promise<Area[]> {
 
 export function getPropertyTypes(locale: Locale): Promise<PropertyType[]> {
   return safeGet<PropertyType[]>("/property-types", { locale }, []);
+}
+
+/** Live hero slides, in the order the office arranged them in the admin.
+ *  Empty (API down, or nothing uploaded yet) means the home page falls back to
+ *  the artwork bundled in `public/banners/`. */
+export function getBanners(locale: Locale): Promise<Banner[]> {
+  return safeGet<Banner[]>("/banners", { locale }, []);
 }
 
 /** `/properties/featured` answers `{items:[…]}`, not a bare array — reading it

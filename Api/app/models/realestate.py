@@ -210,6 +210,59 @@ class PropertyAmenity(Base):
     property: Mapped["Property"] = relationship(back_populates="amenity_links")
 
 
+class Banner(Base, TimestampMixin):
+    """A home-page hero slide, managed from the admin panel.
+
+    The artwork carries its own baked-in headline, which is why the image
+    itself is translatable: `media_id` here is the fallback used for every
+    locale, and a translation row may override it with locale-specific
+    artwork. Alt text is always per-locale — these are content images.
+    """
+
+    __tablename__ = "banners"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    media_id: Mapped[int] = mapped_column(ForeignKey("media.id"), nullable=False)
+    # Internal path such as "/smart-search" or an absolute URL. NULL = the
+    # slide is not clickable.
+    href: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    # Optional scheduling window; NULL on either side means "no bound".
+    starts_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
+    ends_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+
+    translations: Mapped[list["BannerTranslation"]] = relationship(
+        back_populates="banner", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_banners_is_active", "is_active"),
+        Index("ix_banners_sort_order", "sort_order"),
+    )
+
+
+class BannerTranslation(Base, TimestampMixin):
+    __tablename__ = "banner_translations"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    banner_id: Mapped[int] = mapped_column(
+        ForeignKey("banners.id", ondelete="CASCADE"), nullable=False
+    )
+    locale: Mapped[str] = mapped_column(nullable=False)
+    alt_text: Mapped[str] = mapped_column(String(300), nullable=False)
+    # Locale-specific artwork. NULL falls back to Banner.media_id, so a site
+    # with one bilingual image never has to upload it twice.
+    media_id: Mapped[int | None] = mapped_column(ForeignKey("media.id"), nullable=True)
+
+    banner: Mapped["Banner"] = relationship(back_populates="translations")
+
+    __table_args__ = (
+        UniqueConstraint("banner_id", "locale", name="uq_banner_translations_banner_locale"),
+    )
+
+
 class Inquiry(Base, CreatedAtMixin):
     __tablename__ = "inquiries"
 

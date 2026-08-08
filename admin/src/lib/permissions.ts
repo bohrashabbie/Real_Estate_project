@@ -24,6 +24,10 @@ export const PERMISSIONS = {
   taxonomyView: "taxonomy.view",
   taxonomyManage: "taxonomy.manage",
 
+  // banners (home-page hero slides)
+  bannersView: "banners.view",
+  bannersManage: "banners.manage",
+
   // administration
   usersView: "users.view",
   usersManage: "users.manage",
@@ -43,6 +47,7 @@ export const PERMISSION_GROUP_ORDER = [
   "inquiries",
   "requests",
   "taxonomy",
+  "banners",
   "users",
   "roles",
   "settings",

@@ -46,6 +46,12 @@ const TONE_BY_STATUS: Record<string, BadgeTone> = {
   // property requests
   in_progress: "info",
   matched: "success",
+  // banners — a slide can be switched on yet outside its date window, which
+  // is neither "active" nor "hidden" and confuses staff if shown as either.
+  live: "success",
+  scheduled: "info",
+  expired: "neutral",
+  hidden: "neutral",
   // generic
   active: "success",
   inactive: "neutral",

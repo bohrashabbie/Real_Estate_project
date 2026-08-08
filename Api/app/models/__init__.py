@@ -14,6 +14,8 @@ from app.models.realestate import (
     AmenityTranslation,
     Area,
     AreaTranslation,
+    Banner,
+    BannerTranslation,
     Inquiry,
     Property,
     PropertyAmenity,
@@ -48,4 +50,6 @@ __all__ = [
     "PropertyAmenity",
     "Inquiry",
     "PropertyRequest",
+    "Banner",
+    "BannerTranslation",
 ]

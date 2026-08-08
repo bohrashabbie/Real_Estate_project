@@ -288,5 +288,11 @@
     "hoursNote": "Friday: closed — WhatsApp is available around the clock.",
     "formTitle": "Send your inquiry",
     "formSubtitle": "Leave your message and we'll get back to you shortly."
+  },
+  "hero": {
+    "label": "Kuwait Real Estate banners",
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "goTo": "Go to slide {number}"
   }
 }

@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas.public import PublicInquiryIn, PublicPropertyRequestIn, SmartSearchIn
-from app.services import inquiry_service, public_service
+from app.services import banner_service, inquiry_service, public_service
 
 router = APIRouter(tags=["public"])
 
@@ -40,6 +40,12 @@ def property_types(locale: str = "ar", db: Session = Depends(get_db)) -> list[di
 @router.get("/amenities")
 def amenities(locale: str = "ar", db: Session = Depends(get_db)) -> list[dict]:
     return public_service.list_amenities(db, public_service.normalize_locale(locale))
+
+
+@router.get("/banners")
+def banners(locale: str = "ar", db: Session = Depends(get_db)) -> list[dict]:
+    """Home-page hero slides: active, inside their scheduling window, in order."""
+    return banner_service.public_banners(db, public_service.normalize_locale(locale))
 
 
 @router.get("/properties")

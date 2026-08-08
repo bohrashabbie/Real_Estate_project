@@ -158,3 +158,43 @@ class PropertyRequestOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+# --------------------------------------------------------------------------
+# Banners — home-page hero slides
+# --------------------------------------------------------------------------
+
+class BannerTranslationIn(BaseModel):
+    locale: Locale
+    alt_text: str = Field(min_length=1, max_length=300)
+    # Locale-specific artwork; omit to use the banner's own media_id.
+    media_id: int | None = None
+
+
+class BannerCreate(BaseModel):
+    media_id: int
+    href: str | None = Field(default=None, max_length=500)
+    sort_order: int = 0
+    is_active: bool = True
+    starts_at: datetime | None = None
+    ends_at: datetime | None = None
+    translations: list[BannerTranslationIn] = Field(min_length=1)
+
+
+class BannerUpdate(BaseModel):
+    media_id: int | None = None
+    href: str | None = Field(default=None, max_length=500)
+    sort_order: int | None = None
+    is_active: bool | None = None
+    starts_at: datetime | None = None
+    ends_at: datetime | None = None
+    translations: list[BannerTranslationIn] | None = None
+
+
+class BannerReorderItem(BaseModel):
+    id: int
+    sort_order: int
+
+
+class BannerReorder(BaseModel):
+    items: list[BannerReorderItem] = Field(min_length=1)

@@ -40,6 +40,13 @@ are rows in `*_translations` keyed by `locale`, slugs unique per locale):
   - is_active BOOL soft-delete, published_at TIMESTAMPTZ null (null = draft),
   - created_by FK users, created_at, updated_at.
   - `property_translations`(property_id, locale, title, slug, description). Slug unique per locale.
+- **banners** — home-page hero slides, admin-managed (nothing hardcoded in the storefront):
+  - id, media_id FK media (fallback artwork for every locale), href VARCHAR(500) null (link target; null = not clickable),
+  - sort_order INT, is_active BOOL soft-delete,
+  - starts_at / ends_at TIMESTAMPTZ null (optional live window; null = unbounded),
+  - created_by FK users, created_at, updated_at.
+  - `banner_translations`(banner_id, locale, alt_text, media_id FK null). The **image is translatable** because the artwork carries a baked-in headline: a null translation media_id falls back to `banners.media_id`.
+  - One live banner renders as a static hero; two or more make the hero a slider. The count *is* the setting — there is no carousel on/off flag.
 - **property_media** — id, property_id FK, media_id FK (GRC-style media table holding uploaded file path/mime/size), sort_order, is_main BOOL.
 - **property_amenities** — property_id, amenity_id (PK pair).
 - **inquiries** — id, property_id FK nullable, name, phone, message, source ENUM `property|contact|home`, status ENUM `new|contacted|closed` default new, created_at. Public insert; admin list/update-status.
@@ -66,14 +73,17 @@ Error envelope `{code, message, details}` everywhere. Cursor pagination
 - `analytics/dashboard` — counts: total/published/available properties, by purpose, new inquiries (7d), new requests (7d), recent 5 inquiries.
 - `audit` — list audit log (copy GRC).
 - `media` — upload endpoint (copy GRC storage.py local ./uploads, served at `/uploads/*`).
+- `banners` — CRUD with translations, soft delete. `POST /banners/upload` (multipart → media row; separate from `/media/upload` so running marketing doesn't require property permissions), `POST /banners/reorder` `{items:[{id, sort_order}]}` (whole order in one transaction). Writes audit_log.
 
 Permission keys (in `permissions.py`): `properties.view/create/edit/delete/publish`,
 `inquiries.view/manage`, `requests.view/manage`, `taxonomy.view/manage` (areas/types/amenities),
-`users.view/manage`, `roles.view/manage`, `settings.view/manage`, `audit.view`, `analytics.view`.
+`banners.view/manage`, `users.view/manage`, `roles.view/manage`, `settings.view/manage`,
+`audit.view`, `analytics.view`.
 
 ### Public `/public/v1` (no auth, storefront CORS)
 - `GET settings` → `{phone, whatsapp, email, instagram, name_ar, name_en}`
 - `GET areas`, `GET property-types`, `GET amenities` → active only, id+key/slug+localized name (accept `?locale=`)
+- `GET banners` → live slides only (active **and** inside their start/end window), in `sort_order`. Flattened for one locale: `[{id, image_url, alt, href}]`, falling back locale → ar → en for both the alt text and the artwork. Empty list is normal; the storefront then shows the artwork bundled in `public/banners/`.
 - `GET properties` — published+active only. Filters: `purpose`, `type` (key), `area` (slug), `price_min`, `price_max`, `rooms` (int, meaning ≥), `status`, `premium_only` (bool), `q`. Sort newest first, cursor pagination, `?locale=` picks translation (fallback other locale). Item shape: `{id, ref_no, slug, title, purpose, status, price, currency:"KWD", type:{key,name}, area:{slug,name}, block, rooms, bathrooms, floors, area_sqm, is_premium, is_featured, main_image, images_count, published_at}`.
 - `GET properties/featured` → up to 10 featured published items, same shape.
 - `GET properties/{slug}` (locale-aware; also match ref_no) → full detail: above + `description`, `amenities:[{key,name}]`, `images:[{url,alt,is_main,sort_order}]`, `latitude`, `longitude`, `created_at`.
@@ -95,6 +105,7 @@ Pages under `src/app/[locale]/(protected)/`:
 - `properties/new` + `properties/[id]` — form (react-hook-form+zod): AR/EN title+description tabs, type, area, block, purpose, price, rooms/bathrooms/floors/sqm, lat/lng inputs, amenities checkboxes, featured/premium switches, status select, media uploader (drag-drop, set main, reorder, delete), publish/unpublish button
 - `inquiries` — table (name, phone, property link, message, source, status select, date), filter by status
 - `requests` — property_requests table, status select
+- `banners` — card list (the artwork *is* the record, so no DataTable): preview, per-locale alt text, link target, live/scheduled/expired/hidden badge, up/down reorder, hide/show. Dialog uploads the artwork immediately (so the preview is a real URL, not a blob), takes alt text per locale plus an optional per-locale image, link target, and the start/end window.
 - `areas`, `property-types`, `amenities` — simple CRUD tables with AR/EN name dialogs
 - `users`, `roles` — copy GRC pages
 - `settings` — form for the settings keys
