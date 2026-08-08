@@ -48,7 +48,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   email: "",
   instagram: "",
   name_ar: "عقار الكويت",
-  name_en: "Kuwait 25",
+  name_en: "Kwt25",
 };
 
 export interface Area {

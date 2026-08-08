@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: "kwt25 Admin — عقار الكويت",
-  description: "Internal admin panel for Kuwait 25 (kwt25) staff.",
+  description: "Internal admin panel for Kwt25 (kwt25) staff.",
   icons: { icon: "/favicon.png" },
 }
 

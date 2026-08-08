@@ -7,7 +7,7 @@ doubt about a pattern, look at how GRC does it.
 
 ## What this project is
 
-**kwt25 — عقار الكويت / Kuwait 25.** Property-listing website for a
+**kwt25 — عقار الكويت / Kwt25.** Property-listing website for a
 Kuwaiti real-estate office (rebuild of the old kwt25.com, reference screenshots
 in `reference/`). Bilingual Arabic/English, **Arabic default**, RTL primary.
 
