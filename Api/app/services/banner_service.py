@@ -196,11 +196,22 @@ def create_banner(db: Session, data, actor_user_id: int) -> dict:
 def update_banner(db: Session, banner_id: int, data, actor_user_id: int) -> dict:
     banner = _get_or_404(db, banner_id)
 
+    # `exclude_unset` is what makes "clear this field" expressible: href,
+    # starts_at and ends_at are all nullable, so an explicit null has to mean
+    # "remove it" while an absent key means "leave it alone". Reading the
+    # attributes directly would collapse both cases into None and make a
+    # scheduling window impossible to undo once set.
+    sent = data.model_dump(exclude_unset=True)
     proposed: dict = {}
     for field in ("media_id", "href", "sort_order", "is_active", "starts_at", "ends_at"):
-        value = getattr(data, field)
-        if value is not None:
-            proposed[field] = value
+        if field not in sent:
+            continue
+        value = sent[field]
+        # The non-nullable columns have no "clear" meaning; ignore a stray null
+        # rather than writing one and failing at the database.
+        if value is None and field in ("media_id", "sort_order", "is_active"):
+            continue
+        proposed[field] = value
     _assert_media_exists(db, proposed.get("media_id"))
     _validate_window(
         proposed.get("starts_at", banner.starts_at),
