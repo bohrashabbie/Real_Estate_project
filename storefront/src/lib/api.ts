@@ -47,7 +47,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   whatsapp: "",
   email: "",
   instagram: "",
-  name_ar: "عقار الكويت",
+  name_ar: "Kwt25",
   name_en: "Kwt25",
 };
 

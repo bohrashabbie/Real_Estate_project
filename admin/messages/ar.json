@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "عقار الكويت",
+    "name": "Kwt25",
     "shortName": "إدارة kwt25",
     "designedBy": "تصميم وتطوير"
   },
@@ -72,7 +72,7 @@
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",
-    "loginSubtitle": "لوحة تحكم موظفي عقار الكويت.",
+    "loginSubtitle": "لوحة تحكم موظفي Kwt25.",
     "email": "البريد الإلكتروني",
     "emailPlaceholder": "you@kwt25.com",
     "password": "كلمة المرور",

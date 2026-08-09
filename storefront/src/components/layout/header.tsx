@@ -25,7 +25,11 @@ export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const siteName = locale === "ar" ? settings.name_ar : settings.name_en;
-  const siteNameAlt = locale === "ar" ? settings.name_en : settings.name_ar;
+  // The second line is the *other* locale's wordmark, and it only earns its
+  // place when the office actually has two. A single brand spelled the same
+  // way in both would otherwise render stacked on top of itself.
+  const otherName = locale === "ar" ? settings.name_en : settings.name_ar;
+  const siteNameAlt = otherName === siteName ? null : otherName;
 
   return (
     <>
@@ -47,9 +51,11 @@ export function Header({ settings }: { settings: SiteSettings }) {
               <span className="block font-display text-base font-extrabold text-navy sm:text-xl">
                 {siteName}
               </span>
-              <span className="block text-[11px] font-semibold tracking-wide text-gold-dark">
-                {siteNameAlt}
-              </span>
+              {siteNameAlt ? (
+                <span className="block text-[11px] font-semibold tracking-wide text-gold-dark">
+                  {siteNameAlt}
+                </span>
+              ) : null}
             </span>
           </Link>
 

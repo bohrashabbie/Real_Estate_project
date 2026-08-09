@@ -6,10 +6,9 @@ import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 
 /**
- * kwt25 brand mark: a gold building glyph + the localized wordmark
- * (عقار الكويت / Kwt25). Pure text+icon, no artwork, so it works
- * in both locales and both themes. The collapsed sidebar rail shows only the
- * glyph.
+ * kwt25 brand mark: a gold building glyph + the Kwt25 wordmark. Pure
+ * text+icon, no artwork, so it works in both locales and both themes. The
+ * collapsed sidebar rail shows only the glyph.
  */
 export function BrandLogo({
   collapsed = false,

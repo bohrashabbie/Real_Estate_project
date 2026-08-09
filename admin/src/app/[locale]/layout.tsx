@@ -20,7 +20,7 @@ const sans = IBM_Plex_Sans_Arabic({
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "kwt25 Admin — عقار الكويت",
+  title: "Kwt25 Admin",
   description: "Internal admin panel for Kwt25 (kwt25) staff.",
   icons: { icon: "/favicon.png" },
 }

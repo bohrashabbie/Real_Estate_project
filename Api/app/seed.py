@@ -180,7 +180,7 @@ SETTINGS: list[tuple[str, str]] = [
     ("site.whatsapp", "+965 99887766"),
     ("site.email", "info@kwt25.com"),
     ("site.instagram", "kwt25_realestate"),
-    ("site.name_ar", "عقار الكويت"),
+    ("site.name_ar", "Kwt25"),
     ("site.name_en", "Kwt25"),
 ]
 
