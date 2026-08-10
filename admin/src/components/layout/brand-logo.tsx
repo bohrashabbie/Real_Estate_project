@@ -1,14 +1,14 @@
 "use client"
 
-import { Building2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 
 /**
- * kwt25 brand mark: a gold building glyph + the Kwt25 wordmark. Pure
- * text+icon, no artwork, so it works in both locales and both themes. The
- * collapsed sidebar rail shows only the glyph.
+ * kwt25 brand mark: the office's artwork + the Kwt25 wordmark. The mark is
+ * gold-on-black, so it keeps its own dark tile rather than sitting bare on the
+ * sidebar — that way it reads the same in light and dark themes instead of
+ * dissolving into one of them. The collapsed rail shows only the tile.
  */
 export function BrandLogo({
   collapsed = false,
@@ -23,14 +23,17 @@ export function BrandLogo({
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <span
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo-mark.png"
+        alt=""
+        width={40}
+        height={40}
         className={cn(
-          "flex shrink-0 items-center justify-center rounded-lg bg-gold text-gold-foreground",
+          "shrink-0 rounded-lg object-cover ring-1 ring-border",
           size === "lg" ? "size-10" : "size-7"
         )}
-      >
-        <Building2 className={size === "lg" ? "size-5" : "size-4"} aria-hidden />
-      </span>
+      />
       {collapsed ? (
         <span className="sr-only">{app("name")}</span>
       ) : (

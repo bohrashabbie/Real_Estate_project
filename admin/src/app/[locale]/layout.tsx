@@ -21,8 +21,11 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: "Kwt25 Admin",
-  description: "Internal admin panel for Kwt25 (kwt25) staff.",
-  icons: { icon: "/favicon.png" },
+  description: "Internal admin panel for Kwt25 staff.",
+  // No `icons` here on purpose: favicon.ico / icon.png / apple-icon.png live in
+  // `src/app/` and Next's file conventions emit the tags. Declaring it manually
+  // overrode those and left /favicon.ico — which browsers request unprompted —
+  // answering 404.
 }
 
 export function generateStaticParams() {
