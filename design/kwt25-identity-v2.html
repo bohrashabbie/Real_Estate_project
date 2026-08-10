@@ -1,0 +1,1597 @@
+<title>Kwt25 — Visual Identity &amp; Design System</title>
+<style>
+/* ============================================================
+   TOKENS — dark-first. The bare :root carries the default (dark)
+   palette; light is redefined in both the media query and the
+   explicit stamp so either direction of override wins.
+   ============================================================ */
+:root {
+  /* ground */
+  --basalt:        #101208;
+  --basalt-raised: #191C11;
+  --basalt-sunk:   #0A0B05;
+  --hairline:      #2C3020;
+  --hairline-soft: #1E2215;
+
+  /* type */
+  --limestone:     #E8E4D6;
+  --limestone-dim: #A8A491;
+  --sand:          #7C7A68;
+
+  /* accent — Kuwait Towers ceramic */
+  --gulf:          #5E9B84;
+  --gulf-bright:   #7CBBA1;
+  --gulf-sunk:     #16281F;
+
+  /* semantic — separate from accent, never used decoratively */
+  --state-open:    #7CBBA1;
+  --state-held:    #C9A227;
+  --state-closed:  #A65D4E;
+
+  /* photographic duotone */
+  --plate-sky-a:   #1B2418;
+  --plate-sky-b:   #2E3A2A;
+  --plate-mass:    #0C0E07;
+  --plate-lit:     #4A5A42;
+
+  /* type scale */
+  --t-display-xl: clamp(3rem, 7vw, 6rem);
+  --t-display-l:  clamp(2.25rem, 4.4vw, 3.75rem);
+  --t-display-m:  clamp(1.625rem, 2.6vw, 2.25rem);
+  --t-title:      1.3125rem;
+  --t-body-l:     1.0625rem;
+  --t-body:       0.9375rem;
+  --t-small:      0.8125rem;
+  --t-label:      0.6875rem;
+
+  /* spacing — 8px base, 4px half-step */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --s-9: 96px; --s-10: 128px;
+
+  /* radius — near-zero by system, one pill used deliberately */
+  --r-none: 0px;
+  --r-hair: 2px;
+  --r-pill: 999px;
+
+  /* elevation — surfaces separate by lightness + hairline, not shadow */
+  --e-flat:   none;
+  --e-sticky: 0 1px 0 var(--hairline), 0 12px 32px -20px #000;
+  --e-lift:   0 24px 60px -32px #000;
+
+  /* faces — prototype stacks; licensed faces named in the spec */
+  --f-ar-display: "Sakkal Majalla", "SF Arabic", "Geeza Pro", "Noto Naskh Arabic", "Times New Roman", serif;
+  --f-ar-ui:      "SF Arabic", "Dubai", "Segoe UI", "Noto Kufi Arabic", Tahoma, sans-serif;
+  --f-la-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --f-la-ui:      ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono:       ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --basalt:        #E4E2D8;
+    --basalt-raised: #EDEBE2;
+    --basalt-sunk:   #D6D3C7;
+    --hairline:      #BFBCAC;
+    --hairline-soft: #D0CDBF;
+    --limestone:     #16180E;
+    --limestone-dim: #4E5142;
+    --sand:          #6E7060;
+    --gulf:          #2F6B54;
+    --gulf-bright:   #235444;
+    --gulf-sunk:     #D3DED6;
+    --state-open:    #2F6B54;
+    --state-held:    #8A6D10;
+    --state-closed:  #8C4436;
+    --plate-sky-a:   #C8CCBE;
+    --plate-sky-b:   #A9B09C;
+    --plate-mass:    #5A6050;
+    --plate-lit:     #DDE0D2;
+    --e-sticky: 0 1px 0 var(--hairline), 0 12px 32px -22px #6E7060;
+    --e-lift:   0 24px 60px -34px #6E7060;
+  }
+}
+
+:root[data-theme="light"] {
+  --basalt:        #E4E2D8;
+  --basalt-raised: #EDEBE2;
+  --basalt-sunk:   #D6D3C7;
+  --hairline:      #BFBCAC;
+  --hairline-soft: #D0CDBF;
+  --limestone:     #16180E;
+  --limestone-dim: #4E5142;
+  --sand:          #6E7060;
+  --gulf:          #2F6B54;
+  --gulf-bright:   #235444;
+  --gulf-sunk:     #D3DED6;
+  --state-open:    #2F6B54;
+  --state-held:    #8A6D10;
+  --state-closed:  #8C4436;
+  --plate-sky-a:   #C8CCBE;
+  --plate-sky-b:   #A9B09C;
+  --plate-mass:    #5A6050;
+  --plate-lit:     #DDE0D2;
+  --e-sticky: 0 1px 0 var(--hairline), 0 12px 32px -22px #6E7060;
+  --e-lift:   0 24px 60px -34px #6E7060;
+}
+
+/* ============================================================ */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--basalt);
+  color: var(--limestone);
+  font-family: var(--f-la-ui);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gulf-bright);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--s-5);
+}
+
+/* --- document-level typography (the spec itself, LTR English) --- */
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gulf);
+  margin: 0;
+}
+.doc-h1 {
+  font-family: var(--f-la-display);
+  font-size: var(--t-display-l);
+  line-height: 1.02;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: var(--s-4) 0 0;
+}
+.doc-h2 {
+  font-family: var(--f-la-display);
+  font-size: var(--t-display-m);
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0;
+}
+.doc-h3 {
+  font-family: var(--f-la-ui);
+  font-size: var(--t-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.lede {
+  font-size: var(--t-body-l);
+  color: var(--limestone-dim);
+  max-width: 62ch;
+  margin: var(--s-4) 0 0;
+}
+p { max-width: 68ch; }
+
+/* --- page furniture --- */
+.masthead {
+  border-bottom: 1px solid var(--hairline);
+  padding: var(--s-9) 0 var(--s-8);
+  background:
+    radial-gradient(120% 90% at 88% 0%, var(--gulf-sunk) 0%, transparent 60%),
+    var(--basalt);
+}
+.masthead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  margin-top: var(--s-7);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--hairline-soft);
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+.section {
+  padding: var(--s-9) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-3);
+  margin-bottom: var(--s-7);
+}
+@media (min-width: 860px) {
+  .section-head { grid-template-columns: 180px 1fr; gap: var(--s-6); align-items: start; }
+}
+.section-index {
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sand);
+  padding-top: 0.6em;
+  border-top: 1px solid var(--gulf);
+  display: inline-block;
+}
+
+/* --- swatches --- */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+}
+.swatch { background: var(--basalt); padding: 0; }
+.swatch-chip { height: 96px; border-bottom: 1px solid var(--hairline); }
+.swatch-body { padding: var(--s-3) var(--s-4) var(--s-4); }
+.swatch-name {
+  font-family: var(--f-la-ui);
+  font-size: var(--t-small);
+  font-weight: 600;
+  margin: 0;
+}
+.swatch-hex {
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.08em;
+  color: var(--gulf);
+  margin: var(--s-1) 0 0;
+  text-transform: uppercase;
+}
+.swatch-role {
+  font-size: var(--t-label);
+  color: var(--limestone-dim);
+  margin: var(--s-2) 0 0;
+  line-height: 1.5;
+}
+
+/* --- data tables --- */
+.table-scroll { overflow-x: auto; }
+table.spec {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-small);
+  min-width: 560px;
+}
+table.spec th, table.spec td {
+  text-align: left;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--hairline-soft);
+  vertical-align: baseline;
+}
+table.spec th {
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sand);
+  font-weight: 400;
+  border-bottom: 1px solid var(--hairline);
+}
+table.spec td.num, table.spec td.mono {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--gulf);
+}
+.type-sample { font-family: var(--f-ar-display); color: var(--limestone); }
+
+/* ============================================================
+   MOCKUP CHROME
+   ============================================================ */
+.mock {
+  border: 1px solid var(--hairline);
+  background: var(--basalt-sunk);
+  margin-top: var(--s-6);
+  overflow: hidden;
+}
+.mock-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--basalt-raised);
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  color: var(--sand);
+  letter-spacing: 0.06em;
+}
+.dot { width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--hairline); }
+.mock-url { margin-inline-start: var(--s-3); }
+.mock-stage { overflow-x: auto; }
+
+/* the mocked product, RTL */
+.ui {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--f-ar-ui);
+  background: var(--basalt);
+  color: var(--limestone);
+  min-width: 900px;
+}
+.ui-mobile { min-width: 0; }
+
+/* --- product nav --- */
+.ui-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  padding: var(--s-4) var(--s-6);
+  border-bottom: 1px solid var(--hairline);
+}
+.ui-brand {
+  font-family: var(--f-mono);
+  font-size: var(--t-body);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--limestone);
+  white-space: nowrap;
+}
+.ui-brand b { color: var(--gulf); font-weight: 400; }
+.ui-links { display: flex; gap: var(--s-5); font-size: var(--t-small); color: var(--limestone-dim); flex-wrap: wrap; }
+.ui-links span { position: relative; padding-bottom: 3px; cursor: default; }
+.ui-links span.on { color: var(--limestone); border-bottom: 1px solid var(--gulf); }
+.ui-nav-end { margin-inline-start: auto; display: flex; align-items: center; gap: var(--s-3); }
+
+/* --- buttons --- */
+.btn {
+  font-family: var(--f-ar-ui);
+  font-size: var(--t-small);
+  padding: var(--s-3) var(--s-5);
+  border: 1px solid var(--gulf);
+  background: transparent;
+  color: var(--gulf-bright);
+  border-radius: var(--r-none);
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--gulf); color: var(--basalt); }
+.btn-solid { background: var(--gulf); color: var(--basalt); border-color: var(--gulf); }
+.btn-solid:hover { background: var(--gulf-bright); border-color: var(--gulf-bright); }
+.btn-quiet { border-color: var(--hairline); color: var(--limestone-dim); }
+.btn-quiet:hover { border-color: var(--limestone-dim); background: transparent; color: var(--limestone); }
+.btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+/* --- photographic plates: pure CSS, consistent duotone --- */
+.plate {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(170deg, var(--plate-sky-b) 0%, var(--plate-sky-a) 62%, var(--plate-mass) 100%);
+}
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--basalt) 0%, transparent 46%);
+  opacity: 0.9;
+}
+.mass { position: absolute; bottom: 0; background: var(--plate-mass); }
+.mass.lit { background: linear-gradient(to top, var(--plate-mass), var(--plate-lit)); }
+.glint { position: absolute; background: var(--gulf-bright); opacity: 0.5; }
+
+/* --- the signature device: dimension lines --- */
+.dims {
+  display: flex;
+  border-top: 1px solid var(--hairline);
+  margin-top: var(--s-4);
+}
+.dim {
+  flex: 1;
+  padding: var(--s-3) 0 0;
+  position: relative;
+}
+.dim + .dim { border-inline-start: 1px solid var(--hairline); padding-inline-start: var(--s-4); }
+.dim::before {
+  content: "";
+  position: absolute;
+  top: -1px; inset-inline-start: 0;
+  width: 14px; height: 1px;
+  background: var(--gulf);
+}
+.dim-v {
+  font-family: var(--f-mono);
+  font-size: var(--t-body);
+  font-variant-numeric: tabular-nums;
+  color: var(--limestone);
+  display: block;
+  line-height: 1.2;
+}
+.dim-k {
+  font-size: var(--t-label);
+  color: var(--sand);
+  letter-spacing: 0.04em;
+}
+
+/* --- badges --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  padding: 3px var(--s-2);
+  border: 1px solid currentColor;
+  border-radius: var(--r-none);
+  text-transform: uppercase;
+}
+.badge::before { content: ""; width: 5px; height: 5px; background: currentColor; }
+.badge-open   { color: var(--state-open); }
+.badge-held   { color: var(--state-held); }
+.badge-closed { color: var(--state-closed); }
+.badge-star   { color: var(--limestone); border-style: dashed; }
+.badge-star::before { display: none; }
+
+/* --- listing card: no rounded box, no shadow --- */
+.card { display: block; cursor: default; }
+.card-plate { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+.card-plate .plate { position: absolute; inset: 0; transition: transform 500ms cubic-bezier(.2,.7,.3,1); }
+.card:hover .card-plate .plate { transform: scale(1.04); }
+.card-ref {
+  position: absolute; top: var(--s-3); inset-inline-start: var(--s-3);
+  font-family: var(--f-mono); font-size: var(--t-label);
+  color: var(--limestone); letter-spacing: 0.08em;
+  background: color-mix(in srgb, var(--basalt) 72%, transparent);
+  padding: 2px var(--s-2); z-index: 2;
+}
+.card-flags { position: absolute; bottom: var(--s-3); inset-inline-end: var(--s-3); display: flex; gap: var(--s-2); z-index: 2; }
+.card-rule { height: 1px; background: var(--hairline); position: relative; margin-top: var(--s-4); }
+.card-rule::after {
+  content: ""; position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  height: 1px; width: 0; background: var(--gulf);
+  transition: width 420ms cubic-bezier(.2,.7,.3,1);
+}
+.card:hover .card-rule::after { width: 100%; }
+.card-title {
+  font-family: var(--f-ar-display);
+  font-size: var(--t-title);
+  font-weight: 400;
+  line-height: 1.35;
+  margin: var(--s-4) 0 var(--s-1);
+}
+.card-area { font-size: var(--t-small); color: var(--limestone-dim); margin: 0; }
+.card-price {
+  font-family: var(--f-mono);
+  font-size: var(--t-body-l);
+  font-variant-numeric: tabular-nums;
+  color: var(--gulf-bright);
+  margin-top: var(--s-3);
+  display: block;
+}
+.card-price small { color: var(--sand); font-size: var(--t-label); }
+
+/* --- search bar --- */
+.search {
+  border: 1px solid var(--hairline);
+  background: var(--basalt-raised);
+  padding: var(--s-5);
+}
+.seg { display: inline-flex; border: 1px solid var(--hairline); }
+.seg span {
+  padding: var(--s-2) var(--s-5);
+  font-size: var(--t-small);
+  color: var(--limestone-dim);
+  border-inline-start: 1px solid var(--hairline);
+  cursor: default;
+}
+.seg span:first-child { border-inline-start: 0; }
+.seg span.on { background: var(--gulf); color: var(--basalt); }
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) auto;
+  gap: 0;
+  margin-top: var(--s-5);
+  border: 1px solid var(--hairline);
+}
+.field { padding: var(--s-3) var(--s-4); border-inline-start: 1px solid var(--hairline); }
+.field:first-child { border-inline-start: 0; }
+.field-k {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  color: var(--sand);
+  text-transform: uppercase;
+}
+.field-v { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-top: var(--s-1); font-size: var(--t-body); }
+.field-v i { font-style: normal; color: var(--gulf); font-size: 0.7em; }
+.field:focus-within, .field.active { background: var(--gulf-sunk); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
+.chip {
+  font-size: var(--t-small);
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--hairline);
+  color: var(--limestone-dim);
+  cursor: default;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+.chip:hover { border-color: var(--gulf); color: var(--gulf-bright); }
+
+/* --- misc product bits --- */
+.ui-h {
+  font-family: var(--f-ar-display);
+  font-weight: 400;
+  line-height: 1.12;
+  text-wrap: balance;
+  margin: 0;
+}
+.rule-label {
+  display: flex; align-items: baseline; gap: var(--s-4);
+  border-top: 1px solid var(--gulf);
+  padding-top: var(--s-3);
+  margin-bottom: var(--s-5);
+}
+.rule-label b { font-family: var(--f-ar-ui); font-size: var(--t-body-l); font-weight: 600; }
+.rule-label em {
+  font-style: normal; font-family: var(--f-mono); font-size: var(--t-label);
+  color: var(--sand); letter-spacing: 0.12em; margin-inline-start: auto;
+}
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-6); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); }
+.tile { background: var(--basalt); padding: var(--s-5); }
+.tile-n { font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand); }
+.tile-t { font-family: var(--f-ar-display); font-size: var(--t-title); margin-top: var(--s-2); }
+
+.wa {
+  position: absolute; inset-inline-start: var(--s-5); bottom: var(--s-5);
+  width: 46px; height: 46px; border-radius: var(--r-pill);
+  border: 1px solid var(--gulf); color: var(--gulf-bright);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--t-label); font-family: var(--f-mono);
+  background: var(--basalt);
+}
+
+.rationale {
+  border-inline-start: 1px solid var(--gulf);
+  padding-inline-start: var(--s-5);
+  margin-top: var(--s-6);
+}
+.rationale h4 {
+  font-family: var(--f-mono); font-size: var(--t-label);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gulf); margin: 0 0 var(--s-2);
+}
+.rationale p { margin: 0; color: var(--limestone-dim); }
+
+.note {
+  background: var(--basalt-raised);
+  border: 1px solid var(--hairline);
+  padding: var(--s-5);
+  margin-top: var(--s-6);
+}
+.note p { margin: var(--s-2) 0 0; color: var(--limestone-dim); font-size: var(--t-small); }
+.note p:first-of-type { margin-top: 0; }
+
+.phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-6); }
+.phone { border: 1px solid var(--hairline); background: var(--basalt); overflow: hidden; }
+.phone-cap {
+  font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--sand); padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--hairline); background: var(--basalt-raised);
+}
+
+.states { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; }
+.state-cell { display: grid; gap: var(--s-2); justify-items: start; }
+.state-k { font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand); letter-spacing: 0.1em; text-transform: uppercase; }
+
+.foot { padding: var(--s-8) 0 var(--s-9); color: var(--sand); font-size: var(--t-small); }
+
+@media (max-width: 720px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Kwt25 · عقار الكويت · Visual identity proposal</p>
+    <h1 class="doc-h1">A property office that behaves like an architecture studio.</h1>
+    <p class="lede">
+      The rejected design was a listings template: white ground, blue-family accent, rounded cards, a stock hero.
+      This is not a re-skin of it. The palette, the type system, the grid, and every component have been rebuilt
+      around one idea — that the buildings are the product, and everything else should get out of their way.
+    </p>
+    <div class="masthead-meta">
+      <span>Arabic-first · RTL</span>
+      <span>Dark-first, light theme included</span>
+      <span>7 screens + 3 mobile</span>
+      <span>Kuwait · د.ك</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== POSITION ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">Position</span>
+      <div>
+        <h2 class="doc-h2">The one decision everything else follows from: no gold.</h2>
+        <p class="lede">
+          Every property brokerage in the Gulf signals premium with gold on navy or gold on cream. Because they all
+          do it, none of them read as premium — the cue has been spent. The old kwt25 site used exactly that
+          combination, which is a large part of why it felt like something the client had already seen.
+        </p>
+        <p style="margin-top: var(--s-4); color: var(--limestone-dim);">
+          This identity takes the harder route: luxury signalled through restraint, space, and photography rather
+          than metallic accents. The single accent is the sea-green of the ceramic discs on the Kuwait Towers —
+          a colour that belongs to this city rather than to the category. It appears on perhaps two percent of
+          any given screen. That scarcity is what makes it read as expensive.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PALETTE ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">01 · Colour</span>
+      <div>
+        <h2 class="doc-h2">Palette</h2>
+        <p class="lede">
+          A basalt ground with an olive bias — never a pure neutral grey, never navy. Warm limestone carries all
+          type. One accent. Status colours are a separate family and are never borrowed for decoration.
+        </p>
+      </div>
+    </div>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--basalt);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Basalt</p>
+          <p class="swatch-hex">#101208</p>
+          <p class="swatch-role">Page ground. Warm-shifted near-black so photography sits on it without a colour clash.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--basalt-raised);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Basalt Raised</p>
+          <p class="swatch-hex">#191C11</p>
+          <p class="swatch-role">Search bar, filter rail, sticky surfaces. Elevation by lightness, not shadow.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--hairline);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Hairline</p>
+          <p class="swatch-hex">#2C3020</p>
+          <p class="swatch-role">Every rule and divider in the system. The grid is meant to be visible.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--limestone);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Limestone</p>
+          <p class="swatch-hex">#E8E4D6</p>
+          <p class="swatch-role">Primary type. Warm off-white — pure white would glare against the ground.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--sand);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Sand</p>
+          <p class="swatch-hex">#7C7A68</p>
+          <p class="swatch-role">Labels, units, metadata. The quietest legible step.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--gulf);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Gulf</p>
+          <p class="swatch-hex">#5E9B84</p>
+          <p class="swatch-role">The only accent. Prices, active states, the rule that draws on hover.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--state-held);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Held</p>
+          <p class="swatch-hex">#C9A227</p>
+          <p class="swatch-role">Status only — محجوز. Never a brand colour, never a button.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background: var(--state-closed);"></div>
+        <div class="swatch-body">
+          <p class="swatch-name">Closed</p>
+          <p class="swatch-hex">#A65D4E</p>
+          <p class="swatch-role">Status only — مباع / مؤجر. Muted so sold stock doesn't shout.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><strong>Photography treatment.</strong> Every image is graded to a duotone between Basalt and Gulf, then
+      bottom-faded into the page ground so the card has no hard edge. Listings arrive from many phone cameras in
+      wildly different light; a fixed grade is what makes a page of mixed sources look like one brand.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TYPE ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">02 · Type</span>
+      <div>
+        <h2 class="doc-h2">Bilingual type system</h2>
+        <p class="lede">
+          Arabic is the design language, not a translation of a Latin layout. Headlines are set in an editorial
+          Arabic with real stroke contrast; the interface is set in a clean geometric Arabic; all numerals, areas,
+          and reference codes sit in a mono face.
+        </p>
+      </div>
+    </div>
+
+    <div style="border: 1px solid var(--hairline); padding: var(--s-6); background: var(--basalt-raised);">
+      <p style="direction: rtl; font-family: var(--f-ar-display); font-size: var(--t-display-l); margin: 0; line-height: 1.15;">عقارك المناسب أقرب إليك</p>
+      <p style="direction: rtl; font-family: var(--f-ar-ui); font-size: var(--t-body-l); color: var(--limestone-dim); margin: var(--s-4) 0 0;">حدد موقعك وميزانيتك، ونلقى لك الاختيار المناسب في جميع مناطق الكويت.</p>
+      <p style="font-family: var(--f-mono); font-size: var(--t-small); color: var(--gulf); margin: var(--s-5) 0 0; letter-spacing: 0.08em;">KW-2026-0148 · 320 m² · 1,450 د.ك</p>
+    </div>
+
+    <div class="table-scroll" style="margin-top: var(--s-6);">
+      <table class="spec">
+        <thead>
+          <tr><th>Role</th><th>Face — licensed</th><th>Size</th><th>Weight / spacing</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Display, Arabic</td><td>29LT Zarid Display</td><td class="num">clamp(3rem, 7vw, 6rem)</td><td>400 · −0.5% tracking</td></tr>
+          <tr><td>Display, Latin</td><td>GT Alpina</td><td class="num">clamp(2.25rem, 4.4vw, 3.75rem)</td><td>400 · −2% tracking</td></tr>
+          <tr><td>UI &amp; body, Arabic</td><td>29LT Bukra</td><td class="num">15 / 17 px</td><td>400–600 · 1.6 leading</td></tr>
+          <tr><td>UI &amp; body, Latin</td><td>Suisse Int'l</td><td class="num">15 / 17 px</td><td>400–600 · 1.6 leading</td></tr>
+          <tr><td>Data &amp; labels</td><td>Suisse Int'l Mono</td><td class="num">11 / 13 px</td><td>400 · +12% tracking · uppercase</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p><strong>On the prototype.</strong> These screens render with system Arabic and Latin stacks, because the
+      licensed faces above cannot be embedded in a shared preview. The proportions, scale, and hierarchy are
+      correct; the letterforms are a stand-in. Licensing 29LT Zarid Display and Bukra is the first production cost
+      and the one I would not cut — the Arabic display face is where most of this identity actually lives.</p>
+      <p><strong>Numerals.</strong> Prices, areas, and reference numbers use Latin digits, which is how Kuwaiti
+      listings are read in practice. Arabic-Indic digits are reserved for editorial copy, where they belong —
+      the working hours line below is set ٩ص–٩م for exactly this reason.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== STRUCTURE ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">03 · Structure</span>
+      <div>
+        <h2 class="doc-h2">Spacing, radius, elevation</h2>
+        <p class="lede">
+          The system's most opinionated values are the ones set to zero. Corners are square and cards cast no
+          shadow — the two habits that make a listings site look like a listings site.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Step</th><th>Value</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">s-1</td><td class="num">4px</td><td>Label to value</td></tr>
+            <tr><td class="mono">s-3</td><td class="num">12px</td><td>Inside fields, badges</td></tr>
+            <tr><td class="mono">s-4</td><td class="num">16px</td><td>Card internals</td></tr>
+            <tr><td class="mono">s-6</td><td class="num">32px</td><td>Grid gutter</td></tr>
+            <tr><td class="mono">s-7</td><td class="num">48px</td><td>Block separation</td></tr>
+            <tr><td class="mono">s-9</td><td class="num">96px</td><td>Section rhythm</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Token</th><th>Value</th><th>Rationale</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">r-none</td><td class="num">0px</td><td>Cards, buttons, fields, images</td></tr>
+            <tr><td class="mono">r-hair</td><td class="num">2px</td><td>Nothing yet — held in reserve</td></tr>
+            <tr><td class="mono">r-pill</td><td class="num">999px</td><td>WhatsApp float only, once</td></tr>
+            <tr><td class="mono">e-flat</td><td class="num">none</td><td>All cards and listings</td></tr>
+            <tr><td class="mono">e-sticky</td><td class="num">1px + 32px</td><td>Sticky filter bar only</td></tr>
+            <tr><td class="mono">e-lift</td><td class="num">60px −32</td><td>Gallery lightbox only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><strong>Why zero radius matters commercially.</strong> A 12-pixel corner radius is the single strongest
+      visual marker of a templated marketplace — it is what the client recognised when they said "the same as
+      before." Square corners plus a visible hairline grid reads as a drawing sheet rather than a card deck, and
+      that is the whole gap between a portal and a brokerage.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMPONENTS ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">04 · Components</span>
+      <div>
+        <h2 class="doc-h2">Component language</h2>
+        <p class="lede">
+          The signature device is the <em>dimension line</em> — the thin rule with a tick and a mono label that
+          an architect uses to annotate a drawing. It replaces the row of rounded icon chips that every listings
+          site uses for rooms, baths, and area.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="rule-label"><b style="direction: rtl;">خط الأبعاد</b><em>Dimension row</em></div>
+        <div class="ui" style="min-width: 0; padding: var(--s-5); border: 1px solid var(--hairline);">
+          <div class="dims" style="margin-top: 0;">
+            <div class="dim"><span class="dim-v">4</span><span class="dim-k">غرف</span></div>
+            <div class="dim"><span class="dim-v">3</span><span class="dim-k">حمامات</span></div>
+            <div class="dim"><span class="dim-v">320</span><span class="dim-k">م²</span></div>
+            <div class="dim"><span class="dim-v">2</span><span class="dim-k">أدوار</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="rule-label"><b style="direction: rtl;">الحالات</b><em>Badges</em></div>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--s-3); direction: rtl; padding: var(--s-5); border: 1px solid var(--hairline);">
+          <span class="badge badge-open">متاح</span>
+          <span class="badge badge-held">محجوز</span>
+          <span class="badge badge-closed">مباع</span>
+          <span class="badge badge-star">مميز</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: var(--s-7);">
+      <div class="rule-label"><b>Button states</b><em>Primary · Secondary · Quiet</em></div>
+      <div class="states">
+        <div class="state-cell"><span class="state-k">Default</span><button class="btn btn-solid" type="button">ابحث</button></div>
+        <div class="state-cell"><span class="state-k">Secondary</span><button class="btn" type="button">اطلب عقارك</button></div>
+        <div class="state-cell"><span class="state-k">Quiet</span><button class="btn btn-quiet" type="button">مسح الفلاتر</button></div>
+        <div class="state-cell"><span class="state-k">Disabled</span><button class="btn btn-solid" type="button" disabled>ابحث</button></div>
+      </div>
+      <p style="font-size: var(--t-small); color: var(--sand); margin-top: var(--s-4);">
+        Hover fills the outline rather than darkening a fill — the accent arrives, it doesn't merely shift. Focus
+        is a 2px Gulf outline offset by 3px, on every interactive element.
+      </p>
+    </div>
+
+    <div style="margin-top: var(--s-7);">
+      <div class="rule-label"><b>Listing card</b><em>Hover: plate scales 1.04, rule draws right-to-left</em></div>
+      <div class="ui" style="min-width: 0; padding: var(--s-5); border: 1px solid var(--hairline);">
+        <div style="max-width: 340px;">
+          <div class="card">
+            <div class="card-plate">
+              <div class="plate">
+                <div class="mass" style="inset-inline-end: 4%; width: 30%; height: 62%;"></div>
+                <div class="mass lit" style="inset-inline-end: 30%; width: 34%; height: 84%;"></div>
+                <div class="mass" style="inset-inline-start: 6%; width: 28%; height: 48%;"></div>
+                <div class="glint" style="inset-inline-end: 38%; bottom: 30%; width: 18%; height: 2px;"></div>
+              </div>
+              <span class="card-ref">KW-2026-0148</span>
+              <span class="card-flags"><span class="badge badge-star">مميز</span><span class="badge badge-open">متاح</span></span>
+            </div>
+            <div class="card-rule"></div>
+            <h4 class="card-title">فيلا زاوية بمسبح — الجابرية</h4>
+            <p class="card-area">الجابرية · قطعة ٧</p>
+            <div class="dims">
+              <div class="dim"><span class="dim-v">4</span><span class="dim-k">غرف</span></div>
+              <div class="dim"><span class="dim-v">3</span><span class="dim-k">حمامات</span></div>
+              <div class="dim"><span class="dim-v">320</span><span class="dim-k">م²</span></div>
+            </div>
+            <span class="card-price">1,450 <small>د.ك / شهرياً</small></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOME ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">05 · Screen</span>
+      <div><h2 class="doc-h2">Home</h2></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">kwt25.com</span></div>
+      <div class="mock-stage">
+        <div class="ui">
+          <nav class="ui-nav">
+            <span class="ui-brand">KWT<b>25</b></span>
+            <span class="ui-links">
+              <span class="on">الرئيسية</span><span>العقارات</span><span>البحث الذكي</span><span>الخريطة</span><span>تواصل معنا</span>
+            </span>
+            <span class="ui-nav-end">
+              <span style="font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand);">EN</span>
+              <button class="btn" type="button">اعرض عقارك معنا</button>
+            </span>
+          </nav>
+
+          <!-- hero -->
+          <div style="position: relative; display: grid; grid-template-columns: 1.05fr 1fr; min-height: 420px; border-bottom: 1px solid var(--hairline);">
+            <div style="padding: var(--s-9) var(--s-6) var(--s-8); display: flex; flex-direction: column; justify-content: center;">
+              <span style="font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.16em; color: var(--gulf); border-top: 1px solid var(--gulf); padding-top: var(--s-2); align-self: flex-start;">مكتب عقاري · الكويت</span>
+              <h1 class="ui-h" style="font-size: var(--t-display-xl); margin-top: var(--s-5);">عقارك المناسب<br>أقرب إليك</h1>
+              <p style="color: var(--limestone-dim); font-size: var(--t-body-l); max-width: 40ch; margin-top: var(--s-5);">
+                حدد المنطقة والميزانية، ونعرض عليك ما يناسبك فعلاً — للبيع والإيجار في جميع مناطق الكويت.
+              </p>
+            </div>
+            <div class="plate" style="position: relative;">
+              <div class="mass lit" style="inset-inline-end: 8%; width: 30%; height: 76%;"></div>
+              <div class="mass" style="inset-inline-end: 36%; width: 22%; height: 54%;"></div>
+              <div class="mass lit" style="inset-inline-start: 10%; width: 32%; height: 66%;"></div>
+              <div class="glint" style="inset-inline-end: 14%; bottom: 44%; width: 20%; height: 2px;"></div>
+              <div class="glint" style="inset-inline-start: 16%; bottom: 34%; width: 14%; height: 2px;"></div>
+            </div>
+            <span class="wa">واتساب</span>
+          </div>
+
+          <!-- search -->
+          <div style="padding: var(--s-6);">
+            <div class="search">
+              <div style="display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap;">
+                <span class="seg"><span class="on">الكل</span><span>للإيجار</span><span>للبيع</span></span>
+                <span style="font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand); letter-spacing: 0.12em; margin-inline-start: auto;">بحث سريع</span>
+              </div>
+              <div class="fields">
+                <div class="field active"><span class="field-k">المنطقة</span><span class="field-v">السالمية <i>▾</i></span></div>
+                <div class="field"><span class="field-k">نوع العقار</span><span class="field-v">جميع الأنواع <i>▾</i></span></div>
+                <div class="field"><span class="field-k">الغرف</span><span class="field-v">أي عدد <i>▾</i></span></div>
+                <div class="field"><span class="field-k">أقصى سعر</span><span class="field-v">أي ميزانية <i>▾</i></span></div>
+                <div class="field" style="display: flex; align-items: center; padding: 0;"><button class="btn btn-solid" type="button" style="height: 100%; border: 0; padding-inline: var(--s-7);">ابحث</button></div>
+              </div>
+              <div class="chips">
+                <span style="font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand); letter-spacing: 0.1em; align-self: center;">الأكثر طلباً</span>
+                <span class="chip">شقق للإيجار — السالمية</span>
+                <span class="chip">فلل للبيع — الجابرية</span>
+                <span class="chip">أدوار — حولي</span>
+                <span class="chip">شاليه — الخيران</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- featured -->
+          <div style="padding: 0 var(--s-6) var(--s-8);">
+            <div class="rule-label"><b>عقاراتنا المميزة</b><em>03 / 12</em></div>
+            <div class="grid-3">
+              <div class="card">
+                <div class="card-plate">
+                  <div class="plate">
+                    <div class="mass lit" style="inset-inline-end: 6%; width: 36%; height: 78%;"></div>
+                    <div class="mass" style="inset-inline-start: 8%; width: 30%; height: 52%;"></div>
+                    <div class="glint" style="inset-inline-end: 12%; bottom: 40%; width: 22%; height: 2px;"></div>
+                  </div>
+                  <span class="card-ref">KW-2026-0148</span>
+                  <span class="card-flags"><span class="badge badge-star">مميز</span></span>
+                </div>
+                <div class="card-rule"></div>
+                <h4 class="card-title">فيلا زاوية بمسبح</h4>
+                <p class="card-area">الجابرية · قطعة ٧</p>
+                <div class="dims">
+                  <div class="dim"><span class="dim-v">4</span><span class="dim-k">غرف</span></div>
+                  <div class="dim"><span class="dim-v">3</span><span class="dim-k">حمامات</span></div>
+                  <div class="dim"><span class="dim-v">320</span><span class="dim-k">م²</span></div>
+                </div>
+                <span class="card-price">1,450 <small>د.ك / شهرياً</small></span>
+              </div>
+              <div class="card">
+                <div class="card-plate">
+                  <div class="plate">
+                    <div class="mass" style="inset-inline-end: 10%; width: 26%; height: 62%;"></div>
+                    <div class="mass lit" style="inset-inline-start: 12%; width: 40%; height: 84%;"></div>
+                  </div>
+                  <span class="card-ref">KW-2026-0121</span>
+                  <span class="card-flags"><span class="badge badge-open">متاح</span></span>
+                </div>
+                <div class="card-rule"></div>
+                <h4 class="card-title">شقة بإطلالة بحرية</h4>
+                <p class="card-area">السالمية · قطعة ٢</p>
+                <div class="dims">
+                  <div class="dim"><span class="dim-v">2</span><span class="dim-k">غرف</span></div>
+                  <div class="dim"><span class="dim-v">2</span><span class="dim-k">حمامات</span></div>
+                  <div class="dim"><span class="dim-v">95</span><span class="dim-k">م²</span></div>
+                </div>
+                <span class="card-price">550 <small>د.ك / شهرياً</small></span>
+              </div>
+              <div class="card">
+                <div class="card-plate">
+                  <div class="plate">
+                    <div class="mass lit" style="inset-inline-end: 14%; width: 30%; height: 58%;"></div>
+                    <div class="mass" style="inset-inline-start: 6%; width: 34%; height: 72%;"></div>
+                    <div class="glint" style="inset-inline-start: 12%; bottom: 46%; width: 16%; height: 2px;"></div>
+                  </div>
+                  <span class="card-ref">KW-2026-0103</span>
+                  <span class="card-flags"><span class="badge badge-held">محجوز</span></span>
+                </div>
+                <div class="card-rule"></div>
+                <h4 class="card-title">دور واسع بمدخل خاص</h4>
+                <p class="card-area">الجابرية · قطعة ٧</p>
+                <div class="dims">
+                  <div class="dim"><span class="dim-v">3</span><span class="dim-k">غرف</span></div>
+                  <div class="dim"><span class="dim-v">2</span><span class="dim-k">حمامات</span></div>
+                  <div class="dim"><span class="dim-v">220</span><span class="dim-k">م²</span></div>
+                </div>
+                <span class="card-price">650 <small>د.ك / شهرياً</small></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- browse by type -->
+          <div style="padding: 0 var(--s-6) var(--s-8);">
+            <div class="rule-label"><b>تصفح حسب النوع</b><em>07 types</em></div>
+            <div class="grid-4">
+              <div class="tile"><span class="tile-n">01</span><div class="tile-t">فيلا</div></div>
+              <div class="tile"><span class="tile-n">02</span><div class="tile-t">شقة</div></div>
+              <div class="tile"><span class="tile-n">03</span><div class="tile-t">دور</div></div>
+              <div class="tile"><span class="tile-n">04</span><div class="tile-t">أرض</div></div>
+              <div class="tile"><span class="tile-n">05</span><div class="tile-t">مكتب</div></div>
+              <div class="tile"><span class="tile-n">06</span><div class="tile-t">شاليه</div></div>
+              <div class="tile"><span class="tile-n">07</span><div class="tile-t">تجاري</div></div>
+              <div class="tile" style="background: var(--gulf-sunk);"><span class="tile-n" style="color: var(--gulf);">→</span><div class="tile-t" style="color: var(--gulf-bright);">الكل</div></div>
+            </div>
+          </div>
+
+          <!-- request CTA -->
+          <div style="padding: var(--s-8) var(--s-6); border-top: 1px solid var(--hairline); display: grid; grid-template-columns: 1fr auto; gap: var(--s-6); align-items: center;">
+            <div>
+              <h3 class="ui-h" style="font-size: var(--t-display-m);">لم تجد ما يناسبك؟ اطلب عقارك</h3>
+              <p style="color: var(--limestone-dim); margin-top: var(--s-3);">أرسل لنا المواصفات وسنتواصل معك عند توفره.</p>
+            </div>
+            <button class="btn btn-solid" type="button">اطلب عقارك الآن</button>
+          </div>
+
+          <!-- footer -->
+          <div style="border-top: 1px solid var(--hairline); padding: var(--s-7) var(--s-6); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6); background: var(--basalt-sunk);">
+            <div>
+              <span class="ui-brand">KWT<b>25</b></span>
+              <p style="color: var(--sand); font-size: var(--t-small); margin-top: var(--s-3);">مكتب عقاري في الكويت — بيع وإيجار في جميع المناطق.</p>
+            </div>
+            <div style="font-family: var(--f-mono); font-size: var(--t-small); color: var(--limestone-dim); line-height: 2;">
+              <div>+965 22405060</div>
+              <div>+965 99887766</div>
+              <div>info@kwt25.com</div>
+              <div>kwt25_realestate</div>
+            </div>
+            <div style="font-size: var(--t-small); color: var(--limestone-dim); line-height: 2;">
+              <div style="font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.12em; color: var(--sand);">أوقات العمل</div>
+              <div>السبت – الخميس · ٩ص – ٩م</div>
+              <div style="color: var(--state-closed);">الجمعة · مغلق</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rationale">
+      <h4>What changed and why</h4>
+      <p>
+        The old home page put a pre-baked marketing banner in the hero and floated the search panel on top of it,
+        which meant the first thing a visitor saw was an advertisement rather than the inventory. Here the hero is
+        split: the value line holds the right half in large editorial Arabic, and real photography holds the left,
+        full-bleed and uncropped by any overlay. The search bar sits below the fold line as its own grey-raised
+        block, so it is never fighting the artwork for the same pixels — which was the actual cause of the
+        headline and call-to-action being clipped in the old build. For a brokerage pitching to sellers, the page
+        now opens by demonstrating the quality of presentation their property will receive.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RESULTS ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">06 · Screen</span>
+      <div><h2 class="doc-h2">Search results</h2></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">kwt25.com/properties?area=salmiya</span></div>
+      <div class="mock-stage">
+        <div class="ui">
+          <nav class="ui-nav">
+            <span class="ui-brand">KWT<b>25</b></span>
+            <span class="ui-links"><span>الرئيسية</span><span class="on">العقارات</span><span>البحث الذكي</span><span>الخريطة</span></span>
+            <span class="ui-nav-end"><span style="font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand);">EN</span></span>
+          </nav>
+
+          <!-- sticky filter bar -->
+          <div style="padding: var(--s-4) var(--s-6); background: var(--basalt-raised); border-bottom: 1px solid var(--hairline); box-shadow: var(--e-sticky); display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap;">
+            <span class="seg"><span class="on">الكل</span><span>للإيجار</span><span>للبيع</span></span>
+            <span class="chip" style="border-color: var(--gulf); color: var(--gulf-bright);">السالمية ×</span>
+            <span class="chip">شقة ×</span>
+            <span class="chip">3+ غرف ×</span>
+            <button class="btn btn-quiet" type="button" style="padding: var(--s-1) var(--s-3);">مسح الكل</button>
+            <span style="margin-inline-start: auto; display: flex; gap: var(--s-3); align-items: center;">
+              <span style="font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand); letter-spacing: 0.1em;">ترتيب: الأحدث ▾</span>
+              <span class="seg"><span class="on">قائمة</span><span>خريطة</span></span>
+            </span>
+          </div>
+
+          <div style="padding: var(--s-6);">
+            <div class="rule-label"><b>٢٤ عقاراً في السالمية</b><em>KW-2026 · updated today</em></div>
+            <div class="grid-3">
+              <div class="card">
+                <div class="card-plate">
+                  <div class="plate"><div class="mass lit" style="inset-inline-end: 8%; width: 34%; height: 74%;"></div><div class="mass" style="inset-inline-start: 10%; width: 28%; height: 50%;"></div></div>
+                  <span class="card-ref">KW-2026-0121</span>
+                  <span class="card-flags"><span class="badge badge-open">متاح</span></span>
+                </div>
+                <div class="card-rule"></div>
+                <h4 class="card-title">شقة بإطلالة بحرية</h4>
+                <p class="card-area">السالمية · قطعة ٢</p>
+                <div class="dims"><div class="dim"><span class="dim-v">2</span><span class="dim-k">غرف</span></div><div class="dim"><span class="dim-v">2</span><span class="dim-k">حمامات</span></div><div class="dim"><span class="dim-v">95</span><span class="dim-k">م²</span></div></div>
+                <span class="card-price">550 <small>د.ك / شهرياً</small></span>
+              </div>
+              <div class="card">
+                <div class="card-plate">
+                  <div class="plate"><div class="mass" style="inset-inline-end: 12%; width: 30%; height: 60%;"></div><div class="mass lit" style="inset-inline-start: 8%; width: 36%; height: 80%;"></div><div class="glint" style="inset-inline-start: 14%; bottom: 42%; width: 18%; height: 2px;"></div></div>
+                  <span class="card-ref">KW-2026-0135</span>
+                  <span class="card-flags"><span class="badge badge-star">مميز</span><span class="badge badge-open">متاح</span></span>
+                </div>
+                <div class="card-rule"></div>
+                <h4 class="card-title">شقة مفروشة قرب البحر</h4>
+                <p class="card-area">السالمية · قطعة ١٠</p>
+                <div class="dims"><div class="dim"><span class="dim-v">3</span><span class="dim-k">غرف</span></div><div class="dim"><span class="dim-v">2</span><span class="dim-k">حمامات</span></div><div class="dim"><span class="dim-v">140</span><span class="dim-k">م²</span></div></div>
+                <span class="card-price">780 <small>د.ك / شهرياً</small></span>
+              </div>
+              <div class="card">
+                <div class="card-plate">
+                  <div class="plate"><div class="mass lit" style="inset-inline-end: 16%; width: 28%; height: 56%;"></div><div class="mass" style="inset-inline-start: 12%; width: 32%; height: 70%;"></div></div>
+                  <span class="card-ref">KW-2026-0158</span>
+                  <span class="card-flags"><span class="badge badge-closed">مؤجر</span></span>
+                </div>
+                <div class="card-rule"></div>
+                <h4 class="card-title">شقة عائلية بمواقف</h4>
+                <p class="card-area">السالمية · قطعة ٤</p>
+                <div class="dims"><div class="dim"><span class="dim-v">3</span><span class="dim-k">غرف</span></div><div class="dim"><span class="dim-v">3</span><span class="dim-k">حمامات</span></div><div class="dim"><span class="dim-v">165</span><span class="dim-k">م²</span></div></div>
+                <span class="card-price">690 <small>د.ك / شهرياً</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rationale">
+      <h4>What changed and why</h4>
+      <p>
+        The old results page opened with a tall navy banner, then a full-width accordion of every filter, so the
+        first listing sat far below the fold and the filters had to be re-opened on every visit. Here the filters
+        collapse into one sticky bar where applied filters read as removable chips — the state of the search is
+        always visible without occupying a screen of its own. Sold and rented stock stays in the grid with a muted
+        Closed badge rather than being hidden, because a brokerage's recently-transacted inventory is evidence
+        that it sells; a portal hides it, an office shows it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROPERTY ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">07 · Screen</span>
+      <div><h2 class="doc-h2">Property detail</h2></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">kwt25.com/properties/villa-jabriya-block-7</span></div>
+      <div class="mock-stage">
+        <div class="ui">
+          <nav class="ui-nav">
+            <span class="ui-brand">KWT<b>25</b></span>
+            <span class="ui-links"><span>الرئيسية</span><span class="on">العقارات</span><span>البحث الذكي</span><span>الخريطة</span></span>
+          </nav>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1px; background: var(--hairline);">
+            <div class="plate" style="aspect-ratio: 16 / 10; position: relative;">
+              <div class="mass lit" style="inset-inline-end: 10%; width: 32%; height: 72%;"></div>
+              <div class="mass" style="inset-inline-end: 40%; width: 20%; height: 50%;"></div>
+              <div class="mass lit" style="inset-inline-start: 8%; width: 30%; height: 62%;"></div>
+              <div class="glint" style="inset-inline-end: 16%; bottom: 40%; width: 20%; height: 2px;"></div>
+              <span class="card-ref" style="top: var(--s-4); inset-inline-start: var(--s-4);">KW-2026-0148</span>
+            </div>
+            <div style="display: grid; grid-template-rows: 1fr 1fr; gap: 1px;">
+              <div class="plate"><div class="mass" style="inset-inline-end: 20%; width: 40%; height: 60%;"></div></div>
+              <div class="plate" style="position: relative;">
+                <div class="mass lit" style="inset-inline-start: 18%; width: 44%; height: 68%;"></div>
+                <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-size: var(--t-body); color: var(--limestone); background: color-mix(in srgb, var(--basalt) 62%, transparent); z-index: 2;">+ 9</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--s-8); padding: var(--s-7) var(--s-6);">
+            <div>
+              <div style="display: flex; gap: var(--s-2); margin-bottom: var(--s-4);">
+                <span class="badge badge-star">مميز</span><span class="badge badge-open">متاح</span>
+                <span class="badge" style="color: var(--sand);">للإيجار</span>
+              </div>
+              <h1 class="ui-h" style="font-size: var(--t-display-m);">فيلا زاوية بمسبح — الجابرية</h1>
+              <p style="color: var(--limestone-dim); margin-top: var(--s-2);">الجابرية · قطعة ٧ · شارع ١٢</p>
+
+              <div class="dims" style="margin-top: var(--s-6);">
+                <div class="dim"><span class="dim-v">4</span><span class="dim-k">غرف</span></div>
+                <div class="dim"><span class="dim-v">3</span><span class="dim-k">حمامات</span></div>
+                <div class="dim"><span class="dim-v">320</span><span class="dim-k">م²</span></div>
+                <div class="dim"><span class="dim-v">2</span><span class="dim-k">أدوار</span></div>
+                <div class="dim"><span class="dim-v">2024</span><span class="dim-k">سنة البناء</span></div>
+              </div>
+
+              <div style="margin-top: var(--s-7);">
+                <div class="rule-label"><b>تفاصيل واضحة قبل التواصل</b><em>Description</em></div>
+                <p style="color: var(--limestone-dim); max-width: 60ch;">
+                  فيلا زاوية بمدخلين ومسبح خاص، تشطيب حديث بالكامل، مطبخ مجهز، وغرفة سائق مستقلة.
+                  قريبة من المدارس والجمعية، ومواقف تتسع لثلاث سيارات.
+                </p>
+              </div>
+
+              <div style="margin-top: var(--s-7);">
+                <div class="rule-label"><b>الموقع على الخريطة</b><em>Jabriya · Block 7</em></div>
+                <div class="plate" style="height: 190px; position: relative;">
+                  <div style="position: absolute; inset: 0; background:
+                    repeating-linear-gradient(90deg, transparent 0 46px, var(--hairline) 46px 47px),
+                    repeating-linear-gradient(0deg, transparent 0 46px, var(--hairline) 46px 47px); opacity: 0.5;"></div>
+                  <span style="position: absolute; top: 44%; inset-inline-end: 46%; width: 12px; height: 12px; background: var(--gulf-bright); z-index: 3;"></span>
+                </div>
+              </div>
+            </div>
+
+            <aside>
+              <div style="border: 1px solid var(--hairline); padding: var(--s-5); background: var(--basalt-raised); position: sticky; top: 0;">
+                <span style="font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.12em; color: var(--sand);">السعر</span>
+                <div style="font-family: var(--f-mono); font-size: var(--t-display-m); color: var(--gulf-bright); font-variant-numeric: tabular-nums; line-height: 1.1; margin-top: var(--s-2);">1,450</div>
+                <div style="font-size: var(--t-small); color: var(--sand);">د.ك / شهرياً</div>
+
+                <div style="display: grid; gap: var(--s-3); margin-top: var(--s-5);">
+                  <button class="btn btn-solid" type="button">واتساب</button>
+                  <button class="btn" type="button">اتصل — 22405060</button>
+                  <button class="btn btn-quiet" type="button">أرسل استفسارك</button>
+                </div>
+
+                <div style="border-top: 1px solid var(--hairline); margin-top: var(--s-5); padding-top: var(--s-4); font-size: var(--t-small); color: var(--limestone-dim); line-height: 1.9;">
+                  <div style="font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.12em; color: var(--sand);">أوقات العمل</div>
+                  <div>السبت – الخميس · ٩ص – ٩م</div>
+                  <div style="color: var(--state-closed);">الجمعة · مغلق</div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rationale">
+      <h4>What changed and why</h4>
+      <p>
+        The old detail page stacked a single image, then a description, then contact buttons far down the page, so
+        the two things a buyer decides on — what it looks like and what it costs — were never on screen together.
+        The gallery now opens as an asymmetric plate group at full width, and price plus the three contact routes
+        sit in a sticky rail that stays with the visitor through the whole scroll. Specs are set as a dimension row
+        rather than icon chips, which is what stopped the labels truncating to "2 bath…" on narrow cards. For the
+        client, WhatsApp is one tap from any scroll position, which is where their leads actually come from.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SMART SEARCH ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">08 · Screen</span>
+      <div><h2 class="doc-h2">Smart search — البحث الذكي</h2></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">kwt25.com/smart-search</span></div>
+      <div class="mock-stage">
+        <div class="ui">
+          <nav class="ui-nav">
+            <span class="ui-brand">KWT<b>25</b></span>
+            <span class="ui-links"><span>الرئيسية</span><span>العقارات</span><span class="on">البحث الذكي</span><span>الخريطة</span></span>
+          </nav>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 460px;">
+            <div style="padding: var(--s-8) var(--s-6); display: flex; flex-direction: column; justify-content: center; border-inline-start: 1px solid var(--hairline);">
+              <div style="display: flex; gap: var(--s-2); align-items: center; font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand); letter-spacing: 0.14em;">
+                <span style="color: var(--gulf);">٣</span><span>/</span><span>٥</span>
+                <span style="flex: 1; height: 1px; background: var(--hairline); margin-inline-start: var(--s-3); position: relative;">
+                  <span style="position: absolute; inset-inline-start: 0; top: 0; height: 1px; width: 60%; background: var(--gulf);"></span>
+                </span>
+              </div>
+
+              <h2 class="ui-h" style="font-size: var(--t-display-m); margin-top: var(--s-5);">في أي منطقة تفضّل؟</h2>
+              <p style="color: var(--limestone-dim); margin-top: var(--s-3);">اختر منطقة واحدة أو أكثر — أو تجاوز السؤال.</p>
+
+              <div class="chips" style="margin-top: var(--s-6); gap: var(--s-3);">
+                <span class="chip" style="border-color: var(--gulf); color: var(--gulf-bright); background: var(--gulf-sunk);">السالمية</span>
+                <span class="chip">حولي</span>
+                <span class="chip">الجابرية</span>
+                <span class="chip" style="border-color: var(--gulf); color: var(--gulf-bright); background: var(--gulf-sunk);">مشرف</span>
+                <span class="chip">بيان</span>
+                <span class="chip">قرطبة</span>
+                <span class="chip">الفنطاس</span>
+                <span class="chip">صباح السالم</span>
+              </div>
+
+              <div style="display: flex; gap: var(--s-3); margin-top: var(--s-7);">
+                <button class="btn btn-solid" type="button">التالي</button>
+                <button class="btn btn-quiet" type="button">لا يهم</button>
+              </div>
+            </div>
+
+            <div class="plate" style="position: relative;">
+              <div class="mass lit" style="inset-inline-end: 12%; width: 34%; height: 70%;"></div>
+              <div class="mass" style="inset-inline-start: 14%; width: 30%; height: 54%;"></div>
+              <div style="position: absolute; inset-inline-end: var(--s-6); top: var(--s-6); font-family: var(--f-mono); font-size: var(--t-label); color: var(--limestone-dim); letter-spacing: 0.12em; z-index: 3; text-align: end; line-height: 2;">
+                <div>الغرض · للإيجار ✓</div>
+                <div>النوع · شقة ✓</div>
+                <div style="color: var(--gulf-bright);">المنطقة · …</div>
+                <div style="opacity: 0.4;">الميزانية</div>
+                <div style="opacity: 0.4;">الغرف</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rationale">
+      <h4>What changed and why</h4>
+      <p>
+        Smart search was previously a form on a side page — five fields stacked in a box, indistinguishable from
+        the ordinary filters and reached from a menu item most visitors never opened. It is now a full-bleed
+        one-question-per-screen flow with the answers accumulating as a visible list on the photographic half, so
+        progress is legible and the feature feels like the office thinking rather than a form submitting. When it
+        widens a search it says so in plain Arabic naming the relaxed filter, instead of printing a raw
+        <span style="font-family: var(--f-mono); color: var(--gulf);">budget_max</span> key at the visitor. This is
+        the screen to demo in a pitch — it is the only thing here a competitor's template cannot copy in a week.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REQUEST + MAP ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">09 · Screens</span>
+      <div><h2 class="doc-h2">Request a property · Map view</h2></div>
+    </div>
+
+    <div class="grid-2" style="gap: var(--s-6);">
+      <div class="mock" style="margin-top: 0;">
+        <div class="mock-bar"><span class="dot"></span><span class="mock-url">/request</span></div>
+        <div class="mock-stage">
+          <div class="ui" style="min-width: 0; padding: var(--s-6);">
+            <div class="rule-label"><b>اطلب عقارك</b><em>Request</em></div>
+            <h3 class="ui-h" style="font-size: var(--t-title); margin-bottom: var(--s-5);">قل لنا ما تبحث عنه، ونتواصل معك عند توفره.</h3>
+            <div style="display: grid; gap: 0; border: 1px solid var(--hairline);">
+              <div class="field" style="border-inline-start: 0; border-bottom: 1px solid var(--hairline);"><span class="field-k">الاسم</span><span class="field-v" style="color: var(--sand);">اكتب اسمك</span></div>
+              <div class="field active" style="border-inline-start: 0; border-bottom: 1px solid var(--hairline);"><span class="field-k">رقم الهاتف</span><span class="field-v">+965 9</span></div>
+              <div class="field" style="border-inline-start: 0; border-bottom: 1px solid var(--hairline);"><span class="field-k">نوع العقار</span><span class="field-v">فيلا <i>▾</i></span></div>
+              <div class="field" style="border-inline-start: 0; border-bottom: 1px solid var(--hairline);"><span class="field-k">المنطقة</span><span class="field-v">مشرف <i>▾</i></span></div>
+              <div class="field" style="border-inline-start: 0;"><span class="field-k">أقصى ميزانية (د.ك)</span><span class="field-v" style="color: var(--sand);">مثال: 1200</span></div>
+            </div>
+            <button class="btn btn-solid" type="button" style="margin-top: var(--s-5); width: 100%;">أرسل الطلب</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mock" style="margin-top: 0;">
+        <div class="mock-bar"><span class="dot"></span><span class="mock-url">/map</span></div>
+        <div class="mock-stage">
+          <div class="ui" style="min-width: 0;">
+            <div style="padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--hairline); background: var(--basalt-raised); display: flex; gap: var(--s-3); align-items: center;">
+              <span class="seg"><span>قائمة</span><span class="on">خريطة</span></span>
+              <span class="chip" style="border-color: var(--gulf); color: var(--gulf-bright);">السالمية ×</span>
+            </div>
+            <div class="plate" style="height: 300px; position: relative;">
+              <div style="position: absolute; inset: 0; background:
+                repeating-linear-gradient(90deg, transparent 0 40px, var(--hairline) 40px 41px),
+                repeating-linear-gradient(0deg, transparent 0 40px, var(--hairline) 40px 41px); opacity: 0.45;"></div>
+              <span style="position: absolute; top: 30%; inset-inline-end: 28%; z-index: 3; font-family: var(--f-mono); font-size: var(--t-label); background: var(--gulf); color: var(--basalt); padding: 3px var(--s-2);">550</span>
+              <span style="position: absolute; top: 52%; inset-inline-end: 52%; z-index: 3; font-family: var(--f-mono); font-size: var(--t-label); background: var(--gulf); color: var(--basalt); padding: 3px var(--s-2);">780</span>
+              <span style="position: absolute; top: 66%; inset-inline-end: 20%; z-index: 3; font-family: var(--f-mono); font-size: var(--t-label); background: var(--basalt-raised); color: var(--limestone); border: 1px solid var(--hairline); padding: 3px var(--s-2);">690</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rationale">
+      <h4>What changed and why</h4>
+      <p>
+        The request form was a generic stack of rounded inputs; it now uses the same bordered field grid as the
+        search bar, so the two most important interactions on the site share one visual grammar and the form reads
+        as three seconds of work rather than a chore. On the map, pins carry the price rather than a generic
+        marker — a visitor scanning Salmiya sees the market, not a scatter of identical dots, which is the single
+        most persuasive view a brokerage can show a seller deciding where to list.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MOBILE ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">10 · Mobile</span>
+      <div>
+        <h2 class="doc-h2">Mobile</h2>
+        <p class="lede">
+          Most Kuwaiti property traffic is a phone on WhatsApp. The grid collapses to one column, the dimension row
+          stays horizontal, and the search bar becomes a sticky bottom sheet within thumb reach.
+        </p>
+      </div>
+    </div>
+
+    <div class="phones">
+      <div class="phone">
+        <div class="phone-cap">Home</div>
+        <div class="ui ui-mobile">
+          <div style="display: flex; align-items: center; padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--hairline);">
+            <span class="ui-brand" style="font-size: var(--t-small);">KWT<b>25</b></span>
+            <span style="margin-inline-start: auto; font-family: var(--f-mono); font-size: var(--t-label); color: var(--sand);">EN ☰</span>
+          </div>
+          <div class="plate" style="height: 150px; position: relative;">
+            <div class="mass lit" style="inset-inline-end: 12%; width: 34%; height: 72%;"></div>
+            <div class="mass" style="inset-inline-start: 10%; width: 28%; height: 52%;"></div>
+          </div>
+          <div style="padding: var(--s-5) var(--s-4);">
+            <h1 class="ui-h" style="font-size: 1.85rem;">عقارك المناسب أقرب إليك</h1>
+            <div class="seg" style="margin-top: var(--s-4); width: 100%;">
+              <span class="on" style="flex: 1; text-align: center;">الكل</span>
+              <span style="flex: 1; text-align: center;">للإيجار</span>
+              <span style="flex: 1; text-align: center;">للبيع</span>
+            </div>
+            <div style="border: 1px solid var(--hairline); margin-top: var(--s-3);">
+              <div class="field" style="border-inline-start: 0; border-bottom: 1px solid var(--hairline);"><span class="field-k">المنطقة</span><span class="field-v">السالمية <i>▾</i></span></div>
+              <div class="field" style="border-inline-start: 0;"><span class="field-k">أقصى سعر</span><span class="field-v">أي ميزانية <i>▾</i></span></div>
+            </div>
+            <button class="btn btn-solid" type="button" style="width: 100%; margin-top: var(--s-3);">ابحث</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-cap">Results</div>
+        <div class="ui ui-mobile">
+          <div style="padding: var(--s-3) var(--s-4); background: var(--basalt-raised); border-bottom: 1px solid var(--hairline); display: flex; gap: var(--s-2); flex-wrap: wrap; box-shadow: var(--e-sticky);">
+            <span class="chip" style="border-color: var(--gulf); color: var(--gulf-bright);">السالمية ×</span>
+            <span class="chip">شقة ×</span>
+          </div>
+          <div style="padding: var(--s-4);">
+            <div class="rule-label" style="margin-bottom: var(--s-4);"><b style="font-size: var(--t-body);">٢٤ عقاراً</b><em>خريطة</em></div>
+            <div class="card">
+              <div class="card-plate" style="aspect-ratio: 3 / 2;">
+                <div class="plate"><div class="mass lit" style="inset-inline-end: 10%; width: 34%; height: 72%;"></div><div class="mass" style="inset-inline-start: 12%; width: 26%; height: 50%;"></div></div>
+                <span class="card-ref">KW-2026-0121</span>
+                <span class="card-flags"><span class="badge badge-open">متاح</span></span>
+              </div>
+              <div class="card-rule"></div>
+              <h4 class="card-title" style="font-size: var(--t-body-l);">شقة بإطلالة بحرية</h4>
+              <p class="card-area">السالمية · قطعة ٢</p>
+              <div class="dims"><div class="dim"><span class="dim-v">2</span><span class="dim-k">غرف</span></div><div class="dim"><span class="dim-v">2</span><span class="dim-k">حمامات</span></div><div class="dim"><span class="dim-v">95</span><span class="dim-k">م²</span></div></div>
+              <span class="card-price">550 <small>د.ك</small></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-cap">Property</div>
+        <div class="ui ui-mobile" style="position: relative;">
+          <div class="plate" style="height: 180px; position: relative;">
+            <div class="mass lit" style="inset-inline-end: 10%; width: 32%; height: 74%;"></div>
+            <div class="mass" style="inset-inline-start: 10%; width: 30%; height: 56%;"></div>
+            <span class="card-ref" style="top: var(--s-3); inset-inline-start: var(--s-3);">KW-2026-0148</span>
+          </div>
+          <div style="padding: var(--s-4);">
+            <div style="display: flex; gap: var(--s-2);"><span class="badge badge-star">مميز</span><span class="badge badge-open">متاح</span></div>
+            <h1 class="ui-h" style="font-size: 1.5rem; margin-top: var(--s-3);">فيلا زاوية بمسبح</h1>
+            <p class="card-area">الجابرية · قطعة ٧</p>
+            <div class="dims"><div class="dim"><span class="dim-v">4</span><span class="dim-k">غرف</span></div><div class="dim"><span class="dim-v">3</span><span class="dim-k">حمامات</span></div><div class="dim"><span class="dim-v">320</span><span class="dim-k">م²</span></div></div>
+          </div>
+          <div style="position: sticky; bottom: 0; border-top: 1px solid var(--hairline); background: var(--basalt-raised); padding: var(--s-3) var(--s-4); display: flex; align-items: center; gap: var(--s-3);">
+            <div>
+              <div style="font-family: var(--f-mono); font-size: var(--t-body-l); color: var(--gulf-bright);">1,450</div>
+              <div style="font-size: var(--t-label); color: var(--sand);">د.ك / شهرياً</div>
+            </div>
+            <button class="btn btn-solid" type="button" style="margin-inline-start: auto;">واتساب</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rationale">
+      <h4>What changed and why</h4>
+      <p>
+        On mobile the old build put the floating WhatsApp, call, and share buttons over the content as a stack of
+        circles that covered listings while scrolling. Here the property page ends in a sticky footer that pairs
+        the price with a single WhatsApp action — the two pieces of information a phone visitor acts on — and the
+        floating circles are gone. Nothing overlaps the photography, which is the asset the seller is paying to
+        have presented well.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BUILD NOTES ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-index">11 · Build</span>
+      <div><h2 class="doc-h2">What this costs to implement</h2></div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="rule-label"><b>Reusable as-is</b><em>No change</em></div>
+        <p style="color: var(--limestone-dim);">
+          Every API route, the cursor pagination, the bilingual translation tables, RBAC, the admin panel's data
+          layer, and the smart-search relaxation logic are untouched. This is a presentation-layer rebuild — the
+          Arabic/English routing and RTL infrastructure already exist and are the expensive part.
+        </p>
+      </div>
+      <div>
+        <div class="rule-label"><b>Actually new</b><em>Scope</em></div>
+        <p style="color: var(--limestone-dim);">
+          A token file replacing the current cream/navy/gold theme, two licensed Arabic faces, and a rewrite of
+          roughly a dozen components — card, badge, field, dropdown, nav, footer, dimension row, search bar,
+          filter bar, gallery, map pin, sticky CTA. The page templates re-compose from those.
+        </p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><strong>Content preserved verbatim.</strong> +965 22405060 · +965 99887766 · info@kwt25.com ·
+      kwt25_realestate · السبت–الخميس ٩ص–٩م، الجمعة مغلق · فيلا شقة دور أرض مكتب شاليه تجاري · all Kuwait areas ·
+      prices in د.ك, monthly for rent · reference format KW-2026-xxxx.</p>
+      <p><strong>The one thing to decide before build.</strong> Dark-first is the recommendation and it is what
+      makes this read as an architecture studio rather than a portal. A light theme is specified and included —
+      toggle your system appearance to see it — but if the office wants light as the default, say so now: the
+      photography grade and the accent's contrast ratio are tuned per ground, and switching the default later is
+      a re-tune, not a flag.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span style="font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.12em; text-transform: uppercase;">Kwt25 — visual identity proposal · prototype renders with system font stacks</span>
+  </div>
+</footer>
