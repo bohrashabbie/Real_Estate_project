@@ -116,7 +116,7 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
             type="button"
             onClick={onClose}
             aria-label={t("close")}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-navy shadow-card ring-1 ring-cream-200 hover:bg-cream-100"
+            className="flex h-11 w-11 items-center justify-center bg-cream-50 text-navy shadow-card ring-1 ring-cream-200 hover:bg-cream-100"
           >
             <CloseIcon width={20} height={20} />
           </button>
@@ -131,8 +131,8 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
               className={cn(
                 "group flex items-center gap-4 rounded-2xl p-4 shadow-card ring-1 transition-transform hover:-translate-y-0.5",
                 item.dark
-                  ? "bg-navy text-white ring-navy-700"
-                  : "bg-white text-navy ring-cream-200",
+                  ? "bg-navy text-cream ring-navy-700"
+                  : "bg-cream-50 text-navy ring-cream-200",
               )}
             >
               <span
@@ -145,7 +145,7 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
               </span>
               <span className="flex-1">
                 <span className="block text-lg font-bold">{item.title}</span>
-                <span className={cn("block text-sm", item.dark ? "text-white/70" : "text-muted")}>
+                <span className={cn("block text-sm", item.dark ? "text-cream/70" : "text-muted")}>
                   {item.subtitle}
                 </span>
               </span>
@@ -173,7 +173,7 @@ export function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => v
               locale: locale === "ar" ? "en" : "ar",
             });
           }}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 hover:bg-cream-100"
+          className="mt-5 flex w-full items-center justify-center gap-2 bg-cream-50 px-5 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 hover:bg-cream-100"
         >
           <GlobeIcon width={18} height={18} className="text-gold" />
           {locale === "ar" ? "English" : "العربية"}

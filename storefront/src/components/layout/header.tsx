@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { MenuIcon, PhoneIcon } from "@/components/ui/icons";
 import { MenuOverlay } from "@/components/layout/menu-overlay";
 import { LocaleToggle } from "@/components/layout/locale-toggle";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 const NAV_ITEMS = [
   { href: "/", key: "home" },
@@ -33,26 +34,27 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-cream-200/70 bg-cream/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-(--container-site) items-center gap-3 px-4 py-3 sm:px-6">
           {/* Brand mark + wordmark */}
           <Link href="/" className="flex shrink-0 items-center gap-2.5 leading-tight">
-            {/* The mark is gold-on-black artwork, so it keeps its own dark
-                tile rather than sitting bare on the cream bar. */}
+            {/* The mark is artwork on black, so it keeps its own tile rather
+                than sitting bare on the plaster bar — square, like everything
+                else in the system. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo-mark.png"
               alt=""
               width={44}
               height={44}
-              className="h-10 w-10 rounded-xl object-cover ring-1 ring-cream-300 sm:h-11 sm:w-11"
+              className="h-10 w-10 border border-cream-300 object-cover sm:h-11 sm:w-11"
             />
             <span>
-              <span className="block font-display text-base font-extrabold text-navy sm:text-xl">
+              <span className="block font-display text-base font-extrabold tracking-wide text-navy sm:text-xl">
                 {siteName}
               </span>
               {siteNameAlt ? (
-                <span className="block text-[11px] font-semibold tracking-wide text-gold-dark">
+                <span className="block text-[11px] font-semibold tracking-wider text-gold">
                   {siteNameAlt}
                 </span>
               ) : null}
@@ -69,10 +71,12 @@ export function Header({ settings }: { settings: SiteSettings }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-full px-4 py-2 text-sm font-bold transition-colors",
+                    // Active state is a rule under the label, not a filled
+                    // pill — the accent marks position, it doesn't decorate.
+                    "border-b px-3 py-2 text-sm font-semibold transition-colors",
                     active
-                      ? "bg-navy text-white shadow-card"
-                      : "text-navy/75 hover:bg-white hover:text-navy",
+                      ? "border-gold text-navy"
+                      : "border-transparent text-muted hover:text-navy",
                   )}
                 >
                   {t(`menu.${item.key}`)}
@@ -82,21 +86,24 @@ export function Header({ settings }: { settings: SiteSettings }) {
           </nav>
 
           <div className="ms-auto flex items-center gap-2 lg:ms-0 sm:gap-2.5">
+            {/* Appearance and language are the same kind of choice, so they sit
+                together as a matched pair of segmented controls. */}
+            <ThemeToggle className="hidden sm:inline-flex" />
             <LocaleToggle />
 
             {settings.phone ? (
               <a
                 href={telLink(settings.phone)}
                 aria-label={t("nav.call")}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-navy hover:text-white"
+                className="flex h-10 w-10 shrink-0 items-center justify-center border border-cream-200 bg-cream-50 text-navy transition-colors hover:bg-navy hover:text-cream"
               >
-                <PhoneIcon width={19} height={19} />
+                <PhoneIcon width={18} height={18} />
               </a>
             ) : null}
 
             <Link
               href="/request"
-              className="bg-gold-gradient hidden shrink-0 items-center rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:inline-flex"
+              className="hidden shrink-0 items-center border border-gold px-5 py-2.5 text-sm font-bold text-gold transition-colors hover:bg-gold hover:text-cream sm:inline-flex"
             >
               {t("nav.listYourProperty")}
             </Link>
@@ -105,21 +112,25 @@ export function Header({ settings }: { settings: SiteSettings }) {
               type="button"
               onClick={() => setMenuOpen(true)}
               aria-label={t("nav.openMenu")}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-cream-100 lg:hidden"
+              className="flex h-10 w-10 shrink-0 items-center justify-center border border-cream-200 bg-cream-50 text-navy transition-colors hover:bg-cream-100 lg:hidden"
             >
-              <MenuIcon width={22} height={22} />
+              <MenuIcon width={20} height={20} />
             </button>
           </div>
         </div>
 
-        {/* Mobile gets the CTA on its own row so it never collides with the wordmark. */}
-        <div className="border-t border-cream-200/70 px-4 pb-2.5 pt-2 sm:hidden">
+        {/* Mobile gets the CTA on its own row so it never collides with the
+            wordmark, and carries the appearance switch that the desktop bar
+            shows inline — it belongs in reach on the device that has a system
+            dark mode people actually use. */}
+        <div className="flex items-center gap-3 border-t border-cream-200 px-4 pb-2.5 pt-2 sm:hidden">
           <Link
             href="/request"
-            className="bg-gold-gradient flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-gold transition-all active:scale-[0.98]"
+            className="flex flex-1 items-center justify-center border border-gold px-5 py-2.5 text-sm font-bold text-gold"
           >
             {t("nav.listYourProperty")}
           </Link>
+          <ThemeToggle />
         </div>
       </header>
 

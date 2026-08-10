@@ -154,7 +154,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
             {property.amenities.map((amenity) => (
               <li
                 key={amenity.key}
-                className="flex items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4 shadow-card ring-1 ring-cream-200"
+                className="flex items-center justify-between gap-3 rounded-2xl bg-cream-50 px-5 py-4 shadow-card ring-1 ring-cream-200"
               >
                 <span className="font-semibold text-navy">{amenity.name}</span>
                 <CheckIcon width={20} height={20} strokeWidth={2.4} className="shrink-0 text-gold" />
@@ -166,14 +166,14 @@ export default async function PropertyDetailPage({ params }: { params: Params })
 
       {/* Map — only when the office pinned coordinates */}
       {hasCoords ? (
-        <section className="mt-10 rounded-3xl bg-white p-4 shadow-card ring-1 ring-cream-200 sm:p-5">
+        <section className="mt-10 rounded-3xl bg-cream-50 p-4 shadow-card ring-1 ring-cream-200 sm:p-5">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-xl font-bold text-navy">{t("mapTitle")}</h2>
             <a
               href={`https://www.google.com/maps?q=${latitude},${longitude}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-cream px-4 py-2 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
+              className="inline-flex items-center gap-2 bg-cream px-4 py-2 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
             >
               <ExternalIcon width={16} height={16} className="text-gold" />
               {t("openInMaps")}
@@ -184,7 +184,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
       ) : null}
 
       {/* Contact card */}
-      <section className="mt-10 rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
+      <section className="mt-10 rounded-3xl bg-cream-50 p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
         <p className="text-center text-base font-bold text-gold-dark">{t("contactTitle")}</p>
         <p className="mt-2 text-center text-xl font-bold text-navy">{property.title}</p>
 
@@ -192,7 +192,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
           {settings.phone ? (
             <a
               href={telLink(settings.phone)}
-              className="flex items-center justify-center gap-2.5 rounded-2xl bg-navy px-6 py-4 text-base font-bold text-white shadow-card transition-colors hover:bg-navy-700"
+              className="flex items-center justify-center gap-2.5 rounded-2xl bg-navy px-6 py-4 text-base font-bold text-cream shadow-card transition-colors hover:bg-navy-700"
             >
               {t("directContact")}
               <PhoneIcon width={20} height={20} />

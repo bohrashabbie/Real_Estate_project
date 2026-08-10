@@ -21,7 +21,7 @@ export function WaPropertyButton({ number, title }: { number: string; title: str
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center gap-2.5 rounded-2xl bg-whatsapp px-6 py-4 text-base font-bold text-white shadow-card transition-colors hover:bg-whatsapp-dark"
+      className="flex items-center justify-center gap-2.5 rounded-2xl bg-whatsapp px-6 py-4 text-base font-bold text-cream shadow-card transition-colors hover:bg-whatsapp-dark"
     >
       {t("whatsapp")}
       <WhatsappIcon width={22} height={22} />

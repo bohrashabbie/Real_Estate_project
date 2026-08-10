@@ -52,31 +52,33 @@ export function QuickSearch({ areas, types }: { areas: Area[]; types: PropertyTy
   ];
 
   return (
-    <div className="rounded-3xl bg-white/95 p-4 shadow-float ring-1 ring-cream-200 backdrop-blur sm:p-6">
+    <div className="border border-cream-200 bg-cream-50 p-4 sm:p-6">
       {/* Purpose segmented tabs */}
       <div className="flex items-center justify-between gap-3">
-        <div className="inline-flex rounded-full bg-cream p-1 ring-1 ring-cream-200">
+        <div className="inline-flex border border-cream-200">
           {tabs.map((tab) => (
             <button
               key={tab.value}
               type="button"
               onClick={() => setPurpose(tab.value)}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-bold transition-all sm:px-6",
-                purpose === tab.value
-                  ? "bg-navy text-white shadow-card"
-                  : "text-muted hover:text-navy",
+                "border-s border-cream-200 px-4 py-2 text-sm font-bold transition-colors first:border-s-0 sm:px-6",
+                purpose === tab.value ? "bg-gold text-cream" : "text-muted hover:text-navy",
               )}
             >
               {tab.label}
             </button>
           ))}
         </div>
-        <p className="hidden text-sm font-bold text-gold-dark sm:block">{t("home.quickSearch")}</p>
+        <p className="hidden text-[11px] font-bold uppercase tracking-widest text-muted sm:block">
+          {t("home.quickSearch")}
+        </p>
       </div>
 
-      {/* Field row */}
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+      {/* Field row — one bordered grid rather than five detached inputs, so the
+          search reads as a single instrument. The same grammar is reused by the
+          request form, which is the only other place a visitor types. */}
+      <div className="mt-5 grid border border-cream-200 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
         <Field icon={<PinIcon width={18} height={18} />} label={t("home.area")}>
           <FieldSelect value={area} onChange={setArea} placeholder={t("home.allAreas")}
             options={areas.map((a) => ({ value: a.slug, label: a.name }))} />
@@ -107,7 +109,7 @@ export function QuickSearch({ areas, types }: { areas: Area[]; types: PropertyTy
         <button
           type="button"
           onClick={submit}
-          className="bg-gold-gradient flex items-center justify-center gap-2.5 rounded-2xl px-7 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] lg:self-stretch"
+          className="flex items-center justify-center gap-2.5 bg-gold px-7 py-4 text-base font-bold text-cream transition-colors hover:bg-gold-dark lg:self-stretch"
         >
           <SearchIcon width={19} height={19} />
           {t("home.search")}
@@ -116,16 +118,16 @@ export function QuickSearch({ areas, types }: { areas: Area[]; types: PropertyTy
 
       {/* Quick chips */}
       <div className="mt-4 flex flex-wrap items-center gap-2.5">
-        <span className="text-xs font-bold uppercase tracking-wider text-muted/80">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-muted">
           {t("home.popular")}
         </span>
         {chips.map((chip) => (
           <Link
             key={chip.href}
             href={chip.href}
-            className="inline-flex items-center gap-1.5 rounded-full border border-cream-200 bg-cream/70 px-4 py-1.5 text-sm font-semibold text-navy transition-colors hover:border-gold/60 hover:bg-gold-100"
+            className="inline-flex items-center gap-1.5 border border-cream-200 px-4 py-1.5 text-sm font-semibold text-navy transition-colors hover:border-gold hover:text-gold"
           >
-            <span className="text-gold-dark">{chip.icon}</span>
+            <span className="text-gold">{chip.icon}</span>
             {chip.label}
           </Link>
         ))}
@@ -144,12 +146,12 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block rounded-2xl border border-cream-200 bg-cream-50 px-4 py-2.5 transition-colors focus-within:border-gold focus-within:bg-white">
-      <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted">
+    <label className="block border-s border-cream-200 px-4 py-3 transition-colors first:border-s-0 focus-within:bg-gold-100 max-sm:border-s-0 max-sm:border-b">
+      <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted">
         <span className="text-gold">{icon}</span>
         {label}
       </span>
-      <span className="mt-0.5 block">{children}</span>
+      <span className="mt-1 block">{children}</span>
     </label>
   );
 }

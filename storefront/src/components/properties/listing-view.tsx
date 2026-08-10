@@ -293,26 +293,27 @@ export function ListingView({
 
   return (
     <div>
-      {/* Page banner */}
-      <section className="relative overflow-hidden bg-navy-950 text-white">
-        <div className="hero-grid absolute inset-0" aria-hidden />
-        <div className="gold-glow absolute -top-32 start-1/2 h-72 w-[36rem] -translate-x-1/2 rtl:translate-x-1/2" aria-hidden />
-        <header className="relative mx-auto max-w-(--container-site) px-4 pb-20 pt-14 text-center sm:px-6 sm:pb-24 sm:pt-16">
-          <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-gold-light">
+      {/* Page banner. The old build opened with a tall dark slab that pushed
+          the first listing well below the fold; this is a rule and a headline,
+          so results start almost immediately. */}
+      <section className="border-b border-cream-200">
+        <header className="mx-auto max-w-(--container-site) px-4 pb-10 pt-12 sm:px-6">
+          <p className="inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.16em] text-gold">
             <span className="h-px w-8 bg-gold" aria-hidden />
             {t("listing.eyebrow")}
-            <span className="h-px w-8 bg-gold" aria-hidden />
           </p>
-          <h1 className="mt-3 font-display text-3xl font-extrabold sm:text-5xl">
+          <h1 className="mt-4 font-display text-3xl font-extrabold text-navy sm:text-5xl">
             {t("listing.title")}
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-white/65">{t("listing.subtitle")}</p>
+          <p className="mt-3 max-w-xl text-muted">{t("listing.subtitle")}</p>
         </header>
       </section>
 
       <div className="mx-auto max-w-(--container-site) px-4 pb-14 sm:px-6">
-      {/* Filter panel */}
-      <section className="relative z-10 -mt-8 rounded-3xl bg-white shadow-float ring-1 ring-cream-200">
+      {/* Filter panel. Sticky rather than a block of page: the applied filters
+          below read as removable chips, so the state of the search stays
+          visible without the panel having to be reopened on every visit. */}
+      <section className="sticky top-[4.5rem] z-30 mt-6 border border-cream-200 bg-cream-50 shadow-float">
         <button
           type="button"
           onClick={() => setPanelOpen((open) => !open)}
@@ -443,7 +444,7 @@ export function ListingView({
                   onChange={(event) =>
                     setFilters((f) => ({ ...f, priceMin: event.target.value }))
                   }
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
+                  className="rounded-2xl border border-cream-200 bg-cream-50 px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
                 />
                 <input
                   type="number"
@@ -454,7 +455,7 @@ export function ListingView({
                   onChange={(event) =>
                     setFilters((f) => ({ ...f, priceMax: event.target.value }))
                   }
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
+                  className="rounded-2xl border border-cream-200 bg-cream-50 px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
                 />
               </div>
             </fieldset>
@@ -535,7 +536,7 @@ export function ListingView({
             <button
               type="button"
               onClick={() => setFilters(EMPTY_FILTERS)}
-              className="flex items-center justify-center gap-2 rounded-2xl border border-cream-200 bg-white px-6 py-3.5 text-base font-bold text-navy shadow-sm transition-colors hover:bg-cream-100"
+              className="flex items-center justify-center gap-2 rounded-2xl border border-cream-200 bg-cream-50 px-6 py-3.5 text-base font-bold text-navy shadow-sm transition-colors hover:bg-cream-100"
             >
               {t("filters.clear")}
               <ResetIcon width={18} height={18} className="text-gold" />
@@ -546,7 +547,7 @@ export function ListingView({
 
       {/* Selected filters */}
       {chips.length > 0 ? (
-        <section className="mt-5 rounded-3xl bg-white p-5 shadow-card ring-1 ring-cream-200">
+        <section className="mt-5 rounded-3xl bg-cream-50 p-5 shadow-card ring-1 ring-cream-200">
           <p className="mb-3 text-base font-bold text-navy">{t("filters.selected")}</p>
           <div className="flex flex-wrap gap-2.5">
             {chips.map((chip) => (
@@ -554,7 +555,7 @@ export function ListingView({
                 key={chip.key}
                 type="button"
                 onClick={chip.onRemove}
-                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-cream px-4 py-2 text-sm font-semibold text-navy transition-colors hover:bg-gold-100"
+                className="inline-flex items-center gap-2 border border-gold/40 bg-cream px-4 py-2 text-sm font-semibold text-navy transition-colors hover:bg-gold-100"
               >
                 <CloseIcon width={14} height={14} className="text-gold-dark" />
                 {chip.label}
@@ -564,7 +565,7 @@ export function ListingView({
           <button
             type="button"
             onClick={() => setFilters(EMPTY_FILTERS)}
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
+            className="mt-4 inline-flex items-center gap-2 bg-cream px-5 py-2.5 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
           >
             {t("filters.clearAll")}
             <ResetIcon width={16} height={16} className="text-gold" />
@@ -593,8 +594,8 @@ export function ListingView({
             className={cn(
               "rounded-2xl px-4 py-3 text-sm font-bold shadow-sm ring-1 transition-colors sm:text-base",
               activePurposeTab === tab.key
-                ? "bg-navy text-white ring-navy"
-                : "bg-white text-navy ring-cream-200 hover:bg-cream-100",
+                ? "bg-navy text-cream ring-navy"
+                : "bg-cream-50 text-navy ring-cream-200 hover:bg-cream-100",
             )}
           >
             {tab.label}
@@ -604,13 +605,13 @@ export function ListingView({
 
       {/* View toggle + count */}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-full bg-white p-1 shadow-card ring-1 ring-cream-200">
+        <div className="inline-flex bg-cream-50 p-1 shadow-card ring-1 ring-cream-200">
           <button
             type="button"
             onClick={() => setView("grid")}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-colors",
-              view === "grid" ? "bg-navy text-white shadow-card" : "text-muted hover:text-navy",
+              "inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold transition-colors",
+              view === "grid" ? "bg-navy text-cream shadow-card" : "text-muted hover:text-navy",
             )}
           >
             <HomeIcon width={16} height={16} />
@@ -620,8 +621,8 @@ export function ListingView({
             type="button"
             onClick={() => setView("map")}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-colors",
-              view === "map" ? "bg-navy text-white shadow-card" : "text-muted hover:text-navy",
+              "inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold transition-colors",
+              view === "map" ? "bg-navy text-cream shadow-card" : "text-muted hover:text-navy",
             )}
           >
             <MapIcon width={16} height={16} />
@@ -642,7 +643,7 @@ export function ListingView({
 
       {/* Results */}
       {view === "map" ? (
-        <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-cream-200">
+        <div className="mt-8 overflow-hidden rounded-3xl bg-cream-50 shadow-card ring-1 ring-cream-200">
           <MapExplorer locale={locale} />
         </div>
       ) : isLoading ? (
@@ -650,18 +651,18 @@ export function ListingView({
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className="h-96 animate-pulse rounded-2xl bg-white shadow-card ring-1 ring-cream-200"
+              className="h-96 animate-pulse rounded-2xl bg-cream-50 shadow-card ring-1 ring-cream-200"
             />
           ))}
         </div>
       ) : isError ? (
-        <div className="mt-8 rounded-3xl border border-dashed border-cream-300 bg-white/70 p-14 text-center">
+        <div className="mt-8 rounded-3xl border border-dashed border-cream-300 bg-cream-50/70 p-14 text-center">
           <p className="text-lg font-bold text-navy">{t("listing.errorTitle")}</p>
           <p className="mt-2 text-muted">{t("listing.errorBody")}</p>
         </div>
       ) : items.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-dashed border-cream-300 bg-white/70 p-14 text-center">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cream-100 text-gold">
+        <div className="mt-8 rounded-3xl border border-dashed border-cream-300 bg-cream-50/70 p-14 text-center">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center bg-cream-100 text-gold">
             <SearchIcon width={24} height={24} />
           </span>
           <p className="mt-4 text-lg font-bold text-navy">{t("listing.emptyTitle")}</p>
@@ -669,7 +670,7 @@ export function ListingView({
           <button
             type="button"
             onClick={() => setFilters(EMPTY_FILTERS)}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-navy-700"
+            className="mt-6 inline-flex items-center gap-2 bg-navy px-6 py-3 text-sm font-bold text-cream transition-colors hover:bg-navy-700"
           >
             {t("filters.clearAll")}
             <ResetIcon width={16} height={16} />
@@ -688,7 +689,7 @@ export function ListingView({
                 type="button"
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
-                className="inline-flex items-center gap-2 rounded-full bg-navy px-8 py-3.5 text-base font-bold text-white shadow-card transition-colors hover:bg-navy-700 disabled:opacity-60"
+                className="inline-flex items-center gap-2 bg-navy px-8 py-3.5 text-base font-bold text-cream shadow-card transition-colors hover:bg-navy-700 disabled:opacity-60"
               >
                 {isFetchingNextPage ? t("listing.loadingMore") : t("listing.loadMore")}
               </button>
@@ -716,10 +717,10 @@ function ChipButton({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
+        "border px-4 py-2 text-sm font-semibold transition-colors",
         selected
           ? "border-gold bg-gold-100 text-navy"
-          : "border-cream-200 bg-white text-navy hover:border-gold/60",
+          : "border-cream-200 bg-cream-50 text-navy hover:border-gold/60",
       )}
     >
       {label}
@@ -747,7 +748,7 @@ function FilterCheckbox({
       <span
         className={cn(
           "flex h-5.5 w-5.5 items-center justify-center rounded-md border transition-colors",
-          checked ? "border-gold bg-gold text-white" : "border-cream-300 bg-white text-transparent",
+          checked ? "border-gold bg-gold text-cream" : "border-cream-300 bg-cream-50 text-transparent",
         )}
       >
         <CheckIcon width={14} height={14} strokeWidth={3} />

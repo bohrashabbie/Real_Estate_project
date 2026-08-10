@@ -5,20 +5,18 @@ import type { Locale } from "@/i18n/routing";
 import { mediaUrl, type PropertyListItem } from "@/lib/api";
 import { formatPrice, formatSqm } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import {
-  ArrowIcon,
-  BathIcon,
-  BedIcon,
-  BuildingIcon,
-  ExpandIcon,
-  PinIcon,
-  StarIcon,
-} from "@/components/ui/icons";
+import { ArrowIcon, BuildingIcon, PinIcon, StarIcon } from "@/components/ui/icons";
 import { StatusPill } from "@/components/property/status-pill";
 
-/** Premium listing card: photo with soft gradient, gold-gradient distinct★
- *  badge and availability pill, purpose/type eyebrow, display-font title,
- *  area, spec strip, then price + arrow footer. The whole card lifts on hover. */
+/**
+ * Listing card — a photographic plate with the record set beneath it.
+ *
+ * There is no box: no rounded container, no shadow, no lift on hover. A card
+ * that looks like a card is what makes a property site look like a classifieds
+ * portal, so the only things that move here are the plate easing in and a rule
+ * drawing across under it. The reference number sits on the plate as a drawing
+ * annotation, and rooms / baths / m² are a dimension row rather than icon chips.
+ */
 export function PropertyCard({
   property,
   locale,
@@ -31,10 +29,10 @@ export function PropertyCard({
   const sqm = formatSqm(property.area_sqm);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-cream-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-float hover:ring-gold/40">
+    <article className="group flex h-full flex-col">
       <Link
         href={`/properties/${property.slug}`}
-        className="relative block aspect-[16/10] overflow-hidden bg-cream-100"
+        className="relative block aspect-[4/3] overflow-hidden bg-cream-100"
       >
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -42,40 +40,48 @@ export function PropertyCard({
             src={image}
             alt={property.title}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           />
         ) : (
-          <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cream-100 to-cream-200 text-cream-300">
+          <span className="flex h-full w-full items-center justify-center bg-cream-100 text-cream-300">
             <BuildingIcon width={56} height={56} strokeWidth={1.2} />
           </span>
         )}
-        {/* Soft legibility gradient over the photo bottom. */}
-        <span
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-navy-950/70 to-transparent"
-          aria-hidden
-        />
-        {property.is_premium ? (
-          <span className="bg-gold-gradient absolute end-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-white shadow-gold">
-            {t("card.distinct")}
-            <StarIcon width={13} height={13} fill="currentColor" />
+
+        {/* The reference number reads as a drawing-sheet annotation — it is
+            the one number that identifies the property to the office, so it
+            belongs on the plate rather than buried in the metadata line. */}
+        {property.ref_no ? (
+          <span className="absolute start-3 top-3 bg-cream/80 px-2 py-0.5 text-[11px] font-bold tracking-wider text-navy backdrop-blur">
+            {property.ref_no}
           </span>
         ) : null}
-        <span className="absolute bottom-3 start-3">
+
+        <span className="absolute bottom-3 end-3 flex flex-wrap items-center gap-2">
+          {property.is_premium ? (
+            <span className="inline-flex items-center gap-1.5 border border-dashed border-navy bg-cream/85 px-2 py-0.5 text-[11px] font-bold tracking-wide text-navy backdrop-blur">
+              <StarIcon width={11} height={11} fill="currentColor" />
+              {t("card.distinct")}
+            </span>
+          ) : null}
           <StatusPill status={property.status} />
-        </span>
-        <span className="absolute bottom-3 end-3 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white backdrop-blur">
-          {t(`purpose.${property.purpose}`)}
         </span>
       </Link>
 
-      <div className="flex flex-1 flex-col gap-2 p-5">
-        <p className="text-xs font-bold uppercase tracking-wider text-gold-dark">
+      {/* The rule that draws on hover. Sits between plate and text as the
+          card's only moving part besides the image itself. */}
+      <span
+        aria-hidden
+        className="relative mt-4 block h-px w-full bg-cream-200 after:absolute after:inset-y-0 after:start-0 after:w-0 after:bg-gold after:transition-[width] after:duration-500 after:ease-out group-hover:after:w-full"
+      />
+
+      <div className="flex flex-1 flex-col gap-1 pt-4">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-gold">
           {property.type.name}
-          {property.ref_no ? <span className="text-muted/70"> · {property.ref_no}</span> : null}
         </p>
 
         <h3 className="font-display text-lg font-bold leading-snug text-navy">
-          <Link href={`/properties/${property.slug}`} className="transition-colors hover:text-gold-dark">
+          <Link href={`/properties/${property.slug}`} className="transition-colors hover:text-gold">
             {property.title}
           </Link>
         </h3>
@@ -86,39 +92,24 @@ export function PropertyCard({
           {property.block ? ` — ${t("card.block", { block: property.block })}` : null}
         </p>
 
-        {/* Three equal columns rather than one inline row: "bathrooms" is long
-            enough that a single line ran out of card and truncated every label
-            to "2 bath…". Stacking the label under the value gives each stat the
-            full third of the strip, and the separators are flow elements rather
-            than `divide-x` so they stay between the cells under RTL. */}
-        <div className="mt-2 flex items-stretch rounded-2xl bg-cream-50 px-2 py-2.5 text-sm ring-1 ring-cream-100">
-          <CardStat
-            icon={<BedIcon width={16} height={16} className="text-gold" />}
-            label={t("card.rooms")}
-            value={property.rooms}
-          />
-          <span className="w-px self-stretch bg-cream-200" aria-hidden />
-          <CardStat
-            icon={<BathIcon width={16} height={16} className="text-gold" />}
-            label={t("card.bathrooms")}
-            value={property.bathrooms}
-          />
-          <span className="w-px self-stretch bg-cream-200" aria-hidden />
-          <CardStat
-            icon={<ExpandIcon width={16} height={16} className="text-gold" />}
-            label={t("card.sqm")}
-            value={sqm}
-          />
+        {/* The dimension row — an architect's annotation rather than a strip of
+            icon chips. Each cell takes an equal share of the width, which is
+            also what stopped "bathrooms" truncating to "2 bath…" on a narrow
+            card: the labels no longer compete for one line. */}
+        <div className="dims mt-4">
+          <CardStat label={t("card.rooms")} value={property.rooms} />
+          <CardStat label={t("card.bathrooms")} value={property.bathrooms} />
+          <CardStat label={t("card.sqm")} value={sqm} />
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-          <p className="font-display text-lg font-extrabold text-navy">
+        <div className="mt-auto flex items-baseline justify-between gap-3 pt-4">
+          <p className="font-display text-lg font-extrabold tabular-nums text-gold">
             {formatPrice(property.price, property.purpose, locale)}
           </p>
           <Link
             href={`/properties/${property.slug}`}
             aria-label={t("card.viewDetails")}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream text-navy ring-1 ring-cream-200 transition-all group-hover:bg-gold-gradient group-hover:text-white group-hover:ring-transparent group-hover:shadow-gold"
+            className="shrink-0 text-navy transition-colors hover:text-gold"
           >
             <ArrowIcon width={17} height={17} className="rtl:rotate-180" />
           </Link>
@@ -128,29 +119,15 @@ export function PropertyCard({
   );
 }
 
-function CardStat({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number | null;
-}) {
+/** One cell of the dimension row. The `.dim` classes live in globals.css
+ *  because the tick rule needs a pseudo-element and the whole device is shared
+ *  with the property detail page. */
+function CardStat({ label, value }: { label: string; value: string | number | null }) {
+  const missing = value === null || value === undefined;
   return (
-    <span
-      className={cn(
-        "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1.5 text-center",
-        value === null || value === undefined ? "opacity-40" : undefined,
-      )}
-    >
-      <span className="inline-flex items-center gap-1.5">
-        {icon}
-        <span className="font-bold text-navy">{value ?? "—"}</span>
-      </span>
-      <span className="w-full truncate text-[11px] font-semibold uppercase tracking-wide text-muted">
-        {label}
-      </span>
+    <span className={cn("dim", missing && "opacity-40")}>
+      <span className="dim-v">{value ?? "—"}</span>
+      <span className="dim-k">{label}</span>
     </span>
   );
 }

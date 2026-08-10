@@ -35,10 +35,10 @@ export function LocaleToggle({ className, tone = "light" }: { className?: string
       aria-label={t(next === "en" ? "switchToEnglish" : "switchToArabic")}
       title={t(next === "en" ? "switchToEnglish" : "switchToArabic")}
       className={cn(
-        "flex h-11 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-sm font-bold transition-colors",
+        "flex h-11 shrink-0 items-center gap-1.5 px-3.5 text-sm font-bold transition-colors",
         tone === "dark"
-          ? "bg-white/10 text-white ring-1 ring-white/15 hover:bg-white/20"
-          : "bg-white text-navy shadow-card ring-1 ring-cream-200 hover:bg-navy hover:text-white",
+          ? "bg-cream-50/10 text-cream ring-1 ring-cream-200/15 hover:bg-cream-50/20"
+          : "bg-cream-50 text-navy shadow-card ring-1 ring-cream-200 hover:bg-navy hover:text-cream",
         className,
       )}
     >

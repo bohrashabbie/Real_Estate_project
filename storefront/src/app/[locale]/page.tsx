@@ -109,7 +109,7 @@ export default async function HomePage({
           action={
             <Link
               href="/properties?featured=1"
-              className="inline-flex items-center gap-2 rounded-full border border-cream-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
+              className="inline-flex items-center gap-2 border border-cream-200 bg-cream-50 px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
             >
               {t("viewAll")}
               <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
@@ -124,7 +124,7 @@ export default async function HomePage({
             ))}
           </div>
         ) : (
-          <p className="mt-10 rounded-3xl border border-dashed border-cream-300 bg-white/60 p-10 text-center text-muted">
+          <p className="mt-10 rounded-3xl border border-dashed border-cream-300 bg-cream-50/60 p-10 text-center text-muted">
             {t("featuredEmpty")}
           </p>
         )}
@@ -146,7 +146,7 @@ export default async function HomePage({
               <Link
                 key={type.key}
                 href={`/properties?type=${type.key}`}
-                className="group flex flex-col items-center gap-3 rounded-3xl bg-white p-6 text-center shadow-card ring-1 ring-cream-200 transition-all hover:-translate-y-1 hover:shadow-float hover:ring-gold/40"
+                className="group flex flex-col items-center gap-3 rounded-3xl bg-cream-50 p-6 text-center shadow-card ring-1 ring-cream-200 transition-all hover:-translate-y-1 hover:shadow-float hover:ring-gold/40"
               >
                 <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cream text-gold transition-colors group-hover:bg-gold-100">
                   <BuildingIcon width={26} height={26} />
@@ -170,7 +170,7 @@ export default async function HomePage({
           action={
             <Link
               href="/properties"
-              className="inline-flex items-center gap-2 rounded-full border border-cream-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
+              className="inline-flex items-center gap-2 border border-cream-200 bg-cream-50 px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
             >
               {t("viewAll")}
               <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
@@ -185,7 +185,7 @@ export default async function HomePage({
             ))}
           </div>
         ) : (
-          <p className="mt-10 rounded-3xl border border-dashed border-cream-300 bg-white/60 p-10 text-center text-muted">
+          <p className="mt-10 rounded-3xl border border-dashed border-cream-300 bg-cream-50/60 p-10 text-center text-muted">
             {t("latestEmpty")}
           </p>
         )}
@@ -193,7 +193,7 @@ export default async function HomePage({
         <div className="mt-10 text-center">
           <Link
             href="/properties"
-            className="inline-flex items-center gap-2 rounded-full bg-navy px-9 py-4 text-base font-bold text-white shadow-card transition-colors hover:bg-navy-700"
+            className="inline-flex items-center gap-2 bg-navy px-9 py-4 text-base font-bold text-cream shadow-card transition-colors hover:bg-navy-700"
           >
             {t("browseAll")}
             <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
@@ -205,20 +205,20 @@ export default async function HomePage({
       {/* Request-your-property CTA band                                       */}
       {/* ------------------------------------------------------------------ */}
       <section className="mx-auto max-w-(--container-site) px-4 pt-20 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl bg-navy-950 p-8 text-center text-white shadow-float sm:p-14">
+        <div className="relative overflow-hidden rounded-3xl bg-navy-950 p-8 text-center text-cream shadow-float sm:p-14">
           <div className="hero-grid absolute inset-0" aria-hidden />
           <div className="gold-glow absolute -start-24 -bottom-24 h-80 w-80" aria-hidden />
           <div className="relative flex flex-col items-center gap-6">
-            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-gold-light ring-1 ring-white/15">
+            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cream-50/10 text-gold-light ring-1 ring-cream-200/15">
               <ClipboardIcon width={26} height={26} />
             </span>
             <div>
               <h2 className="font-display text-2xl font-extrabold sm:text-4xl">{t("requestTitle")}</h2>
-              <p className="mx-auto mt-3 max-w-xl text-white/65">{t("requestSubtitle")}</p>
+              <p className="mx-auto mt-3 max-w-xl text-cream/65">{t("requestSubtitle")}</p>
             </div>
             <Link
               href="/request"
-              className="bg-gold-gradient inline-flex items-center gap-2 rounded-full px-9 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
+              className="bg-gold-gradient inline-flex items-center gap-2 px-9 py-4 text-base font-bold text-cream shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
             >
               {t("requestCta")}
               <ArrowIcon width={18} height={18} className="rtl:rotate-180" />

@@ -143,7 +143,7 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
                 in normal flow would end up hidden behind that card. The offset
                 clears the panel's negative margin in `page.tsx`. */}
             <div className="absolute inset-x-0 bottom-16 z-10 flex justify-center sm:bottom-24">
-              <div className="flex gap-2 rounded-full bg-navy-950/40 px-3 py-2 backdrop-blur">
+              <div className="flex gap-2 bg-navy-950/40 px-3 py-2 backdrop-blur">
                 {slides.map((slide, i) => (
                   <button
                     key={slide.key}
@@ -152,8 +152,8 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
                     aria-label={t("goTo", { number: i + 1 })}
                     aria-current={i === index}
                     className={cn(
-                      "h-2.5 rounded-full transition-all",
-                      i === index ? "w-7 bg-gold" : "w-2.5 bg-white/70 hover:bg-gold/70",
+                      "h-2.5 transition-all",
+                      i === index ? "w-7 bg-gold" : "w-2.5 bg-cream-50/70 hover:bg-gold/70",
                     )}
                   />
                 ))}
@@ -181,7 +181,7 @@ function SliderArrow({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-navy-950/50 text-white ring-1 ring-white/20 backdrop-blur transition-colors hover:bg-gold hover:text-white",
+        "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-navy-950/50 text-cream ring-1 ring-cream-200/20 backdrop-blur transition-colors hover:bg-gold hover:text-cream",
         side === "start" ? "start-3 sm:start-6" : "end-3 sm:end-6",
       )}
     >

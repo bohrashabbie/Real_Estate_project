@@ -27,7 +27,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
     : null;
 
   return (
-    <footer className="relative mt-20 bg-navy-950 text-white">
+    <footer className="relative mt-20 bg-navy-950 text-cream">
       {/* Gold hairline crowning the footer. */}
       <div className="bg-gold-gradient h-1 w-full" aria-hidden />
 
@@ -38,10 +38,10 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
           <img
             src="/logo-mark.png"
             alt={siteName}
-            className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/15"
+            className="h-20 w-20 rounded-2xl object-cover ring-1 ring-cream-200/15"
           />
           <p className="mt-4 font-display text-lg font-extrabold">{siteName}</p>
-          <p className="mt-2 text-sm leading-relaxed text-white/60">{t("app.tagline")}</p>
+          <p className="mt-2 text-sm leading-relaxed text-cream/60">{t("app.tagline")}</p>
 
           {/* Social row */}
           <div className="mt-5 flex items-center gap-2.5">
@@ -51,7 +51,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t("floats.whatsapp")}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/8 text-gold-light ring-1 ring-white/10 transition-colors hover:bg-gold hover:text-white"
+                className="flex h-10 w-10 items-center justify-center bg-cream-50/8 text-gold-light ring-1 ring-cream-200/10 transition-colors hover:bg-gold hover:text-cream"
               >
                 <WhatsappIcon width={18} height={18} />
               </a>
@@ -62,7 +62,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t("contact.instagram")}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/8 text-gold-light ring-1 ring-white/10 transition-colors hover:bg-gold hover:text-white"
+                className="flex h-10 w-10 items-center justify-center bg-cream-50/8 text-gold-light ring-1 ring-cream-200/10 transition-colors hover:bg-gold hover:text-cream"
               >
                 <InstagramIcon width={18} height={18} />
               </a>
@@ -71,7 +71,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
               <a
                 href={`mailto:${settings.email}`}
                 aria-label={t("contact.email")}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/8 text-gold-light ring-1 ring-white/10 transition-colors hover:bg-gold hover:text-white"
+                className="flex h-10 w-10 items-center justify-center bg-cream-50/8 text-gold-light ring-1 ring-cream-200/10 transition-colors hover:bg-gold hover:text-cream"
               >
                 <MailIcon width={18} height={18} />
               </a>
@@ -89,7 +89,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-white/70 transition-colors hover:text-gold-light"
+                  className="text-cream/70 transition-colors hover:text-gold-light"
                 >
                   {link.label}
                 </Link>
@@ -108,7 +108,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
               <li>
                 <a
                   href={telLink(settings.phone)}
-                  className="inline-flex items-center gap-2.5 text-white/70 transition-colors hover:text-gold-light"
+                  className="inline-flex items-center gap-2.5 text-cream/70 transition-colors hover:text-gold-light"
                 >
                   <PhoneIcon width={16} height={16} className="text-gold" />
                   <span dir="ltr">{settings.phone}</span>
@@ -121,7 +121,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
                   href={waLink(settings.whatsapp)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 text-white/70 transition-colors hover:text-gold-light"
+                  className="inline-flex items-center gap-2.5 text-cream/70 transition-colors hover:text-gold-light"
                 >
                   <WhatsappIcon width={16} height={16} className="text-gold" />
                   <span dir="ltr">{settings.whatsapp}</span>
@@ -132,7 +132,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
               <li>
                 <a
                   href={`mailto:${settings.email}`}
-                  className="inline-flex items-center gap-2.5 text-white/70 transition-colors hover:text-gold-light"
+                  className="inline-flex items-center gap-2.5 text-cream/70 transition-colors hover:text-gold-light"
                 >
                   <MailIcon width={16} height={16} className="text-gold" />
                   {settings.email}
@@ -145,7 +145,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
                   href={instagramHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 text-white/70 transition-colors hover:text-gold-light"
+                  className="inline-flex items-center gap-2.5 text-cream/70 transition-colors hover:text-gold-light"
                 >
                   <InstagramIcon width={16} height={16} className="text-gold" />
                   {settings.instagram}
@@ -160,20 +160,20 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
             <span className="h-px w-6 bg-gold" aria-hidden />
             {t("contact.hoursTitle")}
           </p>
-          <ul className="flex flex-col gap-3 text-sm text-white/70">
+          <ul className="flex flex-col gap-3 text-sm text-cream/70">
             <li>{t("contact.hoursWeek")}</li>
             <li>{t("contact.hoursNote")}</li>
           </ul>
           <Link
             href="/request"
-            className="bg-gold-gradient mt-6 inline-flex items-center rounded-full px-6 py-3 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110"
+            className="bg-gold-gradient mt-6 inline-flex items-center px-6 py-3 text-sm font-bold text-cream shadow-gold transition-all hover:brightness-110"
           >
             {t("nav.listYourProperty")}
           </Link>
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-5 text-center text-xs text-white/45">
+      <div className="border-t border-cream-200/10 py-5 text-center text-xs text-cream/45">
         © {year} {siteName} — {t("footer.rights")}
       </div>
     </footer>

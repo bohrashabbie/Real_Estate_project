@@ -148,7 +148,7 @@ export function FloatingContact({ settings }: { settings: SiteSettings }) {
             aria-label={t("share")}
             aria-haspopup="menu"
             aria-expanded={menuOpen}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-white shadow-float transition-transform hover:scale-105"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-cream shadow-float transition-transform hover:scale-105"
           >
             <ShareIcon width={20} height={20} />
           </button>
@@ -157,7 +157,7 @@ export function FloatingContact({ settings }: { settings: SiteSettings }) {
             <div
               role="menu"
               aria-label={t("shareVia")}
-              className="absolute bottom-0 end-14 w-56 rounded-2xl bg-white p-2 shadow-float ring-1 ring-cream-200"
+              className="absolute bottom-0 end-14 w-56 rounded-2xl bg-cream-50 p-2 shadow-float ring-1 ring-cream-200"
             >
               <div className="flex items-center justify-between gap-2 px-2.5 pb-1.5 pt-1">
                 <span className="text-xs font-bold uppercase tracking-wider text-muted">
@@ -214,7 +214,7 @@ export function FloatingContact({ settings }: { settings: SiteSettings }) {
           <a
             href={telLink(settings.phone)}
             aria-label={t("call")}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white shadow-float transition-transform hover:scale-105"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-cream shadow-float transition-transform hover:scale-105"
           >
             <PhoneIcon width={20} height={20} />
           </a>
@@ -225,7 +225,7 @@ export function FloatingContact({ settings }: { settings: SiteSettings }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t("whatsapp")}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-whatsapp text-white shadow-float transition-transform hover:scale-105"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-whatsapp text-cream shadow-float transition-transform hover:scale-105"
           >
             <WhatsappIcon width={22} height={22} />
           </a>
@@ -238,7 +238,7 @@ export function FloatingContact({ settings }: { settings: SiteSettings }) {
           href={waLink(settings.whatsapp, t("talkToUsMessage"))}
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-5 start-4 z-40 inline-flex items-center gap-3 rounded-full bg-gold px-6 py-3.5 text-base font-bold text-navy shadow-float transition-colors hover:bg-gold-dark hover:text-white"
+          className="fixed bottom-5 start-4 z-40 inline-flex items-center gap-3 rounded-full bg-gold px-6 py-3.5 text-base font-bold text-navy shadow-float transition-colors hover:bg-gold-dark hover:text-cream"
         >
           <span className="h-2.5 w-2.5 rounded-full bg-navy/50" />
           {t("talkToUs")}

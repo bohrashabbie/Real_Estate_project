@@ -1,62 +1,99 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   kwt25 storefront — design tokens v3 (emerald + copper)
+   kwt25 storefront — design tokens v4 (plaster + basalt + gulf)
    ---------------------------------------------------------------------------
-   Porcelain ground, deep emerald ink, copper accent. White rounded-3xl cards,
-   pill buttons, gradient copper CTAs, soft layered shadows, subtle motion.
-   NOTE: utility names (cream/navy/gold) are historical — they now map to
-   porcelain / emerald / copper. Retheme by swapping values here only.
-   Status: available = green, rented/sold = red/neutral, reserved = amber.
+   Light is the default ground and the palette is tuned for it; dark ships as a
+   designed pair, not an inversion, and is selected by `data-theme` on <html>.
+
+   No gold, and no metallic of any kind. Every brokerage in the Gulf signals
+   premium with gold on navy or gold on cream, which is why none of them read as
+   premium — the cue is spent. The single accent is the sea-green of the Kuwait
+   Towers' ceramic discs. It should land on roughly two percent of any screen.
+
+   The ground is plaster, not cream. On a light site that distinction is the
+   whole game: cream plus a metallic is the look the client rejected, while a
+   cool mineral grey-green reads as a material rather than a decoration.
+
+   NOTE: utility names (cream / navy / gold / muted) are historical. They map to
+   plaster / basalt / gulf / sand. Retheme by swapping values here only — that
+   contract is why this file can change the whole site without touching pages.
 --------------------------------------------------------------------------- */
 
 @theme {
-  /* -- "cream" = porcelain: page ground, tint surfaces, chips -------------- */
-  --color-cream: #f5f7f4;
-  --color-cream-50: #fbfcfa;
-  --color-cream-100: #ecf0ea;
-  --color-cream-200: #dde4da;
-  --color-cream-300: #c3cfc0;
+  /* -- "cream" = plaster: page ground, raised surfaces, hairlines ----------- */
+  --color-cream: #e9ebe4;      /* page ground */
+  --color-cream-50: #f3f4ef;   /* chalk — raised surfaces, cards, sticky bars */
+  --color-cream-100: #dbdfd5;  /* sunk — footers, insets */
+  --color-cream-200: #bcc1b3;  /* hairline — every rule and ring in the system */
+  --color-cream-300: #a7ae9c;  /* hairline, emphasised */
 
-  /* -- "navy" = deep emerald: text, dark surfaces, dark pills -------------- */
-  --color-navy: #0f3d33;
-  --color-navy-950: #062019;
-  --color-navy-900: #0a2b23;
-  --color-navy-800: #12463a;
-  --color-navy-700: #175447;
-  --color-navy-600: #1e6a59;
-  --color-navy-100: #e2ede8;
+  /* -- "navy" = basalt: type and dark surfaces ------------------------------ */
+  --color-navy: #14180f;       /* primary type — near-black, olive bias */
+  --color-navy-950: #101208;
+  --color-navy-900: #191c11;
+  --color-navy-800: #23281a;
+  --color-navy-700: #2c3020;
+  --color-navy-600: #3a4029;
+  --color-navy-100: #dbdfd5;
 
-  /* -- "gold" = copper: the brand accent ------------------------------------ */
-  --color-gold: #c0764a;
-  --color-gold-light: #da9a6e;
-  --color-gold-dark: #a55e37;
-  --color-gold-100: #f8ebe1;
-  --color-gold-200: #efd7c3;
+  /* -- "gold" = gulf: the only accent --------------------------------------- */
+  /* Two values on purpose. #2e6b54 holds contrast on plaster; the lighter
+     value is for the accent sitting on a dark surface. One hex cannot do both,
+     and reusing it is what makes most dual-theme sites feel broken in dark. */
+  --color-gold: #2e6b54;
+  --color-gold-light: #5e9b84;
+  --color-gold-dark: #1d5140;
+  --color-gold-100: #d5e0d8;   /* wash — active field, selected chip */
+  --color-gold-200: #b9cdbf;
 
-  /* -- Muted ink on porcelain ------------------------------------------------ */
-  --color-muted: #5c6b64;
+  /* -- Sand: labels, units, metadata — the quietest legible step ------------ */
+  --color-muted: #6e7565;
+
+  /* -- Status: a separate family, never borrowed for decoration -------------
+     A badge wearing the brand accent reads as promotion rather than state, so
+     these stay out of the accent's way. Both are muted: transacted stock
+     belongs in the grid as evidence the office sells, not as an alarm. */
+  --color-state-held: #856811;
+  --color-state-closed: #8c4436;
 
   /* -- Semantic aliases ------------------------------------------------------ */
   --color-background: var(--color-cream);
-  --color-surface: #ffffff;
+  --color-surface: #f3f4ef;
   --color-foreground: var(--color-navy);
 
-  /* -- WhatsApp green -------------------------------------------------------- */
-  --color-whatsapp: #25a95d;
-  --color-whatsapp-dark: #1e8f4e;
+  /* -- WhatsApp renders in the accent, not its own green. Two greens fighting
+        each other is worse than losing the brand cue; the glyph carries the
+        recognition on its own. ------------------------------------------------ */
+  --color-whatsapp: #2e6b54;
+  --color-whatsapp-dark: #1d5140;
 
   --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cairo), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-card: 0 10px 30px -14px rgb(15 61 51 / 0.18);
-  --shadow-float: 0 18px 44px -16px rgb(15 61 51 / 0.32);
-  --shadow-gold: 0 12px 32px -12px rgb(192 118 74 / 0.55);
+  /* -- Radius is zero by system ---------------------------------------------
+     A 12px corner is the single strongest marker of a templated marketplace —
+     it is what the client recognised when they said "the same as before".
+     Collapsing the whole scale here retires it everywhere at once, so no page
+     needs editing and no new component can reintroduce it by habit.
+     `rounded-full` still works, for the one floating action that earns it. */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+
+  /* -- Elevation is lightness plus a hairline, not a drop shadow ------------- */
+  --shadow-card: none;
+  --shadow-float: 0 1px 0 var(--color-cream-200), 0 12px 28px -22px rgb(92 101 82 / 0.5);
+  --shadow-gold: none;
 
   --container-site: 78rem;
 
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-float-slow: float-slow 7s ease-in-out infinite;
 
   @keyframes fade-up {
     from {
@@ -68,16 +105,46 @@
       transform: translateY(0);
     }
   }
+}
 
-  @keyframes float-slow {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-16px);
-    }
-  }
+/* ---------------------------------------------------------------------------
+   Dark — a designed pair. Selected explicitly by the switch; "System" resolves
+   to a concrete value in the pre-paint script rather than being left implicit,
+   so light stays the default for anyone who has not chosen.
+--------------------------------------------------------------------------- */
+:root[data-theme="dark"] {
+  --color-cream: #101208;
+  --color-cream-50: #191c11;
+  --color-cream-100: #0a0b05;
+  --color-cream-200: #2c3020;
+  --color-cream-300: #3a4029;
+
+  --color-navy: #e8e4d6;
+  --color-navy-950: #0a0b05;
+  --color-navy-900: #101208;
+  --color-navy-800: #191c11;
+  --color-navy-700: #23281a;
+  --color-navy-600: #2c3020;
+  --color-navy-100: #23281a;
+
+  --color-gold: #5e9b84;
+  --color-gold-light: #7cbba1;
+  --color-gold-dark: #7cbba1;
+  --color-gold-100: #16281f;
+  --color-gold-200: #1f3a2c;
+
+  --color-muted: #7c7a68;
+
+  /* Lifted, not inverted — the light values would disappear into basalt. */
+  --color-state-held: #c9a227;
+  --color-state-closed: #a65d4e;
+
+  --color-surface: #191c11;
+
+  --color-whatsapp: #5e9b84;
+  --color-whatsapp-dark: #7cbba1;
+
+  --shadow-float: 0 1px 0 var(--color-cream-200), 0 12px 32px -20px #000;
 }
 
 html {
@@ -93,59 +160,127 @@ body {
 
 ::selection {
   background-color: var(--color-gold);
-  color: #ffffff;
+  color: var(--color-cream);
 }
 
-/* -- Premium helpers -------------------------------------------------------- */
+/* Keyboard focus is visible on every interactive element, in both themes. */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
 
-/* Copper gradient fill for CTAs and badges. */
+/* ---------------------------------------------------------------------------
+   The signature device: the dimension line.
+
+   The thin rule with a tick and a mono label that an architect uses to annotate
+   a drawing, standing in for the row of rounded icon chips every listings site
+   uses for rooms / baths / m². It is also why the labels stopped truncating —
+   each cell owns an equal share of the row instead of competing for one line.
+--------------------------------------------------------------------------- */
+.dims {
+  display: flex;
+  border-top: 1px solid var(--color-cream-200);
+}
+
+.dim {
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 0;
+  padding-top: 0.75rem;
+}
+
+.dim + .dim {
+  border-inline-start: 1px solid var(--color-cream-200);
+  padding-inline-start: 1rem;
+}
+
+.dim::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -1px;
+  inset-inline-start: 0;
+  width: 14px;
+  height: 1px;
+  background-color: var(--color-gold);
+}
+
+.dim-v {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-navy);
+}
+
+.dim-k {
+  display: block;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Legacy helpers, redefined rather than deleted.
+
+   These class names are used across pages. Pointing them at flat fills retires
+   every gradient in one place — editing the call sites would have risked
+   missing one and leaving a single copper gradient alive on some page.
+--------------------------------------------------------------------------- */
 .bg-gold-gradient {
-  background-image: linear-gradient(135deg, #da9a6e 0%, #c0764a 55%, #a55e37 100%);
+  background-image: none;
+  background-color: var(--color-gold);
 }
 
-/* Copper gradient headline text. */
 .text-gold-gradient {
-  background-image: linear-gradient(120deg, #f0c29e 0%, #da9a6e 40%, #c9834f 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  background-image: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--color-gold);
 }
 
-/* Faint blueprint grid over dark hero surfaces. */
+/* Drawing-sheet grid over dark surfaces — the grid is meant to be visible. */
 .hero-grid {
   background-image:
-    linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
-  background-size: 44px 44px;
+    linear-gradient(var(--color-cream-200) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-cream-200) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: 0.35;
 }
 
-/* Soft radial copper glow, positioned by the parent. */
+/* Was a radial copper glow. Now a flat wash — no glows in this system. */
 .gold-glow {
-  background: radial-gradient(closest-side, rgb(192 118 74 / 0.32), transparent 70%);
+  background: radial-gradient(closest-side, var(--color-gold-100), transparent 70%);
 }
 
-/* Frosted panel on dark surfaces. */
 .glass-dark {
-  background-color: rgb(255 255 255 / 0.06);
+  background-color: color-mix(in srgb, var(--color-cream-50) 82%, transparent);
   backdrop-filter: blur(12px);
-  border: 1px solid rgb(255 255 255 / 0.12);
+  border: 1px solid var(--color-cream-200);
 }
 
-/* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up,
-  .animate-float-slow {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-up {
     animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
 
 /* MapLibre popups pick up the site look. */
 .maplibregl-popup-content {
-  border-radius: 1rem;
+  border-radius: 0;
   padding: 0;
   overflow: hidden;
   box-shadow: var(--shadow-float);
   font-family: var(--font-sans);
+  background-color: var(--color-cream-50);
 }
 .maplibregl-popup-close-button {
   font-size: 1.1rem;

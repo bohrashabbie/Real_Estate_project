@@ -87,7 +87,7 @@ export function SmartSearchWizard({
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <header className="text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navy text-gold">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center bg-navy text-gold">
           <SparkleIcon width={26} height={26} />
         </span>
         <h1 className="mt-4 text-3xl font-bold text-navy sm:text-4xl">{t("smart.title")}</h1>
@@ -95,14 +95,14 @@ export function SmartSearchWizard({
       </header>
 
       {phase === "wizard" ? (
-        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
+        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-cream-50 p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
           {/* Progress dots */}
           <div className="flex items-center justify-center gap-2.5" aria-hidden>
             {STEPS.map((name, index) => (
               <span
                 key={name}
                 className={cn(
-                  "h-2.5 rounded-full transition-all",
+                  "h-2.5 transition-all",
                   index === stepIndex
                     ? "w-8 bg-gold"
                     : index < stepIndex
@@ -161,12 +161,12 @@ export function SmartSearchWizard({
                   value={budgetInput}
                   onChange={(event) => setBudgetInput(event.target.value)}
                   placeholder={t("smart.budgetPlaceholder")}
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-4 text-center text-lg font-bold text-navy outline-none transition-colors focus:border-gold"
+                  className="rounded-2xl border border-cream-200 bg-cream-50 px-4 py-4 text-center text-lg font-bold text-navy outline-none transition-colors focus:border-gold"
                 />
                 <button
                   type="button"
                   onClick={() => next({ budget_max: budgetInput || undefined })}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-white"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-cream"
                 >
                   {t("smart.next")}
                   <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
@@ -208,8 +208,8 @@ export function SmartSearchWizard({
       ) : null}
 
       {phase === "loading" ? (
-        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
-          <span className="mx-auto flex h-14 w-14 animate-pulse items-center justify-center rounded-full bg-cream-100 text-gold">
+        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-cream-50 p-14 text-center shadow-card ring-1 ring-cream-200">
+          <span className="mx-auto flex h-14 w-14 animate-pulse items-center justify-center bg-cream-100 text-gold">
             <SearchIcon width={26} height={26} />
           </span>
           <p className="mt-4 text-lg font-bold text-navy">{t("smart.searching")}</p>
@@ -217,13 +217,13 @@ export function SmartSearchWizard({
       ) : null}
 
       {phase === "error" ? (
-        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
+        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-cream-50 p-14 text-center shadow-card ring-1 ring-cream-200">
           <p className="text-lg font-bold text-navy">{t("smart.errorTitle")}</p>
           <p className="mt-2 text-muted">{t("smart.errorBody")}</p>
           <button
             type="button"
             onClick={reset}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-white hover:bg-navy-700"
+            className="mt-6 inline-flex items-center gap-2 bg-navy px-6 py-3 text-sm font-bold text-cream hover:bg-navy-700"
           >
             {t("smart.restart")}
             <ResetIcon width={16} height={16} />
@@ -255,12 +255,12 @@ export function SmartSearchWizard({
           ) : null}
 
           {result.items.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-cream-300 bg-white/70 p-14 text-center">
+            <div className="rounded-3xl border border-dashed border-cream-300 bg-cream-50/70 p-14 text-center">
               <p className="text-lg font-bold text-navy">{t("smart.noMatchTitle")}</p>
               <p className="mt-2 text-muted">{t("smart.noMatchBody")}</p>
               <Link
                 href="/request"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy transition-colors hover:bg-gold-dark hover:text-white"
+                className="mt-6 inline-flex items-center gap-2 bg-gold px-6 py-3 text-sm font-bold text-navy transition-colors hover:bg-gold-dark hover:text-cream"
               >
                 {t("smart.requestInstead")}
                 <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
@@ -278,7 +278,7 @@ export function SmartSearchWizard({
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
+              className="inline-flex items-center gap-2 bg-cream-50 px-6 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
             >
               {t("smart.restart")}
               <ResetIcon width={16} height={16} className="text-gold" />

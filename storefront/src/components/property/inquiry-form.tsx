@@ -50,7 +50,7 @@ export function InquiryForm({
   if (state === "success") {
     return (
       <div className="rounded-2xl bg-emerald-50 p-6 text-center ring-1 ring-emerald-200">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
+        <span className="mx-auto flex h-12 w-12 items-center justify-center bg-emerald-500 text-cream">
           <CheckIcon width={24} height={24} />
         </span>
         <p className="mt-3 text-lg font-bold text-emerald-800">{t("successTitle")}</p>
@@ -60,7 +60,7 @@ export function InquiryForm({
   }
 
   const field =
-    "w-full rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold";
+    "w-full rounded-2xl border border-cream-200 bg-cream-50 px-4 py-3 text-navy outline-none transition-colors focus:border-gold";
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
@@ -107,7 +107,7 @@ export function InquiryForm({
       <button
         type="submit"
         disabled={state === "submitting"}
-        className="flex items-center justify-center gap-2.5 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-white disabled:opacity-60"
+        className="flex items-center justify-center gap-2.5 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-cream disabled:opacity-60"
       >
         {state === "submitting" ? t("sending") : t("send")}
         <SendIcon width={18} height={18} className="rtl:-scale-x-100" />
