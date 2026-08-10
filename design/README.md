@@ -12,10 +12,20 @@ the current site and why.
 ## The position
 
 The current site is cream `#FAF6EC` / navy / gold — the default "Gulf luxury"
-combination, which is why the client read it as unchanged. This proposal is
-dark-first, mineral, and uses **no gold at all**. The single accent is the
-sea-green of the Kuwait Towers' ceramic discs, spent on roughly two percent of
-any screen.
+combination, which is why the client read it as unchanged. This proposal keeps a
+light ground but uses **no gold at all**, and the ground is plaster rather than
+cream: `#E9EBE4`, a cool mineral grey-green. On a light site that distinction is
+the whole game — cream plus a metallic is the thing that was rejected, while a
+cool mineral with no metallic reads as a material rather than a decoration.
+
+The single accent is the sea-green of the Kuwait Towers' ceramic discs, spent on
+roughly two percent of any screen.
+
+**Light is the default.** Dark ships alongside it as a designed pair, not an
+inversion, reachable from a switch in the top bar next to the language toggle.
+The accent carries two values — `#2E6B54` on plaster, `#5E9B84` on basalt —
+because one hex cannot hold contrast on both grounds. Naive inversion is what
+makes most dual-theme sites feel broken in their second theme.
 
 Corners are square and cards cast no shadow. A 12px radius is the strongest
 visual marker of a templated marketplace, and removing it is most of the
@@ -36,17 +46,29 @@ and a rewrite of about a dozen components — card, badge, field, dropdown, nav,
 footer, dimension row, search bar, filter bar, gallery, map pin, sticky CTA.
 Page templates re-compose from those.
 
-## Two things to settle before any of it is built
+## The theme switch
 
-1. **Dark or light as the default.** Dark-first is the recommendation. A light
-   theme is specified and included — toggle your OS appearance to see it — but
-   the photography grade and the accent's contrast are tuned per ground, so
-   switching the default later is a re-tune rather than a flag.
-2. **Fonts.** The prototype renders with system stacks because the licensed
-   faces cannot be embedded in a shared preview. The intended pairing is 29LT
-   Zarid Display for Arabic headings with 29LT Bukra for Arabic UI. The Arabic
-   display face is where most of this identity lives; it is the one line item
-   not worth cutting.
+Three states, not two, because a visitor who set their phone to dark has
+expressed a preference and ignoring it is rude:
+
+| State  | Stamp                  | Result                                       |
+| ------ | ---------------------- | -------------------------------------------- |
+| Light  | `data-theme="light"`   | Plaster ground always — beats a dark OS       |
+| Dark   | `data-theme="dark"`    | Basalt ground always — beats a light OS       |
+| System | no attribute           | Follows the device; falls back to light       |
+
+The choice is stored locally and applied before first paint, so a returning
+visitor never sees a flash of the wrong ground. Every colour resolves through
+tokens, so the switch is one attribute on the root element — no component knows
+which theme it is in.
+
+## Still to settle
+
+**Fonts.** The prototype renders with system stacks because the licensed faces
+cannot be embedded in a shared preview. The intended pairing is 29LT Zarid
+Display for Arabic headings with 29LT Bukra for Arabic UI. The Arabic display
+face is where most of this identity lives; it is the one line item not worth
+cutting.
 
 ## Content held verbatim
 
