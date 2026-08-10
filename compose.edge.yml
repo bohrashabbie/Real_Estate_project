@@ -1,0 +1,33 @@
+# Domain deploy behind a shared edge.
+#
+# The VPS already runs another stack whose caddy owns 80/443 for gr8trend.com
+# and burhanicreation.com. That caddy terminates TLS for kwt25.com and
+# admin.kwt25.com too, and forwards to the ports published here — so this
+# caddy stays on 8080/8081 and serves plain HTTP, exactly as it did in
+# IP-only mode.
+#
+# Everything else comes from compose.yml, which already builds every public
+# URL from ${STORE_DOMAIN} / ${ADMIN_DOMAIN} over https. Set those to the real
+# domains in .env.vps and the bundle picks them up:
+#
+#   STORE_DOMAIN=kwt25.com
+#   ADMIN_DOMAIN=admin.kwt25.com
+#
+#   docker compose -f compose.yml -f compose.edge.yml --env-file .env.vps up -d --build
+#
+# This replaces compose.ip.yml, which hard-coded the bare IP into the bundle.
+# NEXT_PUBLIC_* are build args: changing the domain means a rebuild, not a
+# restart, or the browser keeps calling the old origin and trips mixed content
+# on an https page.
+
+services:
+  caddy:
+    ports: !override
+      - "8080:80"
+      - "8081:81"
+    volumes: !override
+      # Catch-all `:80` / `:81` with auto_https off — the edge caddy owns
+      # certificates and hostname matching, this one only routes paths.
+      - ./deploy/Caddyfile.ip:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
