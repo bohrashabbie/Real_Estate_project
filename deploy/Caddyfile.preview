@@ -1,0 +1,27 @@
+# Preview edge. Catch-all on :80 (published as :8090) with auto_https off —
+# this host is reached by bare IP, so there is no name to get a certificate
+# for and nothing to redirect to.
+#
+# /public/v1 and /uploads proxy to the *live* api container over the shared
+# network, which is the point: the preview shows the redesign against real
+# listings without a database or an API of its own. That also keeps the
+# browser same-origin, so the API's CORS allow-list needs no preview entry.
+{
+    auto_https off
+}
+
+:80 {
+    encode zstd gzip
+
+    handle /public/v1/* {
+        reverse_proxy api:8000
+    }
+
+    handle /uploads/* {
+        reverse_proxy api:8000
+    }
+
+    handle {
+        reverse_proxy storefront-preview:3100
+    }
+}

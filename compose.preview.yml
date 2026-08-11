@@ -1,0 +1,60 @@
+# Redesign preview — the identity-v2 storefront on its own port, so the live
+# domain can stay on the previous design.
+#
+#   http://<VPS_IP>:8090
+#
+# Run it from a checkout of design/identity-v2, as its own compose project so
+# it can never recreate a live container:
+#
+#   docker compose -p kwt25-preview -f compose.preview.yml up -d --build
+#
+# Storefront only. There is no db, no api and no admin here: it joins the live
+# stack's network and reads the running api, so the preview shows the redesign
+# against real listings and real photography rather than seed data.
+#
+# Service names must not collide with the live stack's. Both projects attach to
+# the same network, and docker resolves service names as aliases on it — a
+# service called `storefront` here would make that name ambiguous and could
+# send live traffic to the preview container.
+
+name: kwt25-preview
+
+services:
+  storefront-preview:
+    build:
+      context: ./storefront
+      args:
+        # Baked into the bundle at build time. It must be the address the
+        # *browser* uses, which is why it carries the port: the client-side
+        # fetches go out from the visitor's machine, not from this container.
+        NEXT_PUBLIC_API_URL: http://187.127.146.84:8090/public/v1
+        NEXT_PUBLIC_SITE_URL: http://187.127.146.84:8090
+    restart: unless-stopped
+    environment:
+      # Server components talk to the api container directly over the shared
+      # network — no round trip out to the public IP and back.
+      PUBLIC_API_URL: http://api:8000/public/v1
+      NEXT_PUBLIC_SITE_URL: http://187.127.146.84:8090
+    networks: [live]
+
+  caddy-preview:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - ./deploy/Caddyfile.preview:/etc/caddy/Caddyfile:ro
+      - caddy_preview_data:/data
+      - caddy_preview_config:/config
+    depends_on:
+      - storefront-preview
+    networks: [live]
+
+networks:
+  live:
+    external: true
+    name: kwt25-realestate_web
+
+volumes:
+  caddy_preview_data:
+  caddy_preview_config:
