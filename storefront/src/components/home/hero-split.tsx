@@ -38,6 +38,10 @@ export async function HeroSplit({
   locale: Locale;
 }) {
   const t = await getTranslations({ locale, namespace: "home" });
+  // `home.rooms` is a field label ("Rooms" / "الغرف") — reading it after a
+  // numeral gives "2 الغرف", "2 the rooms". The card namespace has the bare
+  // noun that belongs in a count.
+  const tCard = await getTranslations({ locale, namespace: "card" });
   const leadImage = lead ? mediaUrl(lead.main_image) : null;
   // The banner stands in only when there is no property to show at all. A
   // banner *behind* a real listing's record was actively wrong: the artwork
@@ -143,7 +147,7 @@ export async function HeroSplit({
                       {formatPrice(lead.price, lead.purpose, locale)}
                     </p>
                     <p className="flex items-center gap-4 text-xs font-semibold tabular-nums text-muted">
-                      {lead.rooms !== null ? <span>{lead.rooms} {t("rooms")}</span> : null}
+                      {lead.rooms !== null ? <span>{lead.rooms} {tCard("rooms")}</span> : null}
                       {sqm ? <span>{sqm} m²</span> : null}
                       <ArrowIcon
                         width={17}
