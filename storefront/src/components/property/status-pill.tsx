@@ -3,16 +3,11 @@ import { useTranslations } from "next-intl";
 import type { PropertyStatus } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
-/* Status is its own colour family, deliberately kept apart from the brand
-   accent — a badge that borrowed the accent would read as promotion rather
-   than state. Sold and rented sit at a muted clay so transacted stock stays
-   visible in a grid without shouting: a brokerage's recent sales are evidence
-   that it sells, and hiding them is a portal's instinct, not an office's. */
-const STYLES: Record<PropertyStatus, string> = {
-  available: "text-gold",
-  rented: "text-state-closed",
-  sold: "text-state-closed",
-  reserved: "text-state-held",
+const STYLES: Record<PropertyStatus, { pill: string; dot: string }> = {
+  available: { pill: "bg-green-50 text-green-700", dot: "bg-green-500" },
+  rented: { pill: "bg-red-50 text-red-600", dot: "bg-red-500" },
+  sold: { pill: "bg-slate-100 text-slate-600", dot: "bg-slate-500" },
+  reserved: { pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
 };
 
 export function StatusPill({
@@ -28,14 +23,13 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        // Square, hairline, current-colour dot — the badge is drawn, not filled.
-        "inline-flex items-center gap-1.5 border border-current bg-cream/85 px-2 py-0.5 text-[11px] font-bold tracking-wide backdrop-blur",
-        style,
+        "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold shadow-sm",
+        style.pill,
         className,
       )}
     >
-      <span className="h-1.5 w-1.5 bg-current" />
       {t(status)}
+      <span className={cn("h-2 w-2 rounded-full", style.dot)} />
     </span>
   );
 }

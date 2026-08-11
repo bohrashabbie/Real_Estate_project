@@ -7,7 +7,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FloatingContact } from "@/components/layout/floating-contact";
-import { themeInitScript } from "@/components/layout/theme-toggle";
 import { QueryProvider } from "@/providers/query-provider";
 import { getSettings } from "@/lib/api";
 import { fontVariables } from "@/lib/fonts";
@@ -61,24 +60,7 @@ export default async function LocaleLayout({
   const settings = await getSettings();
 
   return (
-    // `suppressHydrationWarning` is required, not cosmetic: the script below
-    // stamps `data-theme` on this element before React loads, so the server
-    // HTML (no attribute) and the client DOM (light or dark) legitimately
-    // differ. The alternative — rendering the theme on the server — is
-    // impossible, since only the browser knows what the visitor chose.
-    // It suppresses the warning for this element's attributes only.
-    <html
-      lang={locale}
-      dir={localeDirection[typedLocale]}
-      className={fontVariables}
-      suppressHydrationWarning
-    >
-      <head>
-        {/* Stamps the theme before first paint. A visitor who chose dark must
-            never see a flash of the light ground on the way in, and nothing
-            React renders can run early enough to prevent that. */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
+    <html lang={locale} dir={localeDirection[typedLocale]} className={fontVariables}>
       <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider>
           <QueryProvider>

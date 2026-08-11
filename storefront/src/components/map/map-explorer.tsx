@@ -129,7 +129,7 @@ export function MapExplorer({ locale }: { locale: Locale }) {
     <div className="relative">
       <div ref={container} className="h-[calc(100dvh-8rem)] min-h-[28rem] w-full" />
       <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
-        <p className="pointer-events-auto bg-cream-50/95 px-5 py-2.5 text-sm font-bold text-navy shadow-float ring-1 ring-cream-200">
+        <p className="pointer-events-auto rounded-full bg-white/95 px-5 py-2.5 text-sm font-bold text-navy shadow-float ring-1 ring-cream-200">
           {isLoading
             ? t("mapPage.loading")
             : t("mapPage.count", { count: located?.length ?? 0 })}

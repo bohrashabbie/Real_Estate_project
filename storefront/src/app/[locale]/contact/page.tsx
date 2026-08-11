@@ -99,7 +99,7 @@ export default async function ContactPage({
               key={card.key}
               href={card.href}
               {...(card.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="group flex items-center gap-4 rounded-2xl bg-cream-50 p-5 shadow-card ring-1 ring-cream-200 transition-transform hover:-translate-y-0.5"
+              className="group flex items-center gap-4 rounded-2xl bg-white p-5 shadow-card ring-1 ring-cream-200 transition-transform hover:-translate-y-0.5"
             >
               <span className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-cream-100 text-gold transition-colors group-hover:bg-navy">
                 {card.icon}
@@ -114,20 +114,20 @@ export default async function ContactPage({
           ))}
         </section>
       ) : (
-        <p className="mt-8 rounded-2xl border border-dashed border-cream-300 bg-cream-50/60 p-8 text-center text-muted">
+        <p className="mt-8 rounded-2xl border border-dashed border-cream-300 bg-white/60 p-8 text-center text-muted">
           {t("noContacts")}
         </p>
       )}
 
       {/* Working hours */}
-      <section className="mt-6 rounded-2xl bg-navy p-6 text-center text-cream sm:p-7">
+      <section className="mt-6 rounded-2xl bg-navy p-6 text-center text-white sm:p-7">
         <p className="text-sm font-bold uppercase tracking-wider text-gold">{t("hoursTitle")}</p>
         <p className="mt-2 text-lg font-bold">{t("hoursWeek")}</p>
-        <p className="mt-1 text-sm text-cream/70">{t("hoursNote")}</p>
+        <p className="mt-1 text-sm text-white/70">{t("hoursNote")}</p>
       </section>
 
       {/* Inquiry form */}
-      <section className="mt-8 rounded-3xl bg-cream-50 p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
+      <section className="mt-8 rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
         <h2 className="text-center text-2xl font-bold text-navy">{t("formTitle")}</h2>
         <p className="mt-2 text-center text-muted">{t("formSubtitle")}</p>
         <div className="mt-6">

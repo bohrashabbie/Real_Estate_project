@@ -52,17 +52,15 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
 
   if (state === "success") {
     return (
-      // Stock emerald was the only colour on the site from outside the token
-      // set — confirmation belongs to the brand accent, like everywhere else.
-      <div className="border border-gold/40 bg-gold-100 p-8 text-center">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center bg-gold text-cream">
-          <CheckIcon width={24} height={24} strokeWidth={2.5} />
+      <div className="rounded-2xl bg-emerald-50 p-8 text-center ring-1 ring-emerald-200">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white">
+          <CheckIcon width={26} height={26} />
         </span>
-        <p className="mt-4 font-display text-xl font-extrabold text-navy">{t("successTitle")}</p>
-        <p className="mt-2 text-muted">{t("successBody")}</p>
+        <p className="mt-4 text-xl font-bold text-emerald-800">{t("successTitle")}</p>
+        <p className="mt-2 text-emerald-700">{t("successBody")}</p>
         <Link
           href="/properties"
-          className="mt-6 inline-flex items-center gap-2 bg-navy px-6 py-3 text-sm font-bold text-cream transition-colors hover:bg-gold"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-navy-700"
         >
           {t("browseMeanwhile")}
           <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
@@ -72,8 +70,8 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
   }
 
   const inputClass =
-    "w-full border border-cream-200 bg-transparent px-3.5 py-2.5 text-sm text-navy outline-none transition-colors focus:border-gold";
-  const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-muted";
+    "w-full rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold";
+  const labelClass = "mb-1.5 block text-sm font-bold text-navy";
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
@@ -199,7 +197,7 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
       </label>
 
       {state === "error" ? (
-        <p className="border border-state-closed/40 px-3.5 py-2.5 text-sm font-semibold text-state-closed">
+        <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 ring-1 ring-red-100">
           {t("error")}
         </p>
       ) : null}
@@ -207,10 +205,10 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
       <button
         type="submit"
         disabled={state === "submitting"}
-        className="flex items-center justify-center gap-2.5 bg-navy px-6 py-3.5 text-sm font-bold text-cream transition-colors hover:bg-gold disabled:opacity-60"
+        className="flex items-center justify-center gap-2.5 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-white disabled:opacity-60"
       >
         {state === "submitting" ? t("sending") : t("send")}
-        <SendIcon width={17} height={17} className="rtl:-scale-x-100" />
+        <SendIcon width={18} height={18} className="rtl:-scale-x-100" />
       </button>
     </form>
   );

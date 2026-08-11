@@ -47,7 +47,7 @@ export default async function RequestPage({
         <p className="mx-auto mt-2 max-w-xl text-muted">{t("subtitle")}</p>
       </header>
 
-      <section className="mt-8 rounded-3xl bg-cream-50 p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
+      <section className="mt-8 rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
         <RequestForm areas={areas} types={types} />
       </section>
     </div>
