@@ -49,24 +49,28 @@ export function InquiryForm({
 
   if (state === "success") {
     return (
-      <div className="rounded-2xl bg-emerald-50 p-6 text-center ring-1 ring-emerald-200">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center bg-emerald-500 text-cream">
-          <CheckIcon width={24} height={24} />
+      // Was emerald-on-emerald from Tailwind's stock palette — a third green
+      // next to the brand accent, and the only place on the site that reached
+      // outside the token set. Confirmation is the accent's job.
+      <div className="border border-gold/40 bg-gold-100 p-6 text-center">
+        <span className="mx-auto flex h-11 w-11 items-center justify-center bg-gold text-cream">
+          <CheckIcon width={22} height={22} strokeWidth={2.5} />
         </span>
-        <p className="mt-3 text-lg font-bold text-emerald-800">{t("successTitle")}</p>
-        <p className="mt-1 text-sm text-emerald-700">{t("successBody")}</p>
+        <p className="mt-3.5 font-display text-lg font-extrabold text-navy">{t("successTitle")}</p>
+        <p className="mt-1.5 text-sm text-muted">{t("successBody")}</p>
       </div>
     );
   }
 
   const field =
-    "w-full rounded-2xl border border-cream-200 bg-cream-50 px-4 py-3 text-navy outline-none transition-colors focus:border-gold";
+    "w-full border border-cream-200 bg-transparent px-3.5 py-2.5 text-sm text-navy outline-none transition-colors focus:border-gold";
+  const label = "mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-muted";
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
-      <div className={cn("grid gap-4", wide ? "sm:grid-cols-2" : undefined)}>
+    <form onSubmit={submit} className="flex flex-col gap-3.5">
+      <div className={cn("grid gap-3.5", wide ? "sm:grid-cols-2" : undefined)}>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-bold text-navy">{t("name")}</span>
+          <span className={label}>{t("name")}</span>
           <input
             type="text"
             required
@@ -76,7 +80,7 @@ export function InquiryForm({
           />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-bold text-navy">{t("phone")}</span>
+          <span className={label}>{t("phone")}</span>
           <input
             type="tel"
             required
@@ -88,7 +92,7 @@ export function InquiryForm({
         </label>
       </div>
       <label className="block">
-        <span className="mb-1.5 block text-sm font-bold text-navy">{t("message")}</span>
+        <span className={label}>{t("message")}</span>
         <textarea
           required
           rows={wide ? 6 : 4}
@@ -99,18 +103,21 @@ export function InquiryForm({
       </label>
 
       {state === "error" ? (
-        <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 ring-1 ring-red-100">
+        <p className="border border-state-closed/40 px-3.5 py-2.5 text-sm font-semibold text-state-closed">
           {t("error")}
         </p>
       ) : null}
 
+      {/* The accent as a fill would put dark green under near-black type; the
+          submit reads as basalt and turns accent on hover, like every other
+          primary action in the system. */}
       <button
         type="submit"
         disabled={state === "submitting"}
-        className="flex items-center justify-center gap-2.5 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-cream disabled:opacity-60"
+        className="flex items-center justify-center gap-2.5 bg-navy px-6 py-3.5 text-sm font-bold text-cream transition-colors hover:bg-gold disabled:opacity-60"
       >
         {state === "submitting" ? t("sending") : t("send")}
-        <SendIcon width={18} height={18} className="rtl:-scale-x-100" />
+        <SendIcon width={17} height={17} className="rtl:-scale-x-100" />
       </button>
     </form>
   );

@@ -301,3 +301,38 @@ export function TagIcon(props: IconProps) {
     </svg>
   );
 }
+
+/* -- Listing view controls -------------------------------------------------
+   The three results views and the rail's mobile trigger. Drawn square-on to
+   match the zero-radius system: the toggle icons are literally diagrams of the
+   layout they switch to. */
+
+export function ListIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <rect x="3" y="5" width="6" height="5" />
+      <rect x="3" y="14" width="6" height="5" />
+      <path d="M12 6.5h9M12 9.5h6M12 15.5h9M12 18.5h6" />
+    </svg>
+  );
+}
+
+export function GridIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <rect x="3.5" y="3.5" width="7" height="7" />
+      <rect x="13.5" y="3.5" width="7" height="7" />
+      <rect x="3.5" y="13.5" width="7" height="7" />
+      <rect x="13.5" y="13.5" width="7" height="7" />
+    </svg>
+  );
+}
+
+export function SlidersIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 7h16M4 12h16M4 17h16" />
+      <path d="M9 5v4M15 10v4M7 15v4" />
+    </svg>
+  );
+}

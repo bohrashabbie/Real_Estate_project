@@ -20,7 +20,13 @@ export interface HeroSlide {
 }
 
 /**
- * The home-page hero: whatever the office uploaded in the admin panel.
+ * The office's campaign strip: whatever it uploaded in the admin panel.
+ *
+ * This used to be the home page's opening screen. It now sits between two
+ * bands further down, because a full-bleed slider as the first thing a visitor
+ * meets is the single most template-like arrangement on a property site — and
+ * it showed artwork rather than stock. The component itself is unchanged apart
+ * from where the dots sit.
  *
  * One slide renders as a plain full-bleed rectangle. Two or more turn it into
  * a slider — there is no separate "carousel on/off" setting to keep in sync,
@@ -138,11 +144,11 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
             <SliderArrow side="start" label={t("previous")} onClick={() => go(index - 1)} />
             <SliderArrow side="end" label={t("next")} onClick={() => go(index + 1)} />
 
-            {/* Dots sit *inside* the artwork rather than below it: the quick
-                search panel floats over the banner's lower edge, and a dot row
-                in normal flow would end up hidden behind that card. The offset
-                clears the panel's negative margin in `page.tsx`. */}
-            <div className="absolute inset-x-0 bottom-16 z-10 flex justify-center sm:bottom-24">
+            {/* Dots sit inside the artwork rather than below it, so the strip
+                stays a single rectangle in the page's rhythm. They used to be
+                lifted clear of a search card that overlapped this band; that
+                card is gone, so they sit on the lower edge where they belong. */}
+            <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center sm:bottom-6">
               <div className="flex gap-2 bg-navy-950/40 px-3 py-2 backdrop-blur">
                 {slides.map((slide, i) => (
                   <button

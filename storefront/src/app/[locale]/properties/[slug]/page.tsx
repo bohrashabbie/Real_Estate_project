@@ -6,6 +6,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import { localeAlternates, type Locale } from "@/i18n/routing";
 import { decodeSlugParam, getProperty, getSettings, mediaUrl } from "@/lib/api";
 import { formatPrice, formatSqm, telLink } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { Gallery } from "@/components/property/gallery";
 import { InquiryForm } from "@/components/property/inquiry-form";
 import { PropertyMap } from "@/components/property/property-map";
@@ -13,14 +14,9 @@ import { StatusPill } from "@/components/property/status-pill";
 import { WaPropertyButton } from "@/components/property/wa-property-button";
 import {
   ArrowIcon,
-  BathIcon,
-  BedIcon,
   CheckIcon,
-  ExpandIcon,
   ExternalIcon,
-  LayersIcon,
   PhoneIcon,
-  PinIcon,
 } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +50,19 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
+/**
+ * One property.
+ *
+ * Was a narrow centred column: every heading, every number and every paragraph
+ * centre-aligned down the middle of a 56rem page, with the price and the phone
+ * number at the very bottom. That is the shape of a flyer, and it put the one
+ * thing the page exists for — contacting the office — below everything else.
+ *
+ * Now it is a record and a counter: the detail reads down the main column at
+ * full width, while price, status, phone, WhatsApp and the inquiry form sit in
+ * a sticky column that stays on screen the whole way down. Same grid as the
+ * listings page, so the two pages feel like one building.
+ */
 export default async function PropertyDetailPage({ params }: { params: Params }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
@@ -81,148 +90,189 @@ export default async function PropertyDetailPage({ params }: { params: Params })
   const hasCoords =
     latitude !== null && longitude !== null && Number.isFinite(latitude) && Number.isFinite(longitude);
 
-  const tiles = [
-    { icon: <BedIcon width={22} height={22} />, label: t("rooms"), value: property.rooms },
-    {
-      icon: <ExpandIcon width={22} height={22} />,
-      label: t("sqm"),
-      value: formatSqm(property.area_sqm),
-    },
-    { icon: <LayersIcon width={22} height={22} />, label: t("floors"), value: property.floors },
-    { icon: <BathIcon width={22} height={22} />, label: t("bathrooms"), value: property.bathrooms },
+  // The dimension row — the same device as the listing cards, so the numbers
+  // are read the same way on both pages.
+  const dims = [
+    { label: t("rooms"), value: property.rooms },
+    { label: t("bathrooms"), value: property.bathrooms },
+    { label: t("floors"), value: property.floors },
+    { label: t("sqm"), value: formatSqm(property.area_sqm) },
   ];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-(--container-site) px-4 sm:px-6">
+      {/* Trail — where this sits in the register. */}
+      <nav className="flex flex-wrap items-center gap-2 py-4 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">
+        <Link href="/properties" className="transition-colors hover:text-gold">
+          {t("backToAll")}
+        </Link>
+        <span aria-hidden>/</span>
+        <Link
+          href={`/properties?area=${property.area.slug}`}
+          className="transition-colors hover:text-gold"
+        >
+          {property.area.name}
+        </Link>
+        <span aria-hidden>/</span>
+        <span className="text-navy" dir="ltr">
+          {property.ref_no}
+        </span>
+      </nav>
+
       <Gallery images={property.images} title={property.title} />
 
-      {/* Headline block */}
-      <header className="mt-8 text-center">
-        <p className="text-sm font-bold tracking-wide text-gold">
-          {property.type.name} • {t(`purpose.${property.purpose}`)}
-        </p>
-        <h1 className="mx-auto mt-3 max-w-2xl text-3xl font-bold leading-tight text-navy sm:text-4xl">
-          {property.title}
-        </h1>
-        <p className="mt-3 flex items-center justify-center gap-1.5 text-muted">
-          {property.area.name}
-          {property.block ? ` — ${t("block", { block: property.block })}` : null}
-          <PinIcon width={18} height={18} className="text-gold" />
-        </p>
-        <p className="mt-1 text-xs font-semibold tracking-wide text-muted/80" dir="ltr">
-          {property.ref_no}
-        </p>
-        <div className="mt-4 flex justify-center">
-          <StatusPill status={property.status} />
-        </div>
-        <p className="mt-4 text-3xl font-bold text-gold">
-          {formatPrice(property.price, property.purpose, typedLocale)}
-        </p>
-      </header>
+      <div className="grid border-t border-cream-200 lg:grid-cols-[1fr_21rem]">
+        {/* ---------------------------------------------------------------- */}
+        {/* The record                                                        */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="min-w-0 py-8 lg:pe-10">
+          <header>
+            <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-gold">
+              {property.type.name}
+              <span className="h-2.5 w-px bg-cream-300" aria-hidden />
+              <span className="text-muted">{t(`purpose.${property.purpose}`)}</span>
+              <StatusPill status={property.status} className="ms-1" />
+            </p>
 
-      {/* 2×2 stat tiles */}
-      <section className="mt-8 grid grid-cols-2 gap-3.5">
-        {tiles.map((tile) => (
-          <div
-            key={tile.label}
-            className="flex items-center justify-between gap-3 rounded-2xl bg-cream-100/80 p-5 ring-1 ring-cream-200"
-          >
-            <span className="text-gold">{tile.icon}</span>
-            <span className="text-end">
-              <span className="block text-xl font-bold text-navy">{tile.value ?? "—"}</span>
-              <span className="block text-sm text-muted">{tile.label}</span>
-            </span>
-          </div>
-        ))}
-      </section>
+            <h1 className="mt-3 font-display text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+              {property.title}
+            </h1>
 
-      {/* Description */}
-      {property.description ? (
-        <section className="mt-10 text-center">
-          <h2 className="text-2xl font-bold text-navy sm:text-3xl">{t("descriptionTitle")}</h2>
-          <p className="mx-auto mt-4 max-w-2xl whitespace-pre-line leading-relaxed text-muted">
-            {property.description}
-          </p>
-        </section>
-      ) : null}
+            <p className="mt-2 text-muted">
+              {property.area.name}
+              {property.block ? ` — ${t("block", { block: property.block })}` : null}
+            </p>
+          </header>
 
-      {/* Amenities */}
-      {property.amenities.length > 0 ? (
-        <section className="mt-10">
-          <h2 className="text-center text-2xl font-bold text-navy">{t("amenitiesTitle")}</h2>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {property.amenities.map((amenity) => (
-              <li
-                key={amenity.key}
-                className="flex items-center justify-between gap-3 rounded-2xl bg-cream-50 px-5 py-4 shadow-card ring-1 ring-cream-200"
+          <div className="dims mt-7">
+            {dims.map((dim) => (
+              <span
+                key={dim.label}
+                className={cn("dim", (dim.value ?? null) === null && "opacity-40")}
               >
-                <span className="font-semibold text-navy">{amenity.name}</span>
-                <CheckIcon width={20} height={20} strokeWidth={2.4} className="shrink-0 text-gold" />
-              </li>
+                <span className="dim-v text-xl">{dim.value ?? "—"}</span>
+                <span className="dim-k">{dim.label}</span>
+              </span>
             ))}
-          </ul>
-        </section>
-      ) : null}
-
-      {/* Map — only when the office pinned coordinates */}
-      {hasCoords ? (
-        <section className="mt-10 rounded-3xl bg-cream-50 p-4 shadow-card ring-1 ring-cream-200 sm:p-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-xl font-bold text-navy">{t("mapTitle")}</h2>
-            <a
-              href={`https://www.google.com/maps?q=${latitude},${longitude}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-cream px-4 py-2 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
-            >
-              <ExternalIcon width={16} height={16} className="text-gold" />
-              {t("openInMaps")}
-            </a>
           </div>
-          <PropertyMap latitude={latitude} longitude={longitude} />
-        </section>
-      ) : null}
 
-      {/* Contact card */}
-      <section className="mt-10 rounded-3xl bg-cream-50 p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
-        <p className="text-center text-base font-bold text-gold-dark">{t("contactTitle")}</p>
-        <p className="mt-2 text-center text-xl font-bold text-navy">{property.title}</p>
-
-        <div className="mt-6 flex flex-col gap-3">
-          {settings.phone ? (
-            <a
-              href={telLink(settings.phone)}
-              className="flex items-center justify-center gap-2.5 rounded-2xl bg-navy px-6 py-4 text-base font-bold text-cream shadow-card transition-colors hover:bg-navy-700"
-            >
-              {t("directContact")}
-              <PhoneIcon width={20} height={20} />
-            </a>
+          {property.description ? (
+            <section className="mt-10 border-t border-cream-200 pt-7">
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
+                {t("descriptionTitle")}
+              </h2>
+              <p className="mt-4 max-w-2xl whitespace-pre-line text-base leading-relaxed text-navy/85">
+                {property.description}
+              </p>
+            </section>
           ) : null}
-          {settings.whatsapp ? (
-            <WaPropertyButton number={settings.whatsapp} title={property.title} />
+
+          {property.amenities.length > 0 ? (
+            <section className="mt-10 border-t border-cream-200 pt-7">
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
+                {t("amenitiesTitle")}
+              </h2>
+              {/* A checked list, not a grid of boxed cards — an amenity is one
+                  word and does not need a container to prove it exists. */}
+              <ul className="mt-4 grid gap-x-10 sm:grid-cols-2">
+                {property.amenities.map((amenity) => (
+                  <li
+                    key={amenity.key}
+                    className="flex items-center gap-3 border-t border-cream-200 py-2.5 text-sm font-semibold text-navy first:border-t-0 sm:[&:nth-child(2)]:border-t-0"
+                  >
+                    <CheckIcon width={14} height={14} strokeWidth={3} className="shrink-0 text-gold" />
+                    {amenity.name}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {hasCoords ? (
+            <section className="mt-10 border-t border-cream-200 pt-7">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
+                  {t("mapTitle")}
+                </h2>
+                <a
+                  href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-cream-200 px-3.5 py-2 text-xs font-bold text-navy transition-colors hover:border-gold hover:text-gold"
+                >
+                  <ExternalIcon width={14} height={14} />
+                  {t("openInMaps")}
+                </a>
+              </div>
+              <div className="border border-cream-200">
+                <PropertyMap latitude={latitude} longitude={longitude} />
+              </div>
+            </section>
           ) : null}
         </div>
 
-        <div className="my-7 flex items-center gap-4 text-sm font-semibold text-muted">
-          <span className="h-px flex-1 bg-cream-200" />
-          {t("orInquiry")}
-          <span className="h-px flex-1 bg-cream-200" />
-        </div>
+        {/* ---------------------------------------------------------------- */}
+        {/* The counter — price and every way to reach the office             */}
+        {/* ---------------------------------------------------------------- */}
+        <aside className="border-t border-cream-200 py-8 lg:border-s lg:border-t-0 lg:ps-8">
+          <div className="lg:sticky lg:top-20">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
+              {t(`purpose.${property.purpose}`)}
+            </p>
+            <p className="mt-1.5 font-display text-3xl font-extrabold tabular-nums text-gold">
+              {formatPrice(property.price, property.purpose, typedLocale)}
+            </p>
 
-        <InquiryForm
-          propertyId={property.id}
-          source="property"
-          initialMessage={t("prefilledMessage", { title: property.title })}
-        />
-      </section>
+            <p className="mt-4 flex items-baseline justify-between gap-3 border-t border-cream-200 pt-3 text-xs">
+              <span className="font-bold uppercase tracking-[0.14em] text-muted">
+                {t("refLabel")}
+              </span>
+              <span className="font-bold tabular-nums text-navy" dir="ltr">
+                {property.ref_no}
+              </span>
+            </p>
 
-      <div className="mt-10 text-center">
+            <div className="mt-6 flex flex-col gap-2">
+              {settings.phone ? (
+                <a
+                  href={telLink(settings.phone)}
+                  className="flex items-center justify-center gap-2.5 bg-navy px-6 py-3.5 text-sm font-bold text-cream transition-colors hover:bg-gold"
+                >
+                  <PhoneIcon width={17} height={17} />
+                  {t("directContact")}
+                </a>
+              ) : null}
+              {settings.whatsapp ? (
+                <WaPropertyButton number={settings.whatsapp} title={property.title} />
+              ) : null}
+            </div>
+
+            <div className="my-6 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
+              <span className="h-px flex-1 bg-cream-200" aria-hidden />
+              {t("orInquiry")}
+              <span className="h-px flex-1 bg-cream-200" aria-hidden />
+            </div>
+
+            <InquiryForm
+              propertyId={property.id}
+              source="property"
+              initialMessage={t("prefilledMessage", { title: property.title })}
+            />
+          </div>
+        </aside>
+      </div>
+
+      <div className="border-t border-cream-200 py-8">
         <Link
           href="/properties"
-          className="inline-flex items-center gap-2 text-lg font-bold text-navy transition-colors hover:text-gold-dark"
+          className="group/back inline-flex items-center gap-3 text-sm font-bold text-navy transition-colors hover:text-gold"
         >
+          <ArrowIcon
+            width={17}
+            height={17}
+            className="rotate-180 transition-transform group-hover/back:-translate-x-1 rtl:rotate-0 rtl:group-hover/back:translate-x-1"
+          />
           {t("backToAll")}
-          <ArrowIcon width={20} height={20} className="rtl:rotate-180" />
         </Link>
       </div>
     </div>

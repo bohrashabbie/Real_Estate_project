@@ -61,7 +61,18 @@ export default async function LocaleLayout({
   const settings = await getSettings();
 
   return (
-    <html lang={locale} dir={localeDirection[typedLocale]} className={fontVariables}>
+    // `suppressHydrationWarning` is required, not cosmetic: the script below
+    // stamps `data-theme` on this element before React loads, so the server
+    // HTML (no attribute) and the client DOM (light or dark) legitimately
+    // differ. The alternative — rendering the theme on the server — is
+    // impossible, since only the browser knows what the visitor chose.
+    // It suppresses the warning for this element's attributes only.
+    <html
+      lang={locale}
+      dir={localeDirection[typedLocale]}
+      className={fontVariables}
+      suppressHydrationWarning
+    >
       <head>
         {/* Stamps the theme before first paint. A visitor who chose dark must
             never see a flash of the light ground on the way in, and nothing
