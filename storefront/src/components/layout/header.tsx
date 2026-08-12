@@ -9,6 +9,7 @@ import { telLink } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { MenuIcon, PhoneIcon } from "@/components/ui/icons";
 import { MenuOverlay } from "@/components/layout/menu-overlay";
+import { LocaleToggle } from "@/components/layout/locale-toggle";
 
 const NAV_ITEMS = [
   { href: "/", key: "home" },
@@ -33,9 +34,23 @@ export function Header({ settings }: { settings: SiteSettings }) {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-cream-200/70 bg-cream/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-(--container-site) items-center gap-3 px-4 py-3 sm:px-6">
-          {/* Brand mark + wordmark */}
-          <Link href="/" className="flex shrink-0 items-center gap-2.5 leading-tight">
+        <div className="mx-auto flex max-w-(--container-site) items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
+          {/* Brand mark + wordmark.
+
+              The bar carries five things on a phone — mark, CTA, phone tile,
+              language, menu — and every one of the controls is `shrink-0`,
+              because a squashed button is worse than a scrolled one. That
+              makes the wordmark the only element that can give way, so it is
+              the one that does: below `sm` the mark alone stands in for it,
+              still linking home. Without this the row overflowed a 360px
+              viewport and pushed the logo clean off the screen. */}
+          <Link
+            href="/"
+            // Below `sm` the visible wordmark is gone and the mark's alt is
+            // empty, which would leave this link with no accessible name.
+            aria-label={siteName}
+            className="flex min-w-0 items-center gap-2.5 leading-tight"
+          >
             {/* The mark is gold-on-black artwork, so it keeps its own dark
                 tile rather than sitting bare on the cream bar. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -44,14 +59,14 @@ export function Header({ settings }: { settings: SiteSettings }) {
               alt=""
               width={44}
               height={44}
-              className="h-10 w-10 rounded-xl object-cover ring-1 ring-cream-300 sm:h-11 sm:w-11"
+              className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-cream-300 sm:h-11 sm:w-11"
             />
-            <span>
-              <span className="block font-display text-base font-extrabold text-navy sm:text-xl">
+            <span className="hidden min-w-0 sm:block">
+              <span className="block truncate font-display text-base font-extrabold text-navy sm:text-xl">
                 {siteName}
               </span>
               {siteNameAlt ? (
-                <span className="block text-[11px] font-semibold tracking-wide text-gold-dark">
+                <span className="block truncate text-[11px] font-semibold tracking-wide text-gold-dark">
                   {siteNameAlt}
                 </span>
               ) : null}
@@ -80,18 +95,24 @@ export function Header({ settings }: { settings: SiteSettings }) {
             })}
           </nav>
 
-          {/* The action trio, in the order the reference design puts it: the
-              gold CTA sits closest to the wordmark, then the navy phone tile,
-              then the hamburger on the far edge. Language switching lives in
-              the menu overlay rather than here — the reference header carries
-              only these three controls, and the overlay already has a full
-              locale row at its foot. */}
+          {/* Ordered as the reference design has it — gold CTA closest to the
+              wordmark, then the navy phone tile, then the utility controls on
+              the far edge. The language switch sits with the menu button
+              because both are utilities, and it has to be here rather than
+              only inside the overlay: locale detection is off, so this is the
+              one route into English. */}
           <div className="ms-auto flex items-center gap-2 lg:ms-0 sm:gap-2.5">
+            {/* The CTA is the only elastic thing in the bar, so it carries a
+                short label on phones. Measured at 360px: the four controls,
+                the mark and the gaps leave it 127px, and the full English
+                label "List your property with us" is 188px — which pushed the
+                menu button clean off the screen. */}
             <Link
               href="/request"
-              className="bg-gold inline-flex shrink-0 items-center rounded-full px-4 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
+              className="bg-gold inline-flex shrink-0 items-center rounded-full px-3 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
             >
-              {t("nav.listYourProperty")}
+              <span className="sm:hidden">{t("nav.listYourPropertyShort")}</span>
+              <span className="hidden sm:inline">{t("nav.listYourProperty")}</span>
             </Link>
 
             {settings.phone ? (
@@ -103,6 +124,8 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 <PhoneIcon width={19} height={19} />
               </a>
             ) : null}
+
+            <LocaleToggle />
 
             <button
               type="button"
