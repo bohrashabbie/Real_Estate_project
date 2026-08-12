@@ -8,7 +8,8 @@
     "call": "Call us",
     "listYourProperty": "List your property with us",
     "switchToEnglish": "Switch to English",
-    "switchToArabic": "Switch to Arabic"
+    "switchToArabic": "Switch to Arabic",
+    "backToHome": "Back to home page"
   },
   "menu": {
     "title": "Menu",
@@ -72,7 +73,8 @@
   "notFound": {
     "title": "Page not found",
     "body": "The property may have been moved or removed. Browse all available properties instead.",
-    "cta": "Browse properties"
+    "cta": "Browse properties",
+    "backHome": "Back to home"
   },
   "home": {
     "metaTitle": "Your ideal property, closer to you",

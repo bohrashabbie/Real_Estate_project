@@ -5,6 +5,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Header } from "@/components/layout/header";
+import { BackToHome } from "@/components/layout/back-to-home";
 import { Footer } from "@/components/layout/footer";
 import { FloatingContact } from "@/components/layout/floating-contact";
 import { QueryProvider } from "@/providers/query-provider";
@@ -66,6 +67,8 @@ export default async function LocaleLayout({
           <QueryProvider>
             <Header settings={settings} />
             <main className="flex-1">{children}</main>
+            {/* Hides itself on the home page; see the component. */}
+            <BackToHome />
             <Footer settings={settings} locale={typedLocale} />
             <FloatingContact settings={settings} />
           </QueryProvider>
