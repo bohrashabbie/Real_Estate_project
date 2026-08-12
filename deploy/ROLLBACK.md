@@ -1,4 +1,32 @@
-# Rollback points — kwt25.com
+# Deploying and rolling back — kwt25.com
+
+## The deploy command
+
+```sh
+cd /opt/kwt25
+git pull --ff-only origin main
+docker compose -f compose.yml -f compose.edge.yml --env-file .env.vps \
+  up -d --build storefront
+```
+
+**Two files, never three.** `compose.ip.yml` is a leftover from before DNS
+existed and hard-codes `http://187.127.146.84:8080` into `NEXT_PUBLIC_*`,
+`PUBLIC_MEDIA_BASE_URL` and the CORS origins. Include it and the site still
+loads, but every `<img>` points at plain HTTP on the bare IP — which an HTTPS
+page blocks as mixed content, so the whole site renders with no photos. It is
+last-wins, so it silently overrides `compose.edge.yml` no matter the order you
+think you wrote. `docker compose ls` will happily report all three as the
+running config; that is a record of a past mistake, not the command to copy.
+
+Its own header says to drop the file once DNS exists. DNS exists — deleting it
+would remove the trap entirely.
+
+`admin` and `caddy` are deliberately not named above: admin is still served
+over plain HTTP on `:8081` and rebuilding it against `ADMIN_DOMAIN` would
+change how its auth cookie is set. Deploy it deliberately, not as a side
+effect.
+
+## Rollback points
 
 Known-good commits the live storefront has served, newest first. Each one is a
 commit you can check out on the VPS and rebuild from; nothing here is deleted
