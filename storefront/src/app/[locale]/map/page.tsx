@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { localeAlternates, type Locale } from "@/i18n/routing";
 import { MapExplorer } from "@/components/map/map-explorer";
+import { MapTabs } from "@/components/map/map-tabs";
 
 export const dynamic = "force-dynamic";
 
@@ -28,5 +29,15 @@ export default async function MapPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <MapExplorer locale={locale as Locale} />;
+  // No coordinates here: this page is the whole country, so Kuwait Finder
+  // opens on Kuwait rather than on any one pin.
+  return (
+    <div className="mx-auto max-w-(--container-site) px-4 py-6 sm:px-6">
+      <MapTabs>
+        <div className="overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-cream-200">
+          <MapExplorer locale={locale as Locale} />
+        </div>
+      </MapTabs>
+    </div>
+  );
 }

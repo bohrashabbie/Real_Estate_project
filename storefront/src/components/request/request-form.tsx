@@ -5,7 +5,9 @@ import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import { apiPost, type Area, type PropertyType } from "@/lib/api";
+import { roomsFilterApplies } from "@/lib/property";
 import { ArrowIcon, CheckIcon, SendIcon } from "@/components/ui/icons";
+import { OptionPicker } from "@/components/ui/option-picker";
 
 /** "Request your property" → POST /public/v1/property-requests. Everything but
  *  name + phone is optional, matching the API contract. */
@@ -28,6 +30,11 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  // The form stores the type's id; roomlessness is keyed on `key`, so resolve
+  // one to the other. Land and floors get no rooms field at all.
+  const selectedTypeKey = types.find((type) => String(type.id) === form.typeId)?.key;
+  const showRooms = roomsFilterApplies(selectedTypeKey ? [selectedTypeKey] : []);
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (state === "submitting") return;
@@ -41,7 +48,9 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
         area_id: form.areaId ? Number(form.areaId) : null,
         budget_min: form.budgetMin ? Number(form.budgetMin) : null,
         budget_max: form.budgetMax ? Number(form.budgetMax) : null,
-        rooms: form.rooms ? Number(form.rooms) : null,
+        // A room count left over from before the visitor switched to land
+        // would be sent for a property that cannot have one.
+        rooms: showRooms && form.rooms ? Number(form.rooms) : null,
         notes: form.notes || null,
       });
       setState("success");
@@ -99,51 +108,37 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
         </label>
       </div>
 
+      {/* Choices go through the site's `OptionPicker` rather than a native
+          `<select>`: a select is a single-column dropdown, and every other
+          list of options on the site is a two-column grid. */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className={labelClass}>{t("purpose")}</span>
-          <select
-            value={form.purpose}
-            onChange={(e) => update("purpose", e.target.value)}
-            className={inputClass}
-          >
-            <option value="">{t("noPreference")}</option>
-            <option value="rent">{t("purposeRent")}</option>
-            <option value="sale">{t("purposeSale")}</option>
-          </select>
-        </label>
-        <label className="block">
-          <span className={labelClass}>{t("type")}</span>
-          <select
-            value={form.typeId}
-            onChange={(e) => update("typeId", e.target.value)}
-            className={inputClass}
-          >
-            <option value="">{t("noPreference")}</option>
-            {types.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <OptionPicker
+          label={t("purpose")}
+          placeholder={t("noPreference")}
+          options={[
+            { value: "rent", label: t("purposeRent") },
+            { value: "sale", label: t("purposeSale") },
+          ]}
+          value={form.purpose ? [form.purpose] : []}
+          onChange={(next) => update("purpose", next[0] ?? "")}
+        />
+        <OptionPicker
+          label={t("type")}
+          placeholder={t("noPreference")}
+          options={types.map((type) => ({ value: String(type.id), label: type.name }))}
+          value={form.typeId ? [form.typeId] : []}
+          onChange={(next) => update("typeId", next[0] ?? "")}
+        />
       </div>
 
-      <label className="block">
-        <span className={labelClass}>{t("area")}</span>
-        <select
-          value={form.areaId}
-          onChange={(e) => update("areaId", e.target.value)}
-          className={inputClass}
-        >
-          <option value="">{t("anyArea")}</option>
-          {areas.map((area) => (
-            <option key={area.id} value={area.id}>
-              {area.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      <OptionPicker
+        label={t("area")}
+        placeholder={t("anyArea")}
+        options={areas.map((area) => ({ value: String(area.id), label: area.name }))}
+        value={form.areaId ? [form.areaId] : []}
+        onChange={(next) => update("areaId", next[0] ?? "")}
+        searchable
+      />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <label className="block">
@@ -168,21 +163,17 @@ export function RequestForm({ areas, types }: { areas: Area[]; types: PropertyTy
             className={inputClass}
           />
         </label>
-        <label className="block">
-          <span className={labelClass}>{t("rooms")}</span>
-          <select
-            value={form.rooms}
-            onChange={(e) => update("rooms", e.target.value)}
-            className={inputClass}
-          >
-            <option value="">{t("noPreference")}</option>
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <option key={n} value={n}>
-                {n}+
-              </option>
-            ))}
-          </select>
-        </label>
+        {/* No rooms field when the requested type has none — the same rule the
+            search filters follow. */}
+        {showRooms ? (
+          <OptionPicker
+            label={t("rooms")}
+            placeholder={t("noPreference")}
+            options={[1, 2, 3, 4, 5, 6].map((n) => ({ value: String(n), label: `${n}+` }))}
+            value={form.rooms ? [form.rooms] : []}
+            onChange={(next) => update("rooms", next[0] ?? "")}
+          />
+        ) : null}
       </div>
 
       <label className="block">

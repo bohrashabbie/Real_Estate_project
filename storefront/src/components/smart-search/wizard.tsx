@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { apiPost, type Area, type PropertyType, type SmartSearchResult } from "@/lib/api";
+import { roomsFilterApplies } from "@/lib/property";
 import { cn } from "@/lib/utils";
 import { PropertyCard } from "@/components/property/property-card";
 import { ArrowIcon, ResetIcon, SearchIcon, SparkleIcon } from "@/components/ui/icons";
@@ -18,6 +19,16 @@ import { ArrowIcon, ResetIcon, SearchIcon, SparkleIcon } from "@/components/ui/i
 
 const STEPS = ["purpose", "type", "area", "budget", "rooms"] as const;
 type Step = (typeof STEPS)[number];
+
+/** The steps this run actually asks. Land and floors have no rooms, so once
+ *  one of those is the answer to "type" the rooms question is dropped from the
+ *  wizard entirely rather than asked and ignored — which also shortens the
+ *  progress dots from five to four. */
+function stepsFor(answers: Answers): readonly Step[] {
+  return STEPS.filter(
+    (step) => step !== "rooms" || roomsFilterApplies(answers.type ? [answers.type] : []),
+  );
+}
 
 interface Answers {
   purpose?: string;
@@ -43,12 +54,17 @@ export function SmartSearchWizard({
   const [phase, setPhase] = useState<"wizard" | "loading" | "results" | "error">("wizard");
   const [result, setResult] = useState<SmartSearchResult | null>(null);
 
-  const step: Step = STEPS[stepIndex];
+  const steps = stepsFor(answers);
+  const step: Step = steps[Math.min(stepIndex, steps.length - 1)];
 
   function next(partial: Partial<Answers>) {
     const merged = { ...answers, ...partial };
+    // Recomputed from the merged answers, not the current ones: the type that
+    // removes the rooms step is chosen *by* this very call.
+    const mergedSteps = stepsFor(merged);
+    if (!mergedSteps.includes("rooms")) delete merged.rooms;
     setAnswers(merged);
-    if (stepIndex < STEPS.length - 1) {
+    if (stepIndex < mergedSteps.length - 1) {
       setStepIndex(stepIndex + 1);
     } else {
       void submit(merged);
@@ -98,7 +114,7 @@ export function SmartSearchWizard({
         <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
           {/* Progress dots */}
           <div className="flex items-center justify-center gap-2.5" aria-hidden>
-            {STEPS.map((name, index) => (
+            {steps.map((name, index) => (
               <span
                 key={name}
                 className={cn(
@@ -113,7 +129,7 @@ export function SmartSearchWizard({
             ))}
           </div>
           <p className="mt-3 text-center text-sm font-semibold text-muted">
-            {t("smart.stepOf", { current: stepIndex + 1, total: STEPS.length })}
+            {t("smart.stepOf", { current: stepIndex + 1, total: steps.length })}
           </p>
 
           <h2 className="mt-6 text-center text-2xl font-bold text-navy">
@@ -267,7 +283,7 @@ export function SmartSearchWizard({
               </Link>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {result.items.map((property) => (
                 <PropertyCard key={property.id} property={property} locale={locale} />
               ))}

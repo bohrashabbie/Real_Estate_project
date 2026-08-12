@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { mediaUrl, type PropertyListItem } from "@/lib/api";
 import { formatPrice, formatSqm } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import {
   ArrowIcon,
   BathIcon,
@@ -14,11 +13,26 @@ import {
   PinIcon,
   StarIcon,
 } from "@/components/ui/icons";
+import { CompareButton } from "@/components/property/compare-button";
 import { StatusPill } from "@/components/property/status-pill";
 
-/** Premium listing card: photo with soft gradient, gold-gradient distinct★
- *  badge and availability pill, purpose/type eyebrow, display-font title,
- *  area, spec strip, then price + arrow footer. The whole card lifts on hover. */
+/**
+ * The listing card, laid out exactly as the reference design in `mimic/`:
+ *
+ *   photo — navy "distinct" badge and the status, both on the inline-start side
+ *   ─────
+ *   gold "purpose • type" eyebrow          navy price
+ *   the title, large and heavy
+ *   pin + area
+ *   ── rule ──
+ *   bed 3 rooms      bath 2 baths      expand 145 m²
+ *   ── rule ──
+ *   view details →                       + compare
+ *
+ * The stats read as one phrase per column ("3 rooms"), not a value stacked over
+ * a label — with four cards to a row there is no width for a two-line stat, and
+ * the bare noun is how the reference prints it.
+ */
 export function PropertyCard({
   property,
   locale,
@@ -29,13 +43,11 @@ export function PropertyCard({
   const t = useTranslations();
   const image = mediaUrl(property.main_image);
   const sqm = formatSqm(property.area_sqm);
+  const href = `/properties/${property.slug}`;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-cream-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-float hover:ring-gold/40">
-      <Link
-        href={`/properties/${property.slug}`}
-        className="relative block aspect-[16/10] overflow-hidden bg-cream-100"
-      >
+    <article className="group flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-float">
+      <Link href={href} className="relative block aspect-[16/10] overflow-hidden bg-cream-100">
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -49,107 +61,100 @@ export function PropertyCard({
             <BuildingIcon width={56} height={56} strokeWidth={1.2} />
           </span>
         )}
-        {/* Soft legibility gradient over the photo bottom. */}
+
+        {/* Legibility gradient for the status line sitting on the photo. */}
         <span
           className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-navy-950/70 to-transparent"
           aria-hidden
         />
+
         {property.is_premium ? (
-          <span className="bg-gold-gradient absolute end-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-white shadow-gold">
+          <span className="absolute start-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-bold text-white shadow-card">
             {t("card.distinct")}
-            <StarIcon width={13} height={13} fill="currentColor" />
+            <StarIcon width={13} height={13} fill="currentColor" className="text-gold" />
           </span>
         ) : null}
+
         <span className="absolute bottom-3 start-3">
-          <StatusPill status={property.status} />
-        </span>
-        <span className="absolute bottom-3 end-3 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white backdrop-blur">
-          {t(`purpose.${property.purpose}`)}
+          <StatusPill status={property.status} tone="onPhoto" />
         </span>
       </Link>
 
-      <div className="flex flex-1 flex-col gap-2 p-5">
-        <p className="text-xs font-bold uppercase tracking-wider text-gold-dark">
-          {property.type.name}
-          {property.ref_no ? <span className="text-muted/70"> · {property.ref_no}</span> : null}
-        </p>
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="min-w-0 truncate text-sm font-bold text-gold-dark">
+            {t(`purpose.${property.purpose}`)} • {property.type.name}
+          </p>
+          <p className="shrink-0 font-display text-base font-extrabold text-navy">
+            {formatPrice(property.price, property.purpose, locale)}
+          </p>
+        </div>
 
-        <h3 className="font-display text-lg font-bold leading-snug text-navy">
-          <Link href={`/properties/${property.slug}`} className="transition-colors hover:text-gold-dark">
+        <h3 className="mt-2 font-display text-xl font-extrabold leading-snug text-navy">
+          <Link href={href} className="transition-colors hover:text-gold-dark">
             {property.title}
           </Link>
         </h3>
 
-        <p className="flex items-center gap-1.5 text-sm text-muted">
-          <PinIcon width={15} height={15} className="shrink-0 text-gold" />
+        <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
+          <PinIcon width={15} height={15} className="shrink-0" />
           {property.area.name}
           {property.block ? ` — ${t("card.block", { block: property.block })}` : null}
         </p>
 
-        {/* Three equal columns rather than one inline row: "bathrooms" is long
-            enough that a single line ran out of card and truncated every label
-            to "2 bath…". Stacking the label under the value gives each stat the
-            full third of the strip, and the separators are flow elements rather
-            than `divide-x` so they stay between the cells under RTL. */}
-        <div className="mt-2 flex items-stretch rounded-2xl bg-cream-50 px-2 py-2.5 text-sm ring-1 ring-cream-100">
-          <CardStat
-            icon={<BedIcon width={16} height={16} className="text-gold" />}
-            label={t("card.rooms")}
-            value={property.rooms}
-          />
-          <span className="w-px self-stretch bg-cream-200" aria-hidden />
-          <CardStat
-            icon={<BathIcon width={16} height={16} className="text-gold" />}
-            label={t("card.bathrooms")}
-            value={property.bathrooms}
-          />
-          <span className="w-px self-stretch bg-cream-200" aria-hidden />
-          <CardStat
-            icon={<ExpandIcon width={16} height={16} className="text-gold" />}
-            label={t("card.sqm")}
-            value={sqm}
-          />
-        </div>
+        {/* A listing with none of the three (bare land, typically) would
+            otherwise get an empty band bracketed by two rules. */}
+        {property.rooms !== null || property.bathrooms !== null || sqm !== null ? (
+          <div className="mt-4 flex items-center justify-between gap-2 border-y border-cream-200 py-3.5">
+            <CardStat
+              icon={<BedIcon width={17} height={17} />}
+              value={property.rooms}
+              noun={t("card.rooms")}
+            />
+            <CardStat
+              icon={<BathIcon width={17} height={17} />}
+              value={property.bathrooms}
+              noun={t("card.bathrooms")}
+            />
+            <CardStat
+              icon={<ExpandIcon width={17} height={17} />}
+              value={sqm}
+              noun={t("card.sqm")}
+            />
+          </div>
+        ) : null}
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-          <p className="font-display text-lg font-extrabold text-navy">
-            {formatPrice(property.price, property.purpose, locale)}
-          </p>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-3.5">
           <Link
-            href={`/properties/${property.slug}`}
-            aria-label={t("card.viewDetails")}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream text-navy ring-1 ring-cream-200 transition-all group-hover:bg-gold-gradient group-hover:text-white group-hover:ring-transparent group-hover:shadow-gold"
+            href={href}
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-navy transition-colors hover:text-gold-dark"
           >
-            <ArrowIcon width={17} height={17} className="rtl:rotate-180" />
+            {t("card.viewDetails")}
+            <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
           </Link>
+          <CompareButton />
         </div>
       </div>
     </article>
   );
 }
 
+/** One stat: gold icon, then "<value> <noun>" as a single line. */
 function CardStat({
   icon,
-  label,
   value,
+  noun,
 }: {
   icon: React.ReactNode;
-  label: string;
   value: string | number | null;
+  noun: string;
 }) {
+  if (value === null || value === undefined) return null;
   return (
-    <span
-      className={cn(
-        "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1.5 text-center",
-        value === null || value === undefined ? "opacity-40" : undefined,
-      )}
-    >
-      <span className="inline-flex items-center gap-1.5">
-        {icon}
-        <span className="font-bold text-navy">{value ?? "—"}</span>
-      </span>
-      <span className="w-full truncate text-[11px] font-semibold uppercase tracking-wide text-muted">
-        {label}
+    <span className="inline-flex min-w-0 items-center gap-1.5 text-sm">
+      <span className="shrink-0 text-gold">{icon}</span>
+      <span className="truncate font-bold text-navy">
+        {value} {noun}
       </span>
     </span>
   );

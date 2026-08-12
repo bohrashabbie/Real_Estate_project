@@ -13,11 +13,13 @@ export function formatAmount(value: string | number): string {
   }).format(numeric);
 }
 
-/** Rent → "650 KD/month" (٦٥٠ د.ك/شهرياً); sale → "KD 85,000". */
+/** Rent → "650 KD / month" (٦٥٠ د.ك / شهرياً); sale → "KD 85,000". The spaces
+ *  around the slash are the reference design's, and they also give the string
+ *  somewhere to wrap in a narrow card rather than overflowing. */
 export function formatPrice(price: string | number, purpose: Purpose, locale: Locale): string {
   const amount = formatAmount(price);
   if (purpose === "rent") {
-    return locale === "ar" ? `${amount} د.ك/شهرياً` : `${amount} KD/month`;
+    return locale === "ar" ? `${amount} د.ك / شهرياً` : `${amount} KD / month`;
   }
   return locale === "ar" ? `${amount} د.ك` : `KD ${amount}`;
 }

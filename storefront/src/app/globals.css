@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   kwt25 storefront — design tokens v3 (emerald + copper)
+   kwt25 storefront — design tokens v4 (gold + navy on cream)
    ---------------------------------------------------------------------------
-   Porcelain ground, deep emerald ink, copper accent. White rounded-3xl cards,
-   pill buttons, gradient copper CTAs, soft layered shadows, subtle motion.
-   NOTE: utility names (cream/navy/gold) are historical — they now map to
-   porcelain / emerald / copper. Retheme by swapping values here only.
+   Cream ground, deep navy ink, gold accent — the palette in `mimic/`, and the
+   one SPEC/CLAUDE.md have always named. White rounded-3xl cards, pill buttons,
+   gradient gold CTAs, soft layered shadows, subtle motion. Retheme by swapping
+   values here only; every component reads these tokens.
    Status: available = green, rented/sold = red/neutral, reserved = amber.
 --------------------------------------------------------------------------- */
 
 @theme {
-  /* -- "cream" = porcelain: page ground, tint surfaces, chips -------------- */
-  --color-cream: #f5f7f4;
-  --color-cream-50: #fbfcfa;
-  --color-cream-100: #ecf0ea;
-  --color-cream-200: #dde4da;
-  --color-cream-300: #c3cfc0;
+  /* -- Cream: page ground, tint surfaces, chips ---------------------------- */
+  --color-cream: #faf6ec;
+  --color-cream-50: #fdfbf5;
+  --color-cream-100: #f3ecdc;
+  --color-cream-200: #e7dcc4;
+  --color-cream-300: #d5c6a4;
 
-  /* -- "navy" = deep emerald: text, dark surfaces, dark pills -------------- */
-  --color-navy: #0f3d33;
-  --color-navy-950: #062019;
-  --color-navy-900: #0a2b23;
-  --color-navy-800: #12463a;
-  --color-navy-700: #175447;
-  --color-navy-600: #1e6a59;
-  --color-navy-100: #e2ede8;
+  /* -- Navy: text, dark surfaces, dark pills -------------------------------- */
+  --color-navy: #152a3d;
+  --color-navy-950: #0a1622;
+  --color-navy-900: #0f1f2d;
+  --color-navy-800: #1b354c;
+  --color-navy-700: #22405a;
+  --color-navy-600: #2d5273;
+  --color-navy-100: #dbe2e9;
 
-  /* -- "gold" = copper: the brand accent ------------------------------------ */
-  --color-gold: #c0764a;
-  --color-gold-light: #da9a6e;
-  --color-gold-dark: #a55e37;
-  --color-gold-100: #f8ebe1;
-  --color-gold-200: #efd7c3;
+  /* -- Gold: the brand accent ------------------------------------------------ */
+  --color-gold: #b8934b;
+  --color-gold-light: #d4b577;
+  --color-gold-dark: #96742f;
+  --color-gold-100: #f6eedc;
+  --color-gold-200: #ebdcba;
 
-  /* -- Muted ink on porcelain ------------------------------------------------ */
-  --color-muted: #5c6b64;
+  /* -- Muted ink on cream ---------------------------------------------------- */
+  --color-muted: #6d6a60;
 
   /* -- Semantic aliases ------------------------------------------------------ */
   --color-background: var(--color-cream);
@@ -49,14 +49,34 @@
   --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cairo), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-card: 0 10px 30px -14px rgb(15 61 51 / 0.18);
-  --shadow-float: 0 18px 44px -16px rgb(15 61 51 / 0.32);
-  --shadow-gold: 0 12px 32px -12px rgb(192 118 74 / 0.55);
+  --shadow-card: 0 10px 30px -14px rgb(21 42 61 / 0.18);
+  --shadow-float: 0 18px 44px -16px rgb(21 42 61 / 0.32);
+  --shadow-gold: 0 12px 32px -12px rgb(184 147 75 / 0.55);
 
   --container-site: 78rem;
 
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-float-slow: float-slow 7s ease-in-out infinite;
+  --animate-slide-up: slide-up 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.2s ease-out both;
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
   @keyframes fade-up {
     from {
@@ -98,14 +118,14 @@ body {
 
 /* -- Premium helpers -------------------------------------------------------- */
 
-/* Copper gradient fill for CTAs and badges. */
+/* Gold gradient fill for CTAs and badges. */
 .bg-gold-gradient {
-  background-image: linear-gradient(135deg, #da9a6e 0%, #c0764a 55%, #a55e37 100%);
+  background-image: linear-gradient(135deg, #d4b577 0%, #b8934b 55%, #96742f 100%);
 }
 
-/* Copper gradient headline text. */
+/* Gold gradient headline text. */
 .text-gold-gradient {
-  background-image: linear-gradient(120deg, #f0c29e 0%, #da9a6e 40%, #c9834f 100%);
+  background-image: linear-gradient(120deg, #efdcb4 0%, #d4b577 40%, #bb9852 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -119,9 +139,9 @@ body {
   background-size: 44px 44px;
 }
 
-/* Soft radial copper glow, positioned by the parent. */
+/* Soft radial gold glow, positioned by the parent. */
 .gold-glow {
-  background: radial-gradient(closest-side, rgb(192 118 74 / 0.32), transparent 70%);
+  background: radial-gradient(closest-side, rgb(184 147 75 / 0.32), transparent 70%);
 }
 
 /* Frosted panel on dark surfaces. */
@@ -134,7 +154,9 @@ body {
 /* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
-  .animate-float-slow {
+  .animate-float-slow,
+  .animate-slide-up,
+  .animate-fade-in {
     animation: none;
   }
 }

@@ -293,5 +293,21 @@
     "previous": "Previous slide",
     "next": "Next slide",
     "goTo": "Go to slide {number}"
+  },
+  "picker": {
+    "search": "Search",
+    "searchPlaceholder": "Type a {field} name",
+    "areaCount": "{count} areas",
+    "noMatches": "Nothing matches that.",
+    "done": "Done",
+    "close": "Close"
+  },
+  "finder": {
+    "mapTab": "Map",
+    "finderTab": "Kuwait Finder",
+    "openInFinder": "Open in Kuwait Finder",
+    "embedNote": "Kuwait Finder is the official app of the Public Authority for Civil Information (PACI). If the map below doesn't appear, open it with the button above or in the app.",
+    "iosApp": "iPhone app",
+    "androidApp": "Android app"
   }
 }

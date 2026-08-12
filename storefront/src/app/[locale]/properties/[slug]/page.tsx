@@ -6,6 +6,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import { localeAlternates, type Locale } from "@/i18n/routing";
 import { decodeSlugParam, getProperty, getSettings, mediaUrl } from "@/lib/api";
 import { formatPrice, formatSqm, telLink } from "@/lib/format";
+import { MapTabs } from "@/components/map/map-tabs";
 import { Gallery } from "@/components/property/gallery";
 import { InquiryForm } from "@/components/property/inquiry-form";
 import { PropertyMap } from "@/components/property/property-map";
@@ -164,22 +165,29 @@ export default async function PropertyDetailPage({ params }: { params: Params })
         </section>
       ) : null}
 
-      {/* Map — only when the office pinned coordinates */}
+      {/* Map — only when the office pinned coordinates. Two tabs: the site's
+          own map, and PACI's Kuwait Finder, which is the address system this
+          country actually navigates by. */}
       {hasCoords ? (
         <section className="mt-10 rounded-3xl bg-white p-4 shadow-card ring-1 ring-cream-200 sm:p-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-xl font-bold text-navy">{t("mapTitle")}</h2>
-            <a
-              href={`https://www.google.com/maps?q=${latitude},${longitude}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-cream px-4 py-2 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
-            >
-              <ExternalIcon width={16} height={16} className="text-gold" />
-              {t("openInMaps")}
-            </a>
-          </div>
-          <PropertyMap latitude={latitude} longitude={longitude} />
+          <h2 className="mb-4 text-xl font-bold text-navy">{t("mapTitle")}</h2>
+          <MapTabs
+            latitude={latitude}
+            longitude={longitude}
+            mapAction={
+              <a
+                href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-cream px-4 py-2 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
+              >
+                <ExternalIcon width={16} height={16} className="text-gold" />
+                {t("openInMaps")}
+              </a>
+            }
+          >
+            <PropertyMap latitude={latitude} longitude={longitude} />
+          </MapTabs>
         </section>
       ) : null}
 

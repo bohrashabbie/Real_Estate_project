@@ -10,11 +10,21 @@ const STYLES: Record<PropertyStatus, { pill: string; dot: string }> = {
   reserved: { pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
 };
 
+/**
+ * `tone="pill"` is the standalone badge used on the detail page.
+ *
+ * `tone="onPhoto"` is what the listing card uses: bare white type with the
+ * status dot, sitting straight on the photo. A tinted pill there fights the
+ * "distinct" badge in the opposite corner for attention, and the photo already
+ * carries a legibility gradient behind it.
+ */
 export function StatusPill({
   status,
+  tone = "pill",
   className,
 }: {
   status: PropertyStatus;
+  tone?: "pill" | "onPhoto";
   className?: string;
 }) {
   const t = useTranslations("status");
@@ -23,8 +33,10 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold shadow-sm",
-        style.pill,
+        "inline-flex items-center gap-2 text-xs font-bold",
+        tone === "pill"
+          ? cn("rounded-full px-3.5 py-1.5 shadow-sm", style.pill)
+          : "text-white drop-shadow",
         className,
       )}
     >

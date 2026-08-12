@@ -9,7 +9,6 @@ import { telLink } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { MenuIcon, PhoneIcon } from "@/components/ui/icons";
 import { MenuOverlay } from "@/components/layout/menu-overlay";
-import { LocaleToggle } from "@/components/layout/locale-toggle";
 
 const NAV_ITEMS = [
   { href: "/", key: "home" },
@@ -81,45 +80,39 @@ export function Header({ settings }: { settings: SiteSettings }) {
             })}
           </nav>
 
+          {/* The action trio, in the order the reference design puts it: the
+              gold CTA sits closest to the wordmark, then the navy phone tile,
+              then the hamburger on the far edge. Language switching lives in
+              the menu overlay rather than here — the reference header carries
+              only these three controls, and the overlay already has a full
+              locale row at its foot. */}
           <div className="ms-auto flex items-center gap-2 lg:ms-0 sm:gap-2.5">
-            <LocaleToggle />
+            <Link
+              href="/request"
+              className="bg-gold-gradient inline-flex shrink-0 items-center rounded-full px-4 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
+            >
+              {t("nav.listYourProperty")}
+            </Link>
 
             {settings.phone ? (
               <a
                 href={telLink(settings.phone)}
                 aria-label={t("nav.call")}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-navy hover:text-white"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-navy text-white shadow-card transition-colors hover:bg-navy-700"
               >
                 <PhoneIcon width={19} height={19} />
               </a>
             ) : null}
 
-            <Link
-              href="/request"
-              className="bg-gold-gradient hidden shrink-0 items-center rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:inline-flex"
-            >
-              {t("nav.listYourProperty")}
-            </Link>
-
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
               aria-label={t("nav.openMenu")}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-cream-100 lg:hidden"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-cream-100 text-navy transition-colors hover:bg-cream-200 lg:hidden"
             >
               <MenuIcon width={22} height={22} />
             </button>
           </div>
-        </div>
-
-        {/* Mobile gets the CTA on its own row so it never collides with the wordmark. */}
-        <div className="border-t border-cream-200/70 px-4 pb-2.5 pt-2 sm:hidden">
-          <Link
-            href="/request"
-            className="bg-gold-gradient flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-gold transition-all active:scale-[0.98]"
-          >
-            {t("nav.listYourProperty")}
-          </Link>
         </div>
       </header>
 

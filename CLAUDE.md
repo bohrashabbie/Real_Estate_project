@@ -60,7 +60,12 @@ site's conversions are phone call, WhatsApp, inquiry form, and the
 - Admin: bearer token in memory + refresh cookie via `/api/auth/*` route handlers
   (copied from GRC). Errors keyed off the `{code,message,details}` envelope.
 - Storefront: server components fetch from `/public/v1`; maplibre-gl with
-  OpenFreeMap tiles for maps; theme cream `#FAF6EC` / navy `#152A3D` / gold `#B8934B`.
+  OpenFreeMap tiles for maps; theme cream `#FAF6EC` / navy `#152A3D` / gold `#B8934B`
+  (tokens live in `storefront/src/app/globals.css` — retheme there, nowhere else).
+- Every list of options on the storefront goes through `OptionPicker` /
+  `OptionGrid` (`components/ui/option-picker.tsx`) — two columns, never a
+  native `<select>`. Listing filters wrap `OptionGrid` in a `BottomSheet`.
+- Previously-live designs and how to restore them: `deploy/ROLLBACK.md`.
 
 ## Login (dev seed)
 

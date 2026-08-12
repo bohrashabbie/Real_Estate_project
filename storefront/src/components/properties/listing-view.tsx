@@ -17,17 +17,25 @@ import {
   type PropertyType,
 } from "@/lib/api";
 import { formatAmount } from "@/lib/format";
+import { roomsFilterApplies } from "@/lib/property";
 import { cn } from "@/lib/utils";
+import { MapTabs } from "@/components/map/map-tabs";
 import { PropertyCard } from "@/components/property/property-card";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { OptionGrid, type PickerOption } from "@/components/ui/option-picker";
 import {
+  BedIcon,
   CheckIcon,
   ChevronDownIcon,
   CloseIcon,
+  ExpandIcon,
   HomeIcon,
   MapIcon,
   PinIcon,
   ResetIcon,
   SearchIcon,
+  SwapIcon,
+  TagIcon,
 } from "@/components/ui/icons";
 
 // Map view is heavy (maplibre) — load it only when the visitor switches to it.
@@ -72,6 +80,13 @@ const EMPTY_FILTERS: Filters = {
 };
 
 const STATUS_OPTIONS: PropertyStatus[] = ["available", "reserved", "sold"];
+
+/** Which filter's sheet is currently up. One at a time, by design. */
+type FilterKey = "area" | "types" | "purposes" | "price" | "rooms" | "sqm" | "statuses";
+
+/** Price brackets are a single-select list like every other filter, so the
+ *  min/max pair has to survive as one option value. */
+const BRACKET_SEPARATOR = "|";
 
 function fromSearchParams(params: URLSearchParams): Filters {
   const list = (key: string) => (params.get(key) ?? "").split(",").filter(Boolean);
@@ -119,7 +134,9 @@ export function ListingView({
   const searchParams = useSearchParams();
 
   const [filters, setFilters] = useState<Filters>(() => fromSearchParams(new URLSearchParams(searchParams)));
-  const [panelOpen, setPanelOpen] = useState(true);
+  // Nothing is expanded on arrival: the visitor sees results first, and opens
+  // one filter at a time from the bar.
+  const [openFilter, setOpenFilter] = useState<FilterKey | null>(null);
   const [view, setView] = useState<"grid" | "map">("grid");
 
   // State → URL, debounced so the price/sqm inputs don't churn history.
@@ -184,6 +201,17 @@ export function ListingView({
 
   const activePurposeTab =
     filters.purposes.length === 1 ? filters.purposes[0] : "all";
+
+  // Land and floors have no rooms; offering "3+ rooms" against them can only
+  // return nothing. The control is withdrawn — and any room count already
+  // chosen is dropped with it, because a filter the visitor can no longer see
+  // must not keep narrowing their results.
+  const showRooms = roomsFilterApplies(filters.types);
+  useEffect(() => {
+    if (showRooms) return;
+    setOpenFilter((open) => (open === "rooms" ? null : open));
+    setFilters((f) => (f.rooms ? { ...f, rooms: "" } : f));
+  }, [showRooms]);
 
   // Tap-first price brackets — sale money is a different order of magnitude
   // than rent, so the presets follow the active purpose tab.
@@ -291,6 +319,91 @@ export function ListingView({
     });
   }
 
+  const priceOptions: PickerOption[] = priceBrackets.map((bracket) => ({
+    value: `${bracket.min}${BRACKET_SEPARATOR}${bracket.max}`,
+    label: bracketLabel(bracket),
+  }));
+
+  // One entry per sheet. `label` is what the closed pill reads — the chosen
+  // value where there is one, the filter's name where there is not — so the bar
+  // doubles as a summary of what is currently applied. Rooms is absent entirely
+  // when the selected types have none.
+  const areaName = filters.area
+    ? (areas.find((a) => a.slug === filters.area)?.name ?? filters.area)
+    : null;
+  const typeNames = filters.types
+    .map((key) => types.find((pt) => pt.key === key)?.name ?? key)
+    .join("، ");
+  const triggers: {
+    key: FilterKey;
+    title: string;
+    label: string;
+    icon: React.ReactNode;
+    active: boolean;
+  }[] = [
+    {
+      key: "area",
+      title: t("filters.area"),
+      label: areaName ?? t("filters.area"),
+      icon: <PinIcon width={15} height={15} />,
+      active: Boolean(filters.area),
+    },
+    {
+      key: "types",
+      title: t("filters.propertyType"),
+      label: typeNames || t("filters.propertyType"),
+      icon: <HomeIcon width={15} height={15} />,
+      active: filters.types.length > 0,
+    },
+    {
+      key: "purposes",
+      title: t("filters.purpose"),
+      label:
+        filters.purposes.length === 1
+          ? t(`purpose.${filters.purposes[0]}`)
+          : t("filters.purpose"),
+      icon: <SwapIcon width={15} height={15} />,
+      active: filters.purposes.length > 0,
+    },
+    {
+      key: "price",
+      title: t("filters.price"),
+      label: t("filters.price"),
+      icon: <TagIcon width={15} height={15} />,
+      active: Boolean(filters.priceMin || filters.priceMax),
+    },
+    ...(showRooms
+      ? [
+          {
+            key: "rooms" as const,
+            title: t("filters.allRooms"),
+            label: filters.rooms
+              ? t("filters.roomsAtLeast", { count: Number(filters.rooms) })
+              : t("filters.allRooms"),
+            icon: <BedIcon width={15} height={15} />,
+            active: Boolean(filters.rooms),
+          },
+        ]
+      : []),
+    {
+      key: "sqm",
+      title: t("filters.sqmMin"),
+      label: filters.sqm
+        ? t("filters.sqmAtLeast", { value: filters.sqm })
+        : t("filters.sqmMin"),
+      icon: <ExpandIcon width={15} height={15} />,
+      active: Boolean(filters.sqm),
+    },
+    {
+      key: "statuses",
+      title: t("filters.status"),
+      label: t("filters.status"),
+      icon: <CheckIcon width={15} height={15} />,
+      active: filters.statuses.length > 0 || filters.premiumOnly,
+    },
+  ];
+  const activeTrigger = triggers.find((trigger) => trigger.key === openFilter);
+
   return (
     <div>
       {/* Page banner */}
@@ -311,238 +424,193 @@ export function ListingView({
       </section>
 
       <div className="mx-auto max-w-(--container-site) px-4 pb-14 sm:px-6">
-      {/* Filter panel */}
-      <section className="relative z-10 -mt-8 rounded-3xl bg-white shadow-float ring-1 ring-cream-200">
-        <button
-          type="button"
-          onClick={() => setPanelOpen((open) => !open)}
-          className="flex w-full items-center justify-between gap-3 p-5 text-start"
-          aria-expanded={panelOpen}
-        >
-          <span className="text-lg font-bold text-navy">{t("filters.title")}</span>
-          <ChevronDownIcon
-            width={20}
-            height={20}
-            className={cn("text-gold transition-transform", panelOpen ? "rotate-180" : undefined)}
-          />
-        </button>
-
-        {panelOpen ? (
-          <div className="flex flex-col gap-6 border-t border-cream-200 p-5">
-            {/* Areas */}
-            <fieldset>
-              <legend className="mb-3 text-base font-bold text-navy">{t("filters.area")}</legend>
-              <div className="grid max-h-72 grid-cols-2 gap-2.5 overflow-y-auto pe-1 sm:grid-cols-3 lg:grid-cols-4">
-                {areas.map((area) => {
-                  const selected = filters.area === area.slug;
-                  return (
-                    <button
-                      key={area.slug}
-                      type="button"
-                      onClick={() =>
-                        setFilters((f) => ({ ...f, area: selected ? "" : area.slug }))
-                      }
-                      className={cn(
-                        "flex flex-col items-center gap-1.5 rounded-2xl border p-3.5 text-sm font-semibold transition-colors",
-                        selected
-                          ? "border-gold bg-gold-100 text-navy"
-                          : "border-cream-200 bg-cream/60 text-navy hover:border-gold/60",
-                      )}
-                    >
-                      <PinIcon width={18} height={18} className="text-gold" />
-                      {area.name}
-                    </button>
-                  );
-                })}
-                {areas.length === 0 ? (
-                  <p className="col-span-full text-sm text-muted">{t("filters.noAreas")}</p>
-                ) : null}
-              </div>
-            </fieldset>
-
-            {/* Purpose */}
-            <fieldset className="border-t border-cream-200 pt-5">
-              <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.purpose")}
-              </legend>
-              <div className="flex flex-wrap gap-x-6 gap-y-2.5 clear-both pt-1">
-                {(["rent", "sale"] as const).map((purpose) => (
-                  <FilterCheckbox
-                    key={purpose}
-                    label={t(`purpose.${purpose}`)}
-                    checked={filters.purposes.includes(purpose)}
-                    onChange={(checked) =>
-                      setFilters((f) => ({
-                        ...f,
-                        purposes: checked
-                          ? [...f.purposes, purpose]
-                          : f.purposes.filter((p) => p !== purpose),
-                      }))
-                    }
-                  />
-                ))}
-              </div>
-            </fieldset>
-
-            {/* Property type */}
-            <fieldset className="border-t border-cream-200 pt-5">
-              <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.propertyType")}
-              </legend>
-              <div className="flex flex-wrap gap-x-6 gap-y-2.5 clear-both pt-1">
-                {types.map((type) => (
-                  <FilterCheckbox
-                    key={type.key}
-                    label={type.name}
-                    checked={filters.types.includes(type.key)}
-                    onChange={(checked) =>
-                      setFilters((f) => ({
-                        ...f,
-                        types: checked
-                          ? [...f.types, type.key]
-                          : f.types.filter((k) => k !== type.key),
-                      }))
-                    }
-                  />
-                ))}
-                {types.length === 0 ? (
-                  <p className="text-sm text-muted">{t("filters.noTypes")}</p>
-                ) : null}
-              </div>
-            </fieldset>
-
-            {/* Price — tap a bracket (KD); custom range stays available. */}
-            <fieldset className="border-t border-cream-200 pt-5">
-              <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.price")}
-              </legend>
-              <div className="flex flex-wrap gap-2.5 clear-both pt-1">
-                <ChipButton
-                  label={t("filters.any")}
-                  selected={!filters.priceMin && !filters.priceMax}
-                  onClick={() => setFilters((f) => ({ ...f, priceMin: "", priceMax: "" }))}
-                />
-                {priceBrackets.map((bracket) => (
-                  <ChipButton
-                    key={`${bracket.min}-${bracket.max}`}
-                    label={bracketLabel(bracket)}
-                    selected={filters.priceMin === bracket.min && filters.priceMax === bracket.max}
-                    onClick={() =>
-                      setFilters((f) => ({ ...f, priceMin: bracket.min, priceMax: bracket.max }))
-                    }
-                  />
-                ))}
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <input
-                  type="number"
-                  min={0}
-                  inputMode="numeric"
-                  placeholder={t("filters.priceFrom")}
-                  value={filters.priceMin}
-                  onChange={(event) =>
-                    setFilters((f) => ({ ...f, priceMin: event.target.value }))
-                  }
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
-                />
-                <input
-                  type="number"
-                  min={0}
-                  inputMode="numeric"
-                  placeholder={t("filters.priceTo")}
-                  value={filters.priceMax}
-                  onChange={(event) =>
-                    setFilters((f) => ({ ...f, priceMax: event.target.value }))
-                  }
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-3 text-navy outline-none transition-colors focus:border-gold"
-                />
-              </div>
-            </fieldset>
-
-            {/* Rooms — tap a count. */}
-            <fieldset className="border-t border-cream-200 pt-5">
-              <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.allRooms")}
-              </legend>
-              <div className="flex flex-wrap gap-2.5 clear-both pt-1">
-                <ChipButton
-                  label={t("filters.any")}
-                  selected={!filters.rooms}
-                  onClick={() => setFilters((f) => ({ ...f, rooms: "" }))}
-                />
-                {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <ChipButton
-                    key={n}
-                    label={t("filters.roomsAtLeast", { count: n })}
-                    selected={filters.rooms === String(n)}
-                    onClick={() => setFilters((f) => ({ ...f, rooms: String(n) }))}
-                  />
-                ))}
-              </div>
-            </fieldset>
-
-            {/* Space — tap a minimum size. */}
-            <fieldset className="border-t border-cream-200 pt-5">
-              <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.sqmMin")}
-              </legend>
-              <div className="flex flex-wrap gap-2.5 clear-both pt-1">
-                <ChipButton
-                  label={t("filters.any")}
-                  selected={!filters.sqm}
-                  onClick={() => setFilters((f) => ({ ...f, sqm: "" }))}
-                />
-                {[100, 200, 400, 600, 1000].map((n) => (
-                  <ChipButton
-                    key={n}
-                    label={t("filters.sqmAtLeast", { value: n })}
-                    selected={filters.sqm === String(n)}
-                    onClick={() => setFilters((f) => ({ ...f, sqm: String(n) }))}
-                  />
-                ))}
-              </div>
-            </fieldset>
-
-            {/* Status + premium */}
-            <fieldset className="border-t border-cream-200 pt-5">
-              <legend className="float-start mb-3 text-base font-bold text-navy">
-                {t("filters.status")}
-              </legend>
-              <div className="flex flex-wrap gap-x-6 gap-y-2.5 clear-both pt-1">
-                {STATUS_OPTIONS.map((status) => (
-                  <FilterCheckbox
-                    key={status}
-                    label={t(`status.${status}`)}
-                    checked={filters.statuses.includes(status)}
-                    onChange={(checked) =>
-                      setFilters((f) => ({
-                        ...f,
-                        statuses: checked
-                          ? [...f.statuses, status]
-                          : f.statuses.filter((s) => s !== status),
-                      }))
-                    }
-                  />
-                ))}
-                <FilterCheckbox
-                  label={t("filters.premiumOnly")}
-                  checked={filters.premiumOnly}
-                  onChange={(checked) => setFilters((f) => ({ ...f, premiumOnly: checked }))}
-                />
-              </div>
-            </fieldset>
-
+      {/* Filter bar — collapsed. Each control raises its own sheet from the
+          bottom of the screen, one at a time, over results that keep updating
+          live behind it. The old design stacked every fieldset open at once,
+          which put the first listing two screens below the filters. */}
+      <section className="relative z-10 -mt-8 rounded-3xl bg-white p-4 shadow-float ring-1 ring-cream-200 sm:p-5">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-display text-lg font-extrabold text-navy">{t("filters.title")}</p>
+          {chips.length > 0 ? (
             <button
               type="button"
               onClick={() => setFilters(EMPTY_FILTERS)}
-              className="flex items-center justify-center gap-2 rounded-2xl border border-cream-200 bg-white px-6 py-3.5 text-base font-bold text-navy shadow-sm transition-colors hover:bg-cream-100"
+              className="inline-flex items-center gap-2 rounded-full bg-cream px-4 py-2 text-sm font-bold text-navy ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
             >
-              {t("filters.clear")}
-              <ResetIcon width={18} height={18} className="text-gold" />
+              {t("filters.clearAll")}
+              <ResetIcon width={15} height={15} className="text-gold" />
             </button>
+          ) : null}
+        </div>
+
+        <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1">
+          {triggers.map((trigger) => (
+            <button
+              key={trigger.key}
+              type="button"
+              onClick={() => setOpenFilter(trigger.key)}
+              aria-haspopup="dialog"
+              className={cn(
+                "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-bold transition-colors",
+                trigger.active
+                  ? "border-gold bg-gold-100 text-navy"
+                  : "border-cream-200 bg-white text-navy hover:border-gold/60 hover:bg-cream-50",
+              )}
+            >
+              <span className="text-gold">{trigger.icon}</span>
+              {trigger.label}
+              <ChevronDownIcon width={14} height={14} className="text-gold" />
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <BottomSheet
+        open={openFilter !== null}
+        title={activeTrigger?.title ?? t("filters.title")}
+        subtitle={t("listing.count", { count: items.length })}
+        onClose={() => setOpenFilter(null)}
+      >
+        {openFilter === "area" ? (
+          <OptionGrid
+            options={areas.map((area) => ({ value: area.slug, label: area.name }))}
+            value={filters.area ? [filters.area] : []}
+            onChange={(next) => setFilters((f) => ({ ...f, area: next[0] ?? "" }))}
+            searchable
+            searchLabel={t("picker.searchPlaceholder", { field: t("filters.area") })}
+            allLabel={t("home.allAreas")}
+            allHint={t("picker.areaCount", { count: areas.length })}
+            emptyLabel={t("filters.noAreas")}
+            onPicked={() => setOpenFilter(null)}
+          />
+        ) : null}
+
+        {openFilter === "types" ? (
+          <OptionGrid
+            options={types.map((type) => ({ value: type.key, label: type.name }))}
+            value={filters.types}
+            onChange={(next) => setFilters((f) => ({ ...f, types: next }))}
+            multiple
+            allLabel={t("home.allTypes")}
+            emptyLabel={t("filters.noTypes")}
+          />
+        ) : null}
+
+        {openFilter === "purposes" ? (
+          <OptionGrid
+            options={(["rent", "sale"] as const).map((purpose) => ({
+              value: purpose,
+              label: t(`purpose.${purpose}`),
+            }))}
+            value={filters.purposes}
+            onChange={(next) => setFilters((f) => ({ ...f, purposes: next }))}
+            multiple
+            allLabel={t("filters.everyone")}
+          />
+        ) : null}
+
+        {openFilter === "price" ? (
+          <div>
+            <OptionGrid
+              options={priceOptions}
+              value={
+                filters.priceMin || filters.priceMax
+                  ? [`${filters.priceMin}${BRACKET_SEPARATOR}${filters.priceMax}`]
+                  : []
+              }
+              onChange={(next) => {
+                const [min = "", max = ""] = (next[0] ?? "").split(BRACKET_SEPARATOR);
+                setFilters((f) => ({ ...f, priceMin: min, priceMax: max }));
+              }}
+              allLabel={t("filters.any")}
+            />
+            {/* The brackets cover the common asks; the pair below is the escape
+                hatch for anything between them. */}
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                placeholder={t("filters.priceFrom")}
+                value={filters.priceMin}
+                onChange={(event) => setFilters((f) => ({ ...f, priceMin: event.target.value }))}
+                className="rounded-xl border border-cream-200 bg-white px-4 py-3 font-semibold text-navy outline-none transition-colors focus:border-gold"
+              />
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                placeholder={t("filters.priceTo")}
+                value={filters.priceMax}
+                onChange={(event) => setFilters((f) => ({ ...f, priceMax: event.target.value }))}
+                className="rounded-xl border border-cream-200 bg-white px-4 py-3 font-semibold text-navy outline-none transition-colors focus:border-gold"
+              />
+            </div>
           </div>
         ) : null}
-      </section>
+
+        {openFilter === "rooms" ? (
+          <OptionGrid
+            options={[1, 2, 3, 4, 5, 6].map((n) => ({
+              value: String(n),
+              label: t("filters.roomsAtLeast", { count: n }),
+            }))}
+            value={filters.rooms ? [filters.rooms] : []}
+            onChange={(next) => setFilters((f) => ({ ...f, rooms: next[0] ?? "" }))}
+            allLabel={t("filters.any")}
+            onPicked={() => setOpenFilter(null)}
+          />
+        ) : null}
+
+        {openFilter === "sqm" ? (
+          <OptionGrid
+            options={[100, 200, 400, 600, 1000].map((n) => ({
+              value: String(n),
+              label: t("filters.sqmAtLeast", { value: n }),
+            }))}
+            value={filters.sqm ? [filters.sqm] : []}
+            onChange={(next) => setFilters((f) => ({ ...f, sqm: next[0] ?? "" }))}
+            allLabel={t("filters.any")}
+            onPicked={() => setOpenFilter(null)}
+          />
+        ) : null}
+
+        {openFilter === "statuses" ? (
+          <div>
+            <OptionGrid
+              options={STATUS_OPTIONS.map((status) => ({
+                value: status,
+                label: t(`status.${status}`),
+              }))}
+              value={filters.statuses}
+              onChange={(next) => setFilters((f) => ({ ...f, statuses: next }))}
+              multiple
+              allLabel={t("filters.any")}
+            />
+            <label className="mt-3 flex cursor-pointer select-none items-center justify-between gap-3 rounded-xl border border-cream-200 bg-white px-3.5 py-3 text-sm font-bold text-navy">
+              {t("filters.premiumOnly")}
+              <input
+                type="checkbox"
+                checked={filters.premiumOnly}
+                onChange={(event) =>
+                  setFilters((f) => ({ ...f, premiumOnly: event.target.checked }))
+                }
+                className="peer sr-only"
+              />
+              <span
+                className={cn(
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors",
+                  filters.premiumOnly
+                    ? "border-gold bg-gold text-white"
+                    : "border-cream-300 bg-cream-50 text-transparent",
+                )}
+              >
+                <CheckIcon width={12} height={12} strokeWidth={3} />
+              </span>
+            </label>
+          </div>
+        ) : null}
+      </BottomSheet>
 
       {/* Selected filters */}
       {chips.length > 0 ? (
@@ -642,11 +710,15 @@ export function ListingView({
 
       {/* Results */}
       {view === "map" ? (
-        <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-cream-200">
-          <MapExplorer locale={locale} />
+        <div className="mt-8">
+          <MapTabs>
+            <div className="overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-cream-200">
+              <MapExplorer locale={locale} />
+            </div>
+          </MapTabs>
         </div>
       ) : isLoading ? (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
@@ -677,7 +749,7 @@ export function ListingView({
         </div>
       ) : (
         <>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((property) => (
               <PropertyCard key={property.id} property={property} locale={locale} />
             ))}
@@ -698,61 +770,5 @@ export function ListingView({
       )}
       </div>
     </div>
-  );
-}
-
-function ChipButton({
-  label,
-  selected,
-  onClick,
-}: {
-  label: string;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      className={cn(
-        "rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
-        selected
-          ? "border-gold bg-gold-100 text-navy"
-          : "border-cream-200 bg-white text-navy hover:border-gold/60",
-      )}
-    >
-      {label}
-    </button>
-  );
-}
-
-function FilterCheckbox({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <label className="inline-flex cursor-pointer select-none items-center gap-2.5 text-sm font-semibold text-navy">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        className="peer sr-only"
-      />
-      <span
-        className={cn(
-          "flex h-5.5 w-5.5 items-center justify-center rounded-md border transition-colors",
-          checked ? "border-gold bg-gold text-white" : "border-cream-300 bg-white text-transparent",
-        )}
-      >
-        <CheckIcon width={14} height={14} strokeWidth={3} />
-      </span>
-      {label}
-    </label>
   );
 }

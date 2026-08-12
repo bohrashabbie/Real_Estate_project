@@ -132,18 +132,16 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
           );
         })}
 
-        {/* Arrows — only earn their place once there is somewhere to go. */}
+        {/* Every slider control — both arrows and the dots — lives in one bar
+            centred on the banner's bottom edge, where a thumb reaches it. Side
+            arrows sat at the vertical middle of a full-bleed image, which on a
+            phone is the hardest place on the banner to hit. Only earns its
+            place once there is somewhere to go. */}
         {count > 1 ? (
-          <>
-            <SliderArrow side="start" label={t("previous")} onClick={() => go(index - 1)} />
-            <SliderArrow side="end" label={t("next")} onClick={() => go(index + 1)} />
-
-            {/* Dots sit *inside* the artwork rather than below it: the quick
-                search panel floats over the banner's lower edge, and a dot row
-                in normal flow would end up hidden behind that card. The offset
-                clears the panel's negative margin in `page.tsx`. */}
-            <div className="absolute inset-x-0 bottom-16 z-10 flex justify-center sm:bottom-24">
-              <div className="flex gap-2 rounded-full bg-navy-950/40 px-3 py-2 backdrop-blur">
+          <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center sm:bottom-6">
+            <div className="flex items-center gap-1.5 rounded-full bg-navy-950/45 p-1.5 backdrop-blur">
+              <SliderArrow side="start" label={t("previous")} onClick={() => go(index - 1)} />
+              <div className="flex items-center gap-2 px-1.5">
                 {slides.map((slide, i) => (
                   <button
                     key={slide.key}
@@ -158,8 +156,9 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
                   />
                 ))}
               </div>
+              <SliderArrow side="end" label={t("next")} onClick={() => go(index + 1)} />
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </div>
@@ -180,15 +179,12 @@ function SliderArrow({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={cn(
-        "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-navy-950/50 text-white ring-1 ring-white/20 backdrop-blur transition-colors hover:bg-gold hover:text-white",
-        side === "start" ? "start-3 sm:start-6" : "end-3 sm:end-6",
-      )}
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-gold"
     >
       {/* ArrowIcon points inline-end; the start arrow is its mirror. */}
       <ArrowIcon
-        width={20}
-        height={20}
+        width={16}
+        height={16}
         className={cn(side === "start" ? "rotate-180 rtl:rotate-0" : "rtl:rotate-180")}
       />
     </button>

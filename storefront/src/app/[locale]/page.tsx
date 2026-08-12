@@ -11,7 +11,6 @@ import {
   getPropertyTypes,
   mediaUrl,
 } from "@/lib/api";
-import { cn } from "@/lib/utils";
 import { HeroBanner, type HeroSlide } from "@/components/home/hero-banner";
 import { QuickSearch } from "@/components/home/quick-search";
 import { PropertyCard } from "@/components/property/property-card";
@@ -83,17 +82,12 @@ export default async function HomePage({
         <HeroBanner slides={slides} />
       </section>
 
-      {/* Search panel, floating over the banner's lower edge. The negative
-          margin is mirrored by the slider's dot offset in `hero-banner.tsx` —
-          change one and the dots end up underneath this card. With every
-          banner hidden there is nothing to overlap, and pulling the card up
-          into the header would look like a bug. */}
-      <section
-        className={cn(
-          "relative z-10 mx-auto max-w-4xl px-4 sm:px-6",
-          slides.length > 0 ? "-mt-14 sm:-mt-20" : "mt-8",
-        )}
-      >
+      {/* Search panel: below the banner in normal flow, at the same width as
+          every section under it, so the page reads as one column. It used to
+          float over the banner's lower edge, which cost the banner its bottom
+          third and forced the slider dots into an offset that had to be kept
+          in sync by hand. */}
+      <section className="mx-auto max-w-(--container-site) px-4 pt-8 sm:px-6">
         <QuickSearch areas={areas} types={types} />
       </section>
 
@@ -118,7 +112,7 @@ export default async function HomePage({
         />
 
         {featured.length > 0 ? (
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {featured.map((property) => (
               <PropertyCard key={property.id} property={property} locale={typedLocale} />
             ))}
@@ -179,8 +173,10 @@ export default async function HomePage({
         />
 
         {latest.items.length > 0 ? (
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {latest.items.slice(0, 9).map((property) => (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/* 12 divides by both the 3- and 4-column breakpoints, so the last
+                row is never ragged. */}
+            {latest.items.slice(0, 12).map((property) => (
               <PropertyCard key={property.id} property={property} locale={typedLocale} />
             ))}
           </div>

@@ -27,7 +27,7 @@ export function PropertyMap({ latitude, longitude }: { latitude: number; longitu
       });
       instance.addControl(new maplibregl.NavigationControl({ showCompass: false }));
       instance.scrollZoom.disable();
-      new maplibregl.Marker({ color: "#0F3D33" }).setLngLat([longitude, latitude]).addTo(instance);
+      new maplibregl.Marker({ color: "#152A3D" }).setLngLat([longitude, latitude]).addTo(instance);
       map.current = instance;
     })();
 
