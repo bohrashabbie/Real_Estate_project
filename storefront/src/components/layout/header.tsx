@@ -89,7 +89,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           <div className="ms-auto flex items-center gap-2 lg:ms-0 sm:gap-2.5">
             <Link
               href="/request"
-              className="bg-gold-gradient inline-flex shrink-0 items-center rounded-full px-4 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
+              className="bg-gold inline-flex shrink-0 items-center rounded-full px-4 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
             >
               {t("nav.listYourProperty")}
             </Link>

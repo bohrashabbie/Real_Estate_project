@@ -29,7 +29,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
   return (
     <footer className="relative mt-20 bg-navy-950 text-white">
       {/* Gold hairline crowning the footer. */}
-      <div className="bg-gold-gradient h-1 w-full" aria-hidden />
+      <div className="bg-gold h-1 w-full" aria-hidden />
 
       <div className="mx-auto grid max-w-(--container-site) gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4">
         <div>
@@ -166,7 +166,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
           </ul>
           <Link
             href="/request"
-            className="bg-gold-gradient mt-6 inline-flex items-center rounded-full px-6 py-3 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110"
+            className="bg-gold mt-6 inline-flex items-center rounded-full px-6 py-3 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110"
           >
             {t("nav.listYourProperty")}
           </Link>

@@ -3,36 +3,42 @@
 /* ---------------------------------------------------------------------------
    kwt25 storefront — design tokens v4 (gold + navy on cream)
    ---------------------------------------------------------------------------
-   Cream ground, deep navy ink, gold accent — the palette in `mimic/`, and the
-   one SPEC/CLAUDE.md have always named. White rounded-3xl cards, pill buttons,
-   gradient gold CTAs, soft layered shadows, subtle motion. Retheme by swapping
-   values here only; every component reads these tokens.
+   Cream ground, deep navy ink, gold accent. The three base values are sampled
+   straight out of the reference screenshots in `mimic/` — #C9A45D, #0E1B2B and
+   #F7F3EA are each the single most common pixel across all thirteen shots, so
+   they are the literal colours the reference paints with, not an eyeball match.
+
+   Gold is FLAT. The reference uses one gold value in every place gold appears —
+   header CTA, chat pill, star badge, ad badge — so a gradient fill is wrong
+   here however good it looks in isolation: it makes the same button read as a
+   different colour at its two ends, and makes a large button read differently
+   from a small one. Retheme by swapping values here only.
    Status: available = green, rented/sold = red/neutral, reserved = amber.
 --------------------------------------------------------------------------- */
 
 @theme {
   /* -- Cream: page ground, tint surfaces, chips ---------------------------- */
-  --color-cream: #faf6ec;
-  --color-cream-50: #fdfbf5;
-  --color-cream-100: #f3ecdc;
-  --color-cream-200: #e7dcc4;
-  --color-cream-300: #d5c6a4;
+  --color-cream: #f7f3ea; /* measured */
+  --color-cream-50: #fcfaf4;
+  --color-cream-100: #f1ead9;
+  --color-cream-200: #e5dac1;
+  --color-cream-300: #d3c4a1;
 
   /* -- Navy: text, dark surfaces, dark pills -------------------------------- */
-  --color-navy: #152a3d;
-  --color-navy-950: #0a1622;
-  --color-navy-900: #0f1f2d;
-  --color-navy-800: #1b354c;
-  --color-navy-700: #22405a;
-  --color-navy-600: #2d5273;
-  --color-navy-100: #dbe2e9;
+  --color-navy: #0e1b2b; /* measured */
+  --color-navy-950: #070f19;
+  --color-navy-900: #0b1622;
+  --color-navy-800: #142639;
+  --color-navy-700: #1b3247;
+  --color-navy-600: #26445f;
+  --color-navy-100: #d9dfe6;
 
   /* -- Gold: the brand accent ------------------------------------------------ */
-  --color-gold: #b8934b;
-  --color-gold-light: #d4b577;
-  --color-gold-dark: #96742f;
-  --color-gold-100: #f6eedc;
-  --color-gold-200: #ebdcba;
+  --color-gold: #c9a45d; /* measured */
+  --color-gold-light: #dcbe84;
+  --color-gold-dark: #a8823f;
+  --color-gold-100: #f8f1e2;
+  --color-gold-200: #eee0c0;
 
   /* -- Muted ink on cream ---------------------------------------------------- */
   --color-muted: #6d6a60;
@@ -49,9 +55,9 @@
   --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cairo), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-card: 0 10px 30px -14px rgb(21 42 61 / 0.18);
-  --shadow-float: 0 18px 44px -16px rgb(21 42 61 / 0.32);
-  --shadow-gold: 0 12px 32px -12px rgb(184 147 75 / 0.55);
+  --shadow-card: 0 10px 30px -14px rgb(14 27 43 / 0.18);
+  --shadow-float: 0 18px 44px -16px rgb(14 27 43 / 0.32);
+  --shadow-gold: 0 12px 32px -12px rgb(201 164 93 / 0.55);
 
   --container-site: 78rem;
 
@@ -118,18 +124,8 @@ body {
 
 /* -- Premium helpers -------------------------------------------------------- */
 
-/* Gold gradient fill for CTAs and badges. */
-.bg-gold-gradient {
-  background-image: linear-gradient(135deg, #d4b577 0%, #b8934b 55%, #96742f 100%);
-}
-
-/* Gold gradient headline text. */
-.text-gold-gradient {
-  background-image: linear-gradient(120deg, #efdcb4 0%, #d4b577 40%, #bb9852 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+/* Gold fills use the `bg-gold` utility directly — see the note at the top of
+   this file on why there is no gradient variant. */
 
 /* Faint blueprint grid over dark hero surfaces. */
 .hero-grid {
@@ -141,7 +137,7 @@ body {
 
 /* Soft radial gold glow, positioned by the parent. */
 .gold-glow {
-  background: radial-gradient(closest-side, rgb(184 147 75 / 0.32), transparent 70%);
+  background: radial-gradient(closest-side, rgb(201 164 93 / 0.32), transparent 70%);
 }
 
 /* Frosted panel on dark surfaces. */

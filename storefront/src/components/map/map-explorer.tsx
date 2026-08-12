@@ -114,7 +114,7 @@ export function MapExplorer({ locale }: { locale: Locale }) {
             </a>
           </div>`;
 
-        new maplibregl.Marker({ color: "#B8934B" })
+        new maplibregl.Marker({ color: "#C9A45D" })
           .setLngLat([lng, lat])
           .setPopup(new maplibregl.Popup({ offset: 20, maxWidth: "260px" }).setDOMContent(popupEl))
           .addTo(map.current);

@@ -63,7 +63,7 @@ export function MapTabs({
             href={finderHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gold-gradient flex items-center justify-center gap-2.5 rounded-2xl px-6 py-3.5 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.99]"
+            className="bg-gold flex items-center justify-center gap-2.5 rounded-2xl px-6 py-3.5 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.99]"
           >
             {t("openInFinder")}
             <ExternalIcon width={18} height={18} />

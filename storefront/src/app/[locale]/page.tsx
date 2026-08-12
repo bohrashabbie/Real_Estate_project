@@ -214,7 +214,7 @@ export default async function HomePage({
             </div>
             <Link
               href="/request"
-              className="bg-gold-gradient inline-flex items-center gap-2 rounded-full px-9 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
+              className="bg-gold inline-flex items-center gap-2 rounded-full px-9 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
             >
               {t("requestCta")}
               <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
