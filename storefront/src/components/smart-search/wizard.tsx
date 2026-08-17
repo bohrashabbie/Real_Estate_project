@@ -106,7 +106,7 @@ export function SmartSearchWizard({
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navy text-gold">
           <SparkleIcon width={26} height={26} />
         </span>
-        <h1 className="mt-4 text-3xl font-bold text-navy sm:text-4xl">{t("smart.title")}</h1>
+        <h1 className="mt-4 font-display text-[28px] font-normal leading-[1.4] text-navy sm:text-[36px]">{t("smart.title")}</h1>
         <p className="mx-auto mt-2 max-w-xl text-muted">{t("smart.subtitle")}</p>
       </header>
 

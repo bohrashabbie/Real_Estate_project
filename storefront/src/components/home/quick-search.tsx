@@ -69,7 +69,7 @@ export function QuickSearch({ areas, types }: { areas: Area[]; types: PropertyTy
     <>
       <div className="rounded-3xl bg-white p-5 shadow-float ring-1 ring-cream-200 sm:p-6">
         <p className="text-sm font-bold text-gold-dark">{t("home.quickSearch")}</p>
-        <h2 className="mt-1 font-display text-2xl font-extrabold text-navy sm:text-3xl">
+        <h2 className="mt-1 font-display text-[24px] font-normal leading-[1.45] text-navy sm:text-[30px]">
           {t("home.findIdeal")}
         </h2>
 

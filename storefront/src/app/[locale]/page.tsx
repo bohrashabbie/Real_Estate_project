@@ -103,7 +103,7 @@ export default async function HomePage({
           action={
             <Link
               href="/properties?featured=1"
-              className="inline-flex items-center gap-2 rounded-full border border-cream-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
+              className="inline-flex items-center gap-2 rounded-2xl border border-cream-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
             >
               {t("viewAll")}
               <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
@@ -164,7 +164,7 @@ export default async function HomePage({
           action={
             <Link
               href="/properties"
-              className="inline-flex items-center gap-2 rounded-full border border-cream-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
+              className="inline-flex items-center gap-2 rounded-2xl border border-cream-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-card transition-colors hover:border-gold/50 hover:bg-gold-100"
             >
               {t("viewAll")}
               <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
@@ -189,7 +189,7 @@ export default async function HomePage({
         <div className="mt-10 text-center">
           <Link
             href="/properties"
-            className="inline-flex items-center gap-2 rounded-full bg-navy px-9 py-4 text-base font-bold text-white shadow-card transition-colors hover:bg-navy-700"
+            className="inline-flex items-center gap-2 rounded-2xl bg-navy px-9 py-4 text-base font-bold text-white shadow-card transition-colors hover:bg-navy-700"
           >
             {t("browseAll")}
             <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
@@ -209,12 +209,12 @@ export default async function HomePage({
               <ClipboardIcon width={26} height={26} />
             </span>
             <div>
-              <h2 className="font-display text-2xl font-extrabold sm:text-4xl">{t("requestTitle")}</h2>
+              <h2 className="font-display text-[26px] font-normal leading-[1.4] sm:text-[40px]">{t("requestTitle")}</h2>
               <p className="mx-auto mt-3 max-w-xl text-white/65">{t("requestSubtitle")}</p>
             </div>
             <Link
               href="/request"
-              className="bg-gold inline-flex items-center gap-2 rounded-full px-9 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
+              className="bg-gold inline-flex items-center gap-2 rounded-2xl px-9 py-4 text-base font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
             >
               {t("requestCta")}
               <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
@@ -248,7 +248,7 @@ function SectionHeader({
           {eyebrowIcon}
           {eyebrow}
         </p>
-        <h2 className="mt-2.5 font-display text-3xl font-extrabold text-navy sm:text-4xl">{title}</h2>
+        <h2 className="mt-2 font-display text-[30px] font-normal leading-[1.5] text-navy sm:text-[40px]">{title}</h2>
         <p className="mt-2 text-muted">{subtitle}</p>
       </div>
       {action}

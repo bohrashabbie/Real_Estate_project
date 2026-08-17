@@ -34,7 +34,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-cream-200/70 bg-cream/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-(--container-site) items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
+        <div className="mx-auto flex max-w-(--container-site) items-center gap-1.5 px-3 py-3 sm:gap-3 sm:px-6">
           {/* Brand mark + wordmark.
 
               The bar carries five things on a phone — mark, CTA, phone tile,
@@ -83,7 +83,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-full px-4 py-2 text-sm font-bold transition-colors",
+                    "rounded-2xl px-4 py-2 text-sm font-bold transition-colors",
                     active
                       ? "bg-navy text-white shadow-card"
                       : "text-navy/75 hover:bg-white hover:text-navy",
@@ -101,7 +101,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
               because both are utilities, and it has to be here rather than
               only inside the overlay: locale detection is off, so this is the
               one route into English. */}
-          <div className="ms-auto flex items-center gap-2 lg:ms-0 sm:gap-2.5">
+          <div className="ms-auto flex items-center gap-1.5 lg:ms-0 sm:gap-2.5">
             {/* The CTA is the only elastic thing in the bar, so it carries a
                 short label on phones. Measured at 360px: the four controls,
                 the mark and the gaps leave it 127px, and the full English
@@ -109,7 +109,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 menu button clean off the screen. */}
             <Link
               href="/request"
-              className="bg-gold inline-flex shrink-0 items-center rounded-full px-3 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
+              className="bg-gold inline-flex shrink-0 items-center rounded-2xl px-3 py-2.5 text-[13px] font-bold text-white shadow-gold transition-all hover:brightness-110 active:scale-[0.98] sm:px-6 sm:text-sm"
             >
               <span className="sm:hidden">{t("nav.listYourPropertyShort")}</span>
               <span className="hidden sm:inline">{t("nav.listYourProperty")}</span>

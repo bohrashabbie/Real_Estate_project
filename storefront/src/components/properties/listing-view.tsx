@@ -416,7 +416,7 @@ export function ListingView({
             {t("listing.eyebrow")}
             <span className="h-px w-8 bg-gold" aria-hidden />
           </p>
-          <h1 className="mt-3 font-display text-3xl font-extrabold sm:text-5xl">
+          <h1 className="mt-3 font-display text-[30px] font-normal leading-[1.5] sm:text-[40px]">
             {t("listing.title")}
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-white/65">{t("listing.subtitle")}</p>

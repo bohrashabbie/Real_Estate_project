@@ -88,7 +88,7 @@ export default async function ContactPage({
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <header className="text-center">
         <p className="text-sm font-bold tracking-wide text-gold">{t("eyebrow")}</p>
-        <h1 className="mt-2 text-3xl font-bold text-navy sm:text-4xl">{t("title")}</h1>
+        <h1 className="mt-2 font-display text-[28px] font-normal leading-[1.4] text-navy sm:text-[36px]">{t("title")}</h1>
         <p className="mx-auto mt-2 max-w-xl text-muted">{t("subtitle")}</p>
       </header>
 

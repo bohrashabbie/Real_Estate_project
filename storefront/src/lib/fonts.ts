@@ -1,25 +1,27 @@
-import { Cairo, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Noto_Kufi_Arabic, Noto_Sans_Arabic } from "next/font/google";
 
 /**
- * Two-tier bilingual pairing. IBM Plex Sans Arabic carries body text — a
- * genuinely well-drawn Arabic with a matching Latin, so running text keeps a
- * single texture in both scripts. Cairo (geometric, high contrast at heavy
- * weights, also dual-script) carries display headlines and prices, giving
- * headings a distinct premium voice without switching mid-word on "KD" or a
- * ref number.
+ * The reference design's pairing, read off the deployed preview rather than
+ * chosen: Noto Kufi Arabic carries every heading, price and button label, and
+ * Noto Sans Arabic carries running text. Both are dual-script, so a heading
+ * does not switch typeface mid-word on "KD" or a ref number.
+ *
+ * Kufi is used at weight 400 for large headings there — the size does the
+ * work, not the weight — so the light weights are loaded too, which the old
+ * Cairo pairing (600 and up) did not need.
  */
-export const plexArabic = IBM_Plex_Sans_Arabic({
+export const notoSansArabic = Noto_Sans_Arabic({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-plex-arabic",
+  variable: "--font-noto-sans-arabic",
   display: "swap",
 });
 
-export const cairo = Cairo({
+export const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
-  weight: ["600", "700", "800", "900"],
-  variable: "--font-cairo",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-noto-kufi-arabic",
   display: "swap",
 });
 
-export const fontVariables = `${plexArabic.variable} ${cairo.variable}`;
+export const fontVariables = `${notoSansArabic.variable} ${notoKufiArabic.variable}`;

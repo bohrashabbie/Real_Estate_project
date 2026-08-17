@@ -80,27 +80,28 @@ export function PropertyCard({
         </span>
       </Link>
 
-      <div className="flex flex-1 flex-col p-6">
-        {/* Purpose/type and price share a line in the reference, where the card
-            is full-bleed on a phone. Four to a row on a desktop they collide,
-            so the price drops to its own line below `2xl` and only sits beside
-            the eyebrow once the column is wide enough to hold both. */}
-        <div className="flex flex-col gap-1 2xl:flex-row 2xl:items-baseline 2xl:justify-between 2xl:gap-4">
-          <p className="min-w-0 truncate text-sm font-bold text-gold-dark">
+      {/* Padding is the reference's own 20px / 20px / 17px. */}
+      <div className="flex flex-1 flex-col px-5 pb-[17px] pt-5">
+        {/* Eyebrow and price share one line, both at 14px, exactly as the
+            reference sets them. They fit at four-across in Arabic; `flex-wrap`
+            is the release valve for English, whose labels are longer. */}
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <p className="text-sm font-extrabold text-gold-dark">
             {t(`purpose.${property.purpose}`)} • {property.type.name}
           </p>
-          <p className="shrink-0 font-display text-lg font-extrabold text-navy 2xl:text-base">
+          <p className="font-display text-sm font-bold text-navy">
             {formatPrice(property.price, property.purpose, locale)}
           </p>
         </div>
 
-        <h3 className="mt-3.5 font-display text-xl font-extrabold leading-snug text-navy">
+        {/* 19px/700 with the reference's 1.585 line-height. */}
+        <h3 className="mt-3 font-display text-[19px] font-bold leading-[1.585] text-navy">
           <Link href={href} className="transition-colors hover:text-gold-dark">
             {property.title}
           </Link>
         </h3>
 
-        <p className="mt-2.5 flex items-center gap-2 text-sm text-muted">
+        <p className="mt-1.5 flex items-center gap-2 text-sm text-muted">
           <PinIcon width={15} height={15} className="shrink-0" />
           {property.area.name}
           {property.block ? ` — ${t("card.block", { block: property.block })}` : null}
@@ -109,13 +110,11 @@ export function PropertyCard({
         {/* A listing with none of the three (bare land, typically) would
             otherwise get an empty band bracketed by two rules.
 
-            Two aligned columns rather than a spread row: three stats never fit
-            on one line in a four-across card ("2 bathrooms" alone is ~85px
-            against a 234px content width), and a wrapping `justify-between`
-            row put the second item at a different x in every card, which is
-            hard to scan down a grid. */}
+            One spread line, as the reference has it. Arabic fits — its nouns
+            are short ("2 حمام") — and English wraps rather than truncating,
+            since "3 bathro…" is worse than a second line. */}
         {property.rooms !== null || property.bathrooms !== null || sqm !== null ? (
-          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-y border-cream-200 py-4">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-y border-cream-200 py-3.5">
             <CardStat
               icon={<BedIcon width={17} height={17} />}
               value={property.rooms}
@@ -134,7 +133,7 @@ export function PropertyCard({
           </div>
         ) : null}
 
-        <div className="mt-auto flex items-center justify-between gap-4 pt-5">
+        <div className="mt-auto flex items-center justify-between gap-4 pt-3.5">
           <Link
             href={href}
             className="inline-flex items-center gap-2 text-sm font-bold text-navy transition-colors hover:text-gold-dark"

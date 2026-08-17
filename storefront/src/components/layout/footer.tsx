@@ -166,7 +166,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: L
           </ul>
           <Link
             href="/request"
-            className="bg-gold mt-6 inline-flex items-center rounded-full px-6 py-3 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110"
+            className="bg-gold mt-6 inline-flex items-center rounded-2xl px-6 py-3 text-sm font-bold text-white shadow-gold transition-all hover:brightness-110"
           >
             {t("nav.listYourProperty")}
           </Link>

@@ -20,14 +20,14 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
           href="/properties"
-          className="inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-white shadow-card transition-colors hover:bg-navy-700"
+          className="inline-flex items-center gap-2 rounded-2xl bg-navy px-6 py-3 text-sm font-bold text-white shadow-card transition-colors hover:bg-navy-700"
         >
           {t("cta")}
           <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
         </Link>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-gold-100 hover:ring-gold/60"
+          className="inline-flex items-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-gold-100 hover:ring-gold/60"
         >
           <HomeIcon width={16} height={16} className="text-gold" />
           {t("backHome")}

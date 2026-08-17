@@ -29,7 +29,7 @@ export function BackToHome() {
       <div className="mx-auto max-w-(--container-site) px-4 py-8 text-center sm:px-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-gold-100 hover:ring-gold/60"
+          className="inline-flex items-center gap-2.5 rounded-2xl bg-white px-7 py-3.5 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-gold-100 hover:ring-gold/60"
         >
           <HomeIcon width={17} height={17} className="text-gold" />
           {t("backToHome")}

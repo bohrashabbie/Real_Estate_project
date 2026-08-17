@@ -43,7 +43,7 @@ export default async function RequestPage({
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-navy text-gold">
           <ClipboardIcon width={26} height={26} />
         </span>
-        <h1 className="mt-4 text-3xl font-bold text-navy sm:text-4xl">{t("title")}</h1>
+        <h1 className="mt-4 font-display text-[28px] font-normal leading-[1.4] text-navy sm:text-[36px]">{t("title")}</h1>
         <p className="mx-auto mt-2 max-w-xl text-muted">{t("subtitle")}</p>
       </header>
 

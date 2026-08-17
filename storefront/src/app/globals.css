@@ -52,8 +52,20 @@
   --color-whatsapp: #25a95d;
   --color-whatsapp-dark: #1e8f4e;
 
-  --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-cairo), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-noto-sans-arabic), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-noto-kufi-arabic), var(--font-noto-sans-arabic), ui-sans-serif, system-ui, sans-serif;
+
+  /* -- Corner radii ---------------------------------------------------------
+     The reference is a small-radius design: 8px accounts for 164 of the radii
+     on its home page, against a handful of pills. Tailwind's scale is remapped
+     here rather than in every component, so `rounded-3xl` on a card resolves
+     to the reference's 10px and `rounded-2xl` on a panel to its 8px.
+     `rounded-full` is untouched — chips and the chat pill are still pills. */
+  --radius-3xl: 10px;
+  --radius-2xl: 8px;
+  --radius-xl: 8px;
+  --radius-lg: 6px;
 
   --shadow-card: 0 10px 30px -14px rgb(14 27 43 / 0.18);
   --shadow-float: 0 18px 44px -16px rgb(14 27 43 / 0.32);
@@ -114,6 +126,8 @@ body {
   background-color: var(--color-cream);
   color: var(--color-navy);
   font-family: var(--font-sans);
+  /* The reference sets running text at 17px, not the 16px browser default. */
+  font-size: 17px;
   -webkit-font-smoothing: antialiased;
 }
 

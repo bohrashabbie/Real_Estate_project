@@ -102,7 +102,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
         <p className="text-sm font-bold tracking-wide text-gold">
           {property.type.name} • {t(`purpose.${property.purpose}`)}
         </p>
-        <h1 className="mx-auto mt-3 max-w-2xl text-3xl font-bold leading-tight text-navy sm:text-4xl">
+        <h1 className="mx-auto mt-3 max-w-2xl font-display text-[28px] font-normal leading-[1.4] text-navy sm:text-[36px]">
           {property.title}
         </h1>
         <p className="mt-3 flex items-center justify-center gap-1.5 text-muted">
