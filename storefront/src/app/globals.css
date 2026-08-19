@@ -8810,3 +8810,49 @@ body {
     text-align: center;
   }
 }
+
+/* ===========================================================================
+   Hero: the office's own artwork
+   ---------------------------------------------------------------------------
+   The reference's hero is plain photography under a scrim, with the headline
+   set in HTML on top. A banner uploaded through the admin is not that — its
+   message is already drawn into the image — so when the office has published
+   banners the hero drops the scrim, the badge and the headline, shows the
+   artwork whole, and lets each slide link where its banner points.
+   =========================================================================== */
+
+.launch-hero.is-artwork {
+  min-height: 0;
+  aspect-ratio: 1920 / 720;
+}
+
+.launch-hero.is-artwork .hero-slide-image {
+  object-fit: cover;
+  transform: none;
+}
+
+.launch-hero.is-artwork .hero-slide-image.is-active {
+  transform: none;
+}
+
+.hero-artwork-link {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+/* A slideshow whose only affordance sits at the bottom edge needs that edge to
+   stay readable over a light banner. */
+.launch-hero.is-artwork .slider-controls {
+  background: #0d1b2a5c;
+  border-radius: 999px;
+  padding: 5px 8px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+@media (max-width: 760px) {
+  .launch-hero.is-artwork {
+    aspect-ratio: 4 / 3;
+  }
+}

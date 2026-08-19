@@ -10,15 +10,24 @@ import { mediaUrl, type Banner } from "@/lib/api";
 const INTERVAL = 6500;
 
 /**
- * The campaign hero: four cross-fading photographs behind one fixed headline.
+ * The campaign hero: cross-fading frames behind a fixed headline.
  *
  * The copy does not change with the slide. That is deliberate in the reference
  * and worth keeping — a headline that swaps every six seconds is unreadable,
  * and the photographs are the campaign, not the message.
  *
- * Slides come from the admin's banner list when the office has published any,
- * and fall back to the four shipped campaign frames when it has not, so the
- * hero is never an empty navy box.
+ * There are two modes, and which one runs is decided by whether the office has
+ * published anything in the admin's banner list:
+ *
+ *   no banners   the four shipped campaign frames, which are plain photography
+ *                with a dark scrim, carrying the reference's headline and CTA.
+ *   banners      the office's own artwork, shown clean. Those banners arrive
+ *                with their message already set in the image ("استثمارك يبدأ من
+ *                هنا"), so painting a second headline and a scrim over them
+ *                puts two competing sentences on one picture. A banner that
+ *                carries an `href` becomes the link for its own slide.
+ *
+ * The rule is simply that whoever wrote the artwork owns the words on it.
  */
 const FALLBACK_SLIDES = [
   "/hero/campaign-smart-search.webp",
@@ -29,12 +38,16 @@ const FALLBACK_SLIDES = [
 
 export function LaunchHero({ banners }: { banners: Banner[] }) {
   const t = useTranslations("hero");
+
   const published = banners
     .map((banner) => ({ ...banner, src: mediaUrl(banner.image_url) }))
     .filter((banner): banner is Banner & { src: string } => Boolean(banner.src));
-  const slides = published.length > 0 ? published.map((banner) => banner.src) : FALLBACK_SLIDES;
-  const alts =
-    published.length > 0 ? published.map((banner) => banner.alt) : slides.map(() => t("slideAlt"));
+
+  const officeArtwork = published.length > 0;
+  const slides = officeArtwork ? published.map((banner) => banner.src) : FALLBACK_SLIDES;
+  const alts = officeArtwork
+    ? published.map((banner) => banner.alt)
+    : slides.map(() => t("slideAlt"));
 
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -58,38 +71,52 @@ export function LaunchHero({ banners }: { banners: Banner[] }) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
   }, []);
 
+  const href = officeArtwork ? published[index]?.href : null;
+
+  const frames = slides.map((src, i) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      key={src}
+      className={`hero-slide-image${i === index ? " is-active" : ""}`}
+      src={src}
+      alt={i === index ? alts[i] : ""}
+      fetchPriority={i === 0 ? "high" : "low"}
+    />
+  ));
+
   return (
-    <section className="launch-hero">
-      {slides.map((src, i) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={src}
-          className={`hero-slide-image${i === index ? " is-active" : ""}`}
-          src={src}
-          alt={i === index ? alts[i] : ""}
-          fetchPriority={i === 0 ? "high" : "low"}
-        />
-      ))}
+    <section className={`launch-hero${officeArtwork ? " is-artwork" : ""}`}>
+      {href ? (
+        <Link className="hero-artwork-link" href={href} aria-label={alts[index]}>
+          {frames}
+        </Link>
+      ) : (
+        frames
+      )}
 
-      <div className="hero-overlay" aria-hidden />
-      <span className="hero-match-badge" aria-hidden>
-        {t("matchBadge")}
-      </span>
+      {officeArtwork ? null : (
+        <>
+          <div className="hero-overlay" aria-hidden />
+          <span className="hero-match-badge" aria-hidden>
+            {t("matchBadge")}
+          </span>
 
-      <div className="container launch-hero-content">
-        <span className="eyebrow light-eyebrow">
-          <Sparkles size={15} />
-          {t("eyebrow")}
-        </span>
-        <h1>{t("title")}</h1>
-        <p>{t("subtitle")}</p>
-        <div className="hero-actions">
-          <Link className="button button-gold button-large" href="/smart-search">
-            <ArrowLeft size={16} />
-            {t("cta")}
-          </Link>
-        </div>
-      </div>
+          <div className="container launch-hero-content">
+            <span className="eyebrow light-eyebrow">
+              <Sparkles size={15} />
+              {t("eyebrow")}
+            </span>
+            <h1>{t("title")}</h1>
+            <p>{t("subtitle")}</p>
+            <div className="hero-actions">
+              <Link className="button button-gold button-large" href="/smart-search">
+                <ArrowLeft size={16} />
+                {t("cta")}
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
 
       {slides.length > 1 ? (
         <div className="container slider-controls">
