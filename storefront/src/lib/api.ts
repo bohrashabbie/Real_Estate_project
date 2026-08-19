@@ -38,6 +38,9 @@ export interface SiteSettings {
   whatsapp: string;
   email: string;
   instagram: string;
+  /** Handle or full profile URL — the footer and contact page accept either. */
+  x: string | null;
+  snapchat: string | null;
   name_ar: string;
   name_en: string;
 }
@@ -47,8 +50,10 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   whatsapp: "",
   email: "",
   instagram: "",
-  name_ar: "Kwt25",
-  name_en: "Kwt25",
+  x: null,
+  snapchat: null,
+  name_ar: "kwt25",
+  name_en: "kwt25",
 };
 
 export interface Area {

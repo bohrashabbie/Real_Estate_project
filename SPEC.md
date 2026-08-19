@@ -121,22 +121,29 @@ server components + fetch from `PUBLIC_API_URL=http://localhost:8000/public/v1`,
 TanStack Query only where client interactivity needs it). No auth, no cart.
 Add dependency `maplibre-gl` for maps (tiles: `https://tiles.openfreemap.org/styles/liberty`).
 
-Layout (all pages): header — logo (text wordmark Kwt25),
-burger menu, phone icon button, gold pill CTA "اعرض عقارك معنا / List your property with us"
-(→ /request). Full-screen menu overlay exactly like reference: Home, Real Estate (all
-properties), Our distinctive properties (featured, dark card), Smart Search (dark card),
-Map, Request your property, Contact us. Floating side buttons on every page:
-share, call (tel:), WhatsApp (wa.me), plus bottom-right gold "تحدث معنا / Talk to us"
-WhatsApp pill. Footer: office info, quick links, phone/WhatsApp/instagram.
+Layout (all pages), matching the kwt25 reference build at
+`https://kwt25-preview.vercel.app`: a one-shot brand title card on the first
+view of a session (`.brand-intro`, navy, the gold mark and three lines of the
+office's own copy); sticky header — kwt25 lockup, seven nav links, gold pill
+CTA "اعرض عقارك لدينا" (→ /list-property), dark phone-number pill, locale
+switch, burger. The seven links are one piece of markup that renders as an
+inline row above 1023px and as a stack of icon cards in a fixed drawer below
+it. Fixed rails on every page: `.contact-floats` (share, call, WhatsApp) and
+the gold `.chat-launcher` pill, whose panel files a real inquiry. Footer: the
+lockup + blurb + socials, three link columns, and the tagline band
+"ثقتكم هي رأس مالنا".
 
 Pages under `src/app/[locale]/`:
+
 - `/` home — hero with headline "عقارك المناسب أقرب إليك" ("Your ideal property, closer to you"); Quick-search card (بحث سريع): area select, property type select, purpose select, gold search button + quick chips (شقق, فلل, للبيع, للإيجار); "Our distinctive properties" featured section (premium cards: image, distinct★ badge, availability dot, price, purpose+type, title, area, sqm/bathrooms/rooms icons, "View details"), CTA button "Featured Properties Showroom" → /properties?featured=1; Smart Search promo card ("Let us arrange suitable properties for you — answer 5 quick questions", dark sparkle icon) → /smart-search; "All ads / جميع الإعلانات" latest-properties grid + "Browse all" → /properties; request-property CTA band.
-- `/properties` — client page, filters in collapsible panel: area (grid of area cards with pin icon), purpose checkboxes (rent/sale), property type checkboxes, price from/to, rooms select + sqm input, status checkboxes (available/reserved/sold) + "Premium properties only", Clear filters. Selected-filter chips with ×, "Clear all". Purpose quick tabs (For rent / For sale / everyone). URL-synced search params (shareable link note "The page link changes automatically and can be shared."), result count "N properties", cards grid, load-more (cursor). Empty state "No results with these filters".
+- `/properties` — the campaign hero and the quick-search bar again (area / type / purpose, pre-filled from the URL), then the results: a count line, the sticky gold `.featured-results-strip` of the office's picks, the smart-search nudge, a range heading and a two-column card grid with cursor-driven "show more". Filters live in that one bar, not a side panel — `?area=&type=&purpose=&featured=1` are the shareable params. Empty state offers to clear the filters or send a request.
 - `/properties/[slug]` — gallery (main image + thumbs), purpose+type gold eyebrow "Floor • For Rent", H1 title, area+block with pin, status pill (Rented ●), gold price "650 KD/month", stat tiles 2×2 (rooms, sqm, floors, bathrooms) gold icons, "Clear details before contacting" description block, "Features and Services" amenity check-list cards, map card (maplibre marker) + "Open in maps" (Google Maps link with lat/lng) — only when coords set, contact card: "Contact us regarding this property" + property title, dark "Direct contact 📞" button, green "WhatsApp" button (prefilled message with property title+link), divider "Or send an inquiry", form (name, phone, message prefilled AR "أرغب بمعرفة المزيد عن …") → POST inquiries, "Return to all properties →". share/call/WhatsApp floats.
 - `/smart-search` — 5-step wizard (purpose → type → area → budget → rooms), progress dots, gold buttons, final: results grid via POST smart-search + note about relaxed filters, "no exact match" fallback message.
-- `/map` — full-height maplibre map of Kuwait with markers for all published properties w/ coords; clicking a marker shows popup card (image, title, price, link).
+- `/map` — navy page hero, then a toolbar (map/list segmented toggle, reset-bounds, "N properties with full coordinates") over a maplibre map of Kuwait. Pins are gold price bubbles, not generic markers; selecting one fills the side card (photo, title, area, specs, price, "open the property"). Listings the office never pinned are counted out rather than silently missing.
 - `/request` — request-your-property form (name, phone, purpose, type, area, budget range, rooms, notes) → POST property-requests, success state "سنتواصل معك قريباً".
-- `/contact` — office phone, WhatsApp, email, instagram (from public settings), inquiry form (source=contact), working-hours block.
+- `/contact` — a tile per channel the office has configured (phone, WhatsApp, email, Instagram, X, Snapchat, all from public settings). A channel with no value renders no tile, which is the page's stated promise.
+- `/compare` — up to three properties from the `localStorage` shortlist, as a spec-by-spec table. `noindex`: it renders one browser's own list. The shortlist is written by the `.compare-toggle` in every card and surfaced by the docked `.compare-bar`.
+- `/list-property` — an owner offering the office stock: name, phone, purpose, type, area, free-text details → POST inquiries (`source=home`). Distinct from `/request`, which is the office looking *for* something on a visitor's behalf.
 
 SEO: metadata per page, `alternates.languages` ar/en, OpenGraph on property detail.
 

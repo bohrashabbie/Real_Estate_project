@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { CircleCheck, House } from "lucide-react";
 
 import { localeAlternates, type Locale } from "@/i18n/routing";
 import { getAreas, getPropertyTypes } from "@/lib/api";
 import { RequestForm } from "@/components/request/request-form";
-import { ClipboardIcon } from "@/components/ui/icons";
-
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,40 +14,50 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "request" });
   return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: { languages: localeAlternates("/request") },
+    title: t("title"),
+    description: t("body"),
+    alternates: { canonical: `/${locale}/request`, languages: localeAlternates("/request") },
   };
 }
 
-export default async function RequestPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function RequestPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const typedLocale = locale as Locale;
-  const t = await getTranslations({ locale, namespace: "request" });
+  const t = await getTranslations("request");
 
-  const [areas, types] = await Promise.all([
-    getAreas(typedLocale),
-    getPropertyTypes(typedLocale),
-  ]);
+  const [areas, types] = await Promise.all([getAreas(typedLocale), getPropertyTypes(typedLocale)]);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-      <header className="text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-navy text-gold">
-          <ClipboardIcon width={26} height={26} />
-        </span>
-        <h1 className="mt-4 font-display text-[28px] font-normal leading-[1.4] text-navy sm:text-[36px]">{t("title")}</h1>
-        <p className="mx-auto mt-2 max-w-xl text-muted">{t("subtitle")}</p>
-      </header>
+    <section className="section request-page">
+      <div className="container request-page-grid">
+        <aside>
+          <span className="request-icon">
+            <House size={22} />
+          </span>
+          <span className="section-kicker">{t("kicker")}</span>
+          <h1>{t("title")}</h1>
+          <p>{t("body")}</p>
+          <ul>
+            <li>
+              <CircleCheck size={16} />
+              {t("point1")}
+            </li>
+            <li>
+              <CircleCheck size={16} />
+              {t("point2")}
+            </li>
+            <li>
+              <CircleCheck size={16} />
+              {t("point3")}
+            </li>
+          </ul>
+        </aside>
 
-      <section className="mt-8 rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
-        <RequestForm areas={areas} types={types} />
-      </section>
-    </div>
+        <div className="request-form-card">
+          <RequestForm areas={areas} types={types} locale={typedLocale} />
+        </div>
+      </div>
+    </section>
   );
 }

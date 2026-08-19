@@ -1,16 +1,33 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 
-/** Single-marker map card on the property detail page. maplibre is imported
- *  inside the effect so it never touches the server bundle. */
-export function PropertyMap({ latitude, longitude }: { latitude: number; longitude: number }) {
+/**
+ * The single-pin map on the detail page.
+ *
+ * maplibre is imported inside the effect so none of it reaches the server
+ * bundle or the initial download; until it lands, the `.map-loading` panel the
+ * reference shows holds the space, so the page does not reflow when tiles
+ * arrive.
+ */
+export function PropertyMap({
+  latitude,
+  longitude,
+  label,
+}: {
+  latitude: number;
+  longitude: number;
+  label: string;
+}) {
+  const t = useTranslations("detail");
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,8 +43,11 @@ export function PropertyMap({ latitude, longitude }: { latitude: number; longitu
         attributionControl: { compact: true },
       });
       instance.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+      // A page-scroll that zooms the map instead is the classic embedded-map
+      // annoyance; drag still pans.
       instance.scrollZoom.disable();
-      new maplibregl.Marker({ color: "#0E1B2B" }).setLngLat([longitude, latitude]).addTo(instance);
+      new maplibregl.Marker({ color: "#0d1b2a" }).setLngLat([longitude, latitude]).addTo(instance);
+      instance.on("load", () => setReady(true));
       map.current = instance;
     })();
 
@@ -38,5 +58,10 @@ export function PropertyMap({ latitude, longitude }: { latitude: number; longitu
     };
   }, [latitude, longitude]);
 
-  return <div ref={container} className="h-80 w-full rounded-2xl sm:h-96" />;
+  return (
+    <div className="property-location-map" aria-label={t("mapAria", { title: label })}>
+      {!ready ? <div className="map-loading">{t("mapLoading")}</div> : null}
+      <div ref={container} className="map-surface" />
+    </div>
+  );
 }

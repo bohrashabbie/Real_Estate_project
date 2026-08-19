@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { localeAlternates, type Locale } from "@/i18n/routing";
-import { getAreas, getPropertyTypes } from "@/lib/api";
+import { getAreas, getPropertyTypes, getSettings } from "@/lib/api";
 import { SmartSearchWizard } from "@/components/smart-search/wizard";
-
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,8 +14,11 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "smart" });
   return {
     title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: { languages: localeAlternates("/smart-search") },
+    description: t("sidebarBody"),
+    alternates: {
+      canonical: `/${locale}/smart-search`,
+      languages: localeAlternates("/smart-search"),
+    },
   };
 }
 
@@ -29,11 +30,25 @@ export default async function SmartSearchPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const typedLocale = locale as Locale;
+  const t = await getTranslations("app");
 
-  const [areas, types] = await Promise.all([
+  const [areas, types, settings] = await Promise.all([
     getAreas(typedLocale),
     getPropertyTypes(typedLocale),
+    getSettings(),
   ]);
 
-  return <SmartSearchWizard areas={areas} types={types} locale={typedLocale} />;
+  return (
+    <section className="section smart-search-page">
+      <div className="container">
+        <SmartSearchWizard
+          areas={areas}
+          types={types}
+          locale={typedLocale}
+          whatsapp={settings.whatsapp?.trim() || null}
+          siteName={t("name")}
+        />
+      </div>
+    </section>
+  );
 }

@@ -1,27 +1,42 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
-import type { Map as MapLibreMap } from "maplibre-gl";
+import type { Map as MapLibreMap, Marker } from "maplibre-gl";
+import { ArrowLeft, List, Map as MapIcon, MapPin, RefreshCw } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 
+import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { apiGet, mediaUrl, type Paginated, type PropertyListItem } from "@/lib/api";
-import { formatPrice } from "@/lib/format";
+import {
+  apiGet,
+  mediaUrl,
+  type Paginated,
+  type PropertyDetail,
+  type PropertyListItem,
+} from "@/lib/api";
+import { formatBareAmount, formatPrice, formatSqm } from "@/lib/format";
+import { PropertyCard } from "@/components/property/property-card";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
-const KUWAIT_CENTER: [number, number] = [47.96, 29.28];
+const KUWAIT_CENTER: [number, number] = [47.8, 29.35];
 const MAX_PROPERTIES = 200;
 
-/** Pages through /properties until exhausted (or the cap) and keeps only the
- *  listings the office actually pinned on the map. */
-async function fetchMappableProperties(locale: Locale): Promise<PropertyListItem[]> {
+interface Located {
+  item: PropertyListItem;
+  lat: number;
+  lng: number;
+}
+
+/** Pages through `/properties` until exhausted, or the cap. */
+async function fetchAll(locale: Locale): Promise<PropertyListItem[]> {
   const collected: PropertyListItem[] = [];
   let cursor: string | null = null;
   do {
     const page: Paginated<PropertyListItem> = await apiGet("/properties", {
       locale,
+      limit: 50,
       ...(cursor ? { cursor } : {}),
     });
     collected.push(...page.items);
@@ -30,29 +45,41 @@ async function fetchMappableProperties(locale: Locale): Promise<PropertyListItem
   return collected;
 }
 
+/**
+ * The map browser: gold price pins over Kuwait, a card for whichever is
+ * selected, and a list view for anyone who would rather scroll than pan.
+ *
+ * The list endpoint carries no coordinates, so each listing is resolved through
+ * the detail endpoint once and the ones the office never pinned drop out — the
+ * toolbar says how many survived, because "8 properties" on a map showing three
+ * pins is the kind of quiet lie that erodes trust in the whole listing.
+ */
 export function MapExplorer({ locale }: { locale: Locale }) {
   const t = useTranslations();
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
+  const markers = useRef<Marker[]>([]);
 
-  const { data: properties, isLoading } = useQuery({
+  const [view, setView] = useState<"map" | "list">("map");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+
+  const { data: properties } = useQuery({
     queryKey: ["map-properties", locale],
-    queryFn: () => fetchMappableProperties(locale),
+    queryFn: () => fetchAll(locale),
   });
 
-  // The list endpoint doesn't include coordinates, so each pinned candidate is
-  // resolved through the detail endpoint — capped and parallelised.
-  const { data: located } = useQuery({
+  const { data: located, isLoading } = useQuery({
     queryKey: ["map-located", locale, properties?.length ?? 0],
     enabled: Boolean(properties?.length),
-    queryFn: async () => {
+    queryFn: async (): Promise<Located[]> => {
       const details = await Promise.all(
         (properties ?? []).map(async (item) => {
           try {
-            const detail = await apiGet<{
-              latitude: string | number | null;
-              longitude: string | number | null;
-            }>(`/properties/${encodeURIComponent(item.slug)}`, { locale });
+            const detail = await apiGet<PropertyDetail>(
+              `/properties/${encodeURIComponent(item.slug)}`,
+              { locale },
+            );
             const lat = detail.latitude === null ? NaN : Number(detail.latitude);
             const lng = detail.longitude === null ? NaN : Number(detail.longitude);
             if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
@@ -62,12 +89,17 @@ export function MapExplorer({ locale }: { locale: Locale }) {
           }
         }),
       );
-      return details.filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+      return details.filter((entry): entry is Located => entry !== null);
     },
   });
 
-  // Map init.
+  const current = useMemo(
+    () => located?.find((entry) => entry.item.slug === selected) ?? located?.[0] ?? null,
+    [located, selected],
+  );
+
   useEffect(() => {
+    if (view !== "map") return;
     let cancelled = false;
     (async () => {
       const maplibregl = (await import("maplibre-gl")).default;
@@ -76,73 +108,147 @@ export function MapExplorer({ locale }: { locale: Locale }) {
         container: container.current,
         style: MAP_STYLE,
         center: KUWAIT_CENTER,
-        zoom: 10,
+        zoom: 8.4,
         attributionControl: { compact: true },
       });
       instance.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+      instance.on("load", () => setReady(true));
       map.current = instance;
     })();
     return () => {
       cancelled = true;
+    };
+  }, [view]);
+
+  // Tear the map down only when the component unmounts, not on every view flip.
+  useEffect(
+    () => () => {
       map.current?.remove();
       map.current = null;
-    };
-  }, []);
+    },
+    [],
+  );
 
-  // Markers whenever located data lands.
   useEffect(() => {
-    if (!located?.length) return;
+    if (!located?.length || !map.current) return;
     let cancelled = false;
+
     (async () => {
       const maplibregl = (await import("maplibre-gl")).default;
       if (cancelled || !map.current) return;
 
-      for (const { item, lat, lng } of located) {
-        const image = mediaUrl(item.main_image);
-        const popupEl = document.createElement("div");
-        popupEl.className = "w-56";
-        popupEl.innerHTML = `
-          ${image ? `<img src="${image}" alt="" class="h-28 w-full object-cover" />` : ""}
-          <div class="p-3">
-            <p class="text-sm font-bold text-navy leading-snug">${escapeHtml(item.title)}</p>
-            <p class="mt-1 text-sm font-bold text-gold">${escapeHtml(
-              formatPrice(item.price, item.purpose, locale),
-            )}</p>
-            <a href="/${locale}/properties/${encodeURIComponent(item.slug)}"
-               class="mt-2 inline-block text-sm font-bold text-navy underline decoration-gold decoration-2 underline-offset-4">
-              ${escapeHtml(t("card.viewDetails"))}
-            </a>
-          </div>`;
+      for (const marker of markers.current) marker.remove();
+      markers.current = [];
 
-        new maplibregl.Marker({ color: "#C9A45D" })
-          .setLngLat([lng, lat])
-          .setPopup(new maplibregl.Popup({ offset: 20, maxWidth: "260px" }).setDOMContent(popupEl))
-          .addTo(map.current);
+      for (const entry of located) {
+        const element = document.createElement("button");
+        element.type = "button";
+        element.className = `map-pin${entry.item.slug === current?.item.slug ? " is-active" : ""}`;
+        element.textContent = formatBareAmount(entry.item.price, locale);
+        element.setAttribute("aria-label", entry.item.title);
+        element.addEventListener("click", () => setSelected(entry.item.slug));
+
+        markers.current.push(
+          new maplibregl.Marker({ element })
+            .setLngLat([entry.lng, entry.lat])
+            .addTo(map.current),
+        );
       }
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [located, locale, t]);
+  }, [located, locale, current?.item.slug, ready]);
+
+  function recenter() {
+    if (!map.current || !located?.length) return;
+    map.current.flyTo({ center: KUWAIT_CENTER, zoom: 8.4 });
+  }
+
+  const count = located?.length ?? 0;
+  const image = current ? mediaUrl(current.item.main_image) : null;
+  const sqm = current ? formatSqm(current.item.area_sqm) : null;
 
   return (
-    <div className="relative">
-      <div ref={container} className="h-[calc(100dvh-8rem)] min-h-[28rem] w-full" />
-      <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
-        <p className="pointer-events-auto rounded-full bg-white/95 px-5 py-2.5 text-sm font-bold text-navy shadow-float ring-1 ring-cream-200">
-          {isLoading
-            ? t("mapPage.loading")
-            : t("mapPage.count", { count: located?.length ?? 0 })}
-        </p>
-      </div>
-    </div>
-  );
-}
+    <>
+      <div className="map-toolbar">
+        <div className="segmented">
+          <button
+            type="button"
+            className={view === "map" ? "is-active" : undefined}
+            onClick={() => setView("map")}
+          >
+            <MapIcon size={15} />
+            {t("mapPage.mapView")}
+          </button>
+          <button
+            type="button"
+            className={view === "list" ? "is-active" : undefined}
+            onClick={() => setView("list")}
+          >
+            <List size={15} />
+            {t("mapPage.listView")}
+          </button>
+        </div>
 
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+        <button type="button" className="button button-outline" onClick={recenter}>
+          <RefreshCw size={14} />
+          {t("mapPage.reset")}
+        </button>
+
+        <span>
+          {isLoading ? t("mapPage.loading") : t("mapPage.count", { count })}
+        </span>
+      </div>
+
+      {view === "map" ? (
+        <div className="real-map-layout">
+          <div className="real-map">
+            {!ready ? <div className="map-loading">{t("mapPage.loadingMap")}</div> : null}
+            <div ref={container} className="map-surface" />
+          </div>
+
+          {current ? (
+            <aside className="map-selected-card">
+              {image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={image} alt={t("card.imageAlt", { title: current.item.title })} />
+              ) : null}
+              <h2>{current.item.title}</h2>
+              <p>
+                <MapPin size={14} />
+                {current.item.area.name}
+              </p>
+              <div>
+                {sqm ? (
+                  <span>
+                    {sqm} {t("card.sqm")}
+                  </span>
+                ) : null}
+                {current.item.rooms ? (
+                  <span>{t("card.rooms", { count: current.item.rooms })}</span>
+                ) : null}
+                <span>{t(`status.${current.item.status}`)}</span>
+              </div>
+              <strong>{formatPrice(current.item.price, current.item.purpose, locale)}</strong>
+              <Link
+                className="button button-gold full-button"
+                href={`/properties/${current.item.slug}`}
+              >
+                <ArrowLeft size={15} />
+                {t("mapPage.openProperty")}
+              </Link>
+            </aside>
+          ) : null}
+        </div>
+      ) : (
+        <div className="property-grid two-column">
+          {(located ?? []).map((entry) => (
+            <PropertyCard key={entry.item.id} property={entry.item} locale={locale} />
+          ))}
+        </div>
+      )}
+    </>
+  );
 }

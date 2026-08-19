@@ -1,61 +1,36 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { Languages } from "lucide-react";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
-import { GlobeIcon } from "@/components/ui/icons";
+import { Link, usePathname } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
 /**
- * Arabic ⇄ English switch. Locale detection is off (see `i18n/routing.ts`), so
- * this button is the *only* way into English — it must be reachable on every
- * breakpoint, not buried in the mobile menu.
+ * The one control the reference has no slot for, because the reference is
+ * Arabic-only and this site is not.
  *
- * It shows the language you would switch *to*, not the one you are in: "EN"
- * while reading Arabic. A control labelled with the current state reads as a
- * status display and leaves people unsure whether pressing it changes anything.
- *
- * The current query string rides along, so switching language from a filtered
- * listing keeps the filters.
+ * It re-renders the current path in the other locale rather than sending
+ * everyone home: someone reading a listing in Arabic wants that listing in
+ * English, not the front page.
  */
-export function LocaleToggle({
-  className,
-  tone = "light",
-}: {
-  className?: string;
-  tone?: "light" | "dark";
-}) {
-  const t = useTranslations("nav");
-  const locale = useLocale();
-  const router = useRouter();
+export function LocaleToggle() {
+  const locale = useLocale() as Locale;
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const t = useTranslations("nav");
 
-  const next = locale === "ar" ? "en" : "ar";
-  const query = searchParams.toString();
-  const label = t(next === "en" ? "switchToEnglish" : "switchToArabic");
+  const next: Locale = locale === "ar" ? "en" : "ar";
 
   return (
-    <button
-      type="button"
-      lang={next}
-      onClick={() => router.replace(query ? `${pathname}?${query}` : pathname, { locale: next })}
-      aria-label={label}
-      title={label}
-      className={cn(
-        // Stays a 44px target on the narrowest phone, where the header already
-        // carries the CTA, the phone tile and the menu button; the globe joins
-        // the label only once there is room for both.
-        "flex h-11 min-w-11 shrink-0 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-bold transition-colors",
-        tone === "dark"
-          ? "bg-white/10 text-white ring-1 ring-white/15 hover:bg-white/20"
-          : "bg-cream-100 text-navy hover:bg-gold-100",
-        className,
-      )}
+    <Link
+      className="locale-toggle"
+      href={pathname}
+      locale={next}
+      aria-label={next === "en" ? t("switchToEnglish") : t("switchToArabic")}
+      hrefLang={next}
     >
-      <GlobeIcon width={17} height={17} className="hidden text-gold sm:block" />
+      <Languages size={15} aria-hidden />
       <span>{next === "en" ? "EN" : "ع"}</span>
-    </button>
+    </Link>
   );
 }

@@ -34,6 +34,7 @@ from git, so any of them can be brought back at any time.
 
 | Commit | What it is | Served kwt25.com |
 | --- | --- | --- |
+| `83055b1` | **The Tailwind storefront.** The last build before the reference port: same navy/gold/cream palette and the same pages, but assembled from Tailwind utilities against the tokens in `globals.css`, with the old `OptionPicker`/`BottomSheet` filter panel, the full-screen menu overlay and no compare, list-property or brand title card. | until the reference port shipped |
 | `84e10bb` | **The previous website.** "Put the previous website back on kwt25.com" — storefront restored to its state at `27c7b4a`: emerald + copper on porcelain, floating quick-search panel over the banner, three-column card grids, expanded filter panel, no Kuwait Finder. | until the mimic redesign shipped |
 | `27c7b4a` | The same storefront as `84e10bb`, before the identity experiments branched off. | — |
 

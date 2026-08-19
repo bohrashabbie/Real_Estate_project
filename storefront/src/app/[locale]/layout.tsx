@@ -4,10 +4,12 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { BrandIntro } from "@/components/layout/brand-intro";
 import { Header } from "@/components/layout/header";
-import { BackToHome } from "@/components/layout/back-to-home";
 import { Footer } from "@/components/layout/footer";
-import { FloatingContact } from "@/components/layout/floating-contact";
+import { ContactFloats } from "@/components/layout/contact-floats";
+import { ChatLauncher } from "@/components/layout/chat-launcher";
+import { CompareBar } from "@/components/property/compare-bar";
 import { QueryProvider } from "@/providers/query-provider";
 import { getSettings } from "@/lib/api";
 import { fontVariables } from "@/lib/fonts";
@@ -27,7 +29,7 @@ export async function generateMetadata({
     // Without a metadataBase every `alternates`/`openGraph` URL below stays
     // path-relative, which crawlers and social scrapers cannot resolve.
     metadataBase: new URL(SITE_URL),
-    title: { default: t("name"), template: `%s — ${t("name")}` },
+    title: { default: `${t("name")} — ${t("titleSuffix")}`, template: `%s — ${t("name")}` },
     description: t("tagline"),
     alternates: { canonical: `/${locale}`, languages: localeAlternates("") },
     openGraph: {
@@ -42,6 +44,14 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * The frame every page renders inside, in the reference's order: the title
+ * card, then `<main>` carrying the header, the page and the footer, then the
+ * two fixed rails outside it.
+ *
+ * The header sits *inside* `<main>` because the reference's sticky offsets and
+ * the drawer's `inset` are measured from it; moving it out shifts the drawer.
+ */
 export default async function LocaleLayout({
   children,
   params,
@@ -55,22 +65,25 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const typedLocale = locale as Locale;
 
-  // Office contact numbers drive the header phone button, the floating rail
-  // and the footer. `getSettings` never throws — the layout renders with the
-  // defaults when the API is unreachable.
+  // Office contact numbers drive the header phone button, the floating rail,
+  // the chat panel and the footer. `getSettings` never throws — the layout
+  // renders with the defaults when the API is unreachable.
   const settings = await getSettings();
 
   return (
     <html lang={locale} dir={localeDirection[typedLocale]} className={fontVariables}>
-      <body className="flex min-h-dvh flex-col">
+      <body>
         <NextIntlClientProvider>
           <QueryProvider>
-            <Header settings={settings} />
-            <main className="flex-1">{children}</main>
-            {/* Hides itself on the home page; see the component. */}
-            <BackToHome />
-            <Footer settings={settings} locale={typedLocale} />
-            <FloatingContact settings={settings} />
+            <BrandIntro />
+            <main>
+              <Header settings={settings} />
+              {children}
+              <Footer settings={settings} />
+            </main>
+            <ContactFloats settings={settings} />
+            <ChatLauncher settings={settings} />
+            <CompareBar />
           </QueryProvider>
         </NextIntlClientProvider>
       </body>

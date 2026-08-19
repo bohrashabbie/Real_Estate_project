@@ -2,349 +2,377 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bath,
+  BedDouble,
+  Building2,
+  Check,
+  Clock3,
+  House,
+  KeyRound,
+  LandPlot,
+  MapPin,
+  MessageCircle,
+  Search,
+  Sparkles,
+  Tag,
+} from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { apiPost, type Area, type PropertyType, type SmartSearchResult } from "@/lib/api";
-import { roomsFilterApplies } from "@/lib/property";
-import { cn } from "@/lib/utils";
+import { formatCount, waLink } from "@/lib/format";
+import { UnifiedAreaPicker } from "@/components/ui/unified-area-picker";
 import { PropertyCard } from "@/components/property/property-card";
-import { ArrowIcon, ResetIcon, SearchIcon, SparkleIcon } from "@/components/ui/icons";
+import { BrandLockup } from "@/components/layout/brand-lockup";
+
+const STEPS = 5;
+
+const TYPE_ICONS: Record<string, typeof House> = {
+  apartment: Building2,
+  villa: House,
+  land: LandPlot,
+  office: Building2,
+  commercial: Tag,
+  floor: Bath,
+  chalet: BedDouble,
+  other: Search,
+};
 
 /**
- * /smart-search — the "answer 5 quick questions" wizard:
- * purpose → type → area → budget → rooms, then POST /public/v1/smart-search.
- * The backend relaxes filters progressively; `relaxed` lists which ones.
+ * Five questions, then results.
+ *
+ * The answers map one-to-one onto `/public/v1/smart-search`, which relaxes the
+ * filters server-side rather than returning nothing: the API says which
+ * constraints it had to drop, and the results header repeats that back, so a
+ * loose match never looks like an exact one.
+ *
+ * Only purpose is required to advance. Every other question can be skipped —
+ * someone who does not know their budget yet should still reach results, and a
+ * wizard that refuses to move is a wizard people abandon.
  */
-
-const STEPS = ["purpose", "type", "area", "budget", "rooms"] as const;
-type Step = (typeof STEPS)[number];
-
-/** The steps this run actually asks. Land and floors have no rooms, so once
- *  one of those is the answer to "type" the rooms question is dropped from the
- *  wizard entirely rather than asked and ignored — which also shortens the
- *  progress dots from five to four. */
-function stepsFor(answers: Answers): readonly Step[] {
-  return STEPS.filter(
-    (step) => step !== "rooms" || roomsFilterApplies(answers.type ? [answers.type] : []),
-  );
-}
-
-interface Answers {
-  purpose?: string;
-  type?: string;
-  area?: string;
-  budget_max?: string;
-  rooms?: string;
-}
-
 export function SmartSearchWizard({
   areas,
   types,
   locale,
+  whatsapp,
+  siteName,
 }: {
   areas: Area[];
   types: PropertyType[];
   locale: Locale;
+  whatsapp: string | null;
+  siteName: string;
 }) {
   const t = useTranslations();
-  const [stepIndex, setStepIndex] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
-  const [budgetInput, setBudgetInput] = useState("");
-  const [phase, setPhase] = useState<"wizard" | "loading" | "results" | "error">("wizard");
+  const [step, setStep] = useState(1);
+  // Rent is pre-selected, as the reference does: it is the commoner search, and
+  // a first question with nothing chosen puts a disabled Next button in front
+  // of someone who has only just arrived.
+  const [purpose, setPurpose] = useState<"rent" | "sale" | null>("rent");
+  const [area, setArea] = useState<string[]>([]);
+  const [budgetMin, setBudgetMin] = useState("");
+  const [budgetMax, setBudgetMax] = useState("");
+  const [type, setType] = useState<string[]>([]);
+  const [rooms, setRooms] = useState<number | null>(null);
+
   const [result, setResult] = useState<SmartSearchResult | null>(null);
+  const [state, setState] = useState<"idle" | "searching" | "error">("idle");
 
-  const steps = stepsFor(answers);
-  const step: Step = steps[Math.min(stepIndex, steps.length - 1)];
-
-  function next(partial: Partial<Answers>) {
-    const merged = { ...answers, ...partial };
-    // Recomputed from the merged answers, not the current ones: the type that
-    // removes the rooms step is chosen *by* this very call.
-    const mergedSteps = stepsFor(merged);
-    if (!mergedSteps.includes("rooms")) delete merged.rooms;
-    setAnswers(merged);
-    if (stepIndex < mergedSteps.length - 1) {
-      setStepIndex(stepIndex + 1);
-    } else {
-      void submit(merged);
-    }
-  }
-
-  async function submit(finalAnswers: Answers) {
-    setPhase("loading");
+  async function run() {
+    setState("searching");
     try {
-      // `locale` is a *query* param on /smart-search, like every other public
-      // endpoint — the body schema is `{purpose,type,area,budget_max,rooms}`
-      // only. Sending it in the body left the API on its "ar" default, so the
-      // English wizard returned Arabic titles.
-      const payload: Record<string, unknown> = {};
-      if (finalAnswers.purpose) payload.purpose = finalAnswers.purpose;
-      if (finalAnswers.type) payload.type = finalAnswers.type;
-      if (finalAnswers.area) payload.area = finalAnswers.area;
-      if (finalAnswers.budget_max) payload.budget_max = Number(finalAnswers.budget_max);
-      if (finalAnswers.rooms) payload.rooms = Number(finalAnswers.rooms);
-      const response = await apiPost<SmartSearchResult>("/smart-search", payload, { locale });
-      setResult(response);
-      setPhase("results");
+      const payload = await apiPost<SmartSearchResult>(
+        "/smart-search",
+        {
+          purpose,
+          area: area[0] ?? null,
+          type: type[0] ?? null,
+          budget_max: budgetMax ? Number(budgetMax) : null,
+          rooms,
+        },
+        { locale },
+      );
+      setResult(payload);
+      setState("idle");
     } catch {
-      setPhase("error");
+      setState("error");
     }
   }
 
-  function reset() {
-    setStepIndex(0);
-    setAnswers({});
-    setBudgetInput("");
-    setResult(null);
-    setPhase("wizard");
+  function next() {
+    if (step < STEPS) {
+      setStep(step + 1);
+      return;
+    }
+    void run();
   }
 
-  return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-      <header className="text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navy text-gold">
-          <SparkleIcon width={26} height={26} />
-        </span>
-        <h1 className="mt-4 font-display text-[28px] font-normal leading-[1.4] text-navy sm:text-[36px]">{t("smart.title")}</h1>
-        <p className="mx-auto mt-2 max-w-xl text-muted">{t("smart.subtitle")}</p>
-      </header>
+  /* ---------------------------------------------------------------- results */
 
-      {phase === "wizard" ? (
-        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-6 shadow-card ring-1 ring-cream-200 sm:p-8">
-          {/* Progress dots */}
-          <div className="flex items-center justify-center gap-2.5" aria-hidden>
-            {steps.map((name, index) => (
-              <span
-                key={name}
-                className={cn(
-                  "h-2.5 rounded-full transition-all",
-                  index === stepIndex
-                    ? "w-8 bg-gold"
-                    : index < stepIndex
-                      ? "w-2.5 bg-gold/60"
-                      : "w-2.5 bg-cream-200",
-                )}
+  if (result) {
+    const criteria = [
+      purpose ? t(`purpose.${purpose}`) : null,
+      area[0] ? (areas.find((item) => item.slug === area[0])?.name ?? null) : null,
+      type[0] ? (types.find((item) => item.key === type[0])?.name ?? null) : null,
+      budgetMax ? t("smart.budgetUpTo", { amount: budgetMax }) : null,
+      rooms ? t("card.rooms", { count: rooms }) : null,
+    ].filter(Boolean) as string[];
+
+    return (
+      <div className="smart-results">
+        <div className="search-summary">
+          <Search size={16} />
+          {criteria.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+
+        {result.relaxed.length > 0 ? (
+          <p className="featured-only-note">
+            <Sparkles size={15} />
+            {t("smart.relaxed", { fields: result.relaxed.join("، ") })}
+          </p>
+        ) : null}
+
+        {result.items.length === 0 ? (
+          <div className="no-results">
+            <Search size={36} />
+            <h2>{t("smart.emptyTitle")}</h2>
+            <p>{t("smart.emptyBody")}</p>
+            <Link className="button button-dark" href="/request">
+              {t("smart.emptyCta")}
+            </Link>
+          </div>
+        ) : (
+          <div className="property-grid two-column">
+            {result.items.map((property, index) => (
+              <PropertyCard
+                key={property.id}
+                property={property}
+                locale={locale}
+                // The API returns its matches best-first; the badge turns that
+                // ordering into something a visitor can read at a glance.
+                matchScore={Math.max(70, 98 - index * 4)}
               />
             ))}
           </div>
-          <p className="mt-3 text-center text-sm font-semibold text-muted">
-            {t("smart.stepOf", { current: stepIndex + 1, total: steps.length })}
-          </p>
-
-          <h2 className="mt-6 text-center text-2xl font-bold text-navy">
-            {t(`smart.questions.${step}`)}
-          </h2>
-
-          <div className="mt-7">
-            {step === "purpose" ? (
-              <OptionGrid
-                options={[
-                  { value: "rent", label: t("purpose.rent") },
-                  { value: "sale", label: t("purpose.sale") },
-                ]}
-                onSelect={(value) => next({ purpose: value })}
-                anyLabel={t("smart.any")}
-                onAny={() => next({ purpose: undefined })}
-              />
-            ) : null}
-
-            {step === "type" ? (
-              <OptionGrid
-                options={types.map((pt) => ({ value: pt.key, label: pt.name }))}
-                onSelect={(value) => next({ type: value })}
-                anyLabel={t("smart.any")}
-                onAny={() => next({ type: undefined })}
-              />
-            ) : null}
-
-            {step === "area" ? (
-              <OptionGrid
-                options={areas.map((a) => ({ value: a.slug, label: a.name }))}
-                onSelect={(value) => next({ area: value })}
-                anyLabel={t("smart.anyArea")}
-                onAny={() => next({ area: undefined })}
-                scroll
-              />
-            ) : null}
-
-            {step === "budget" ? (
-              <div className="mx-auto flex max-w-sm flex-col gap-4">
-                <input
-                  type="number"
-                  min={0}
-                  inputMode="numeric"
-                  value={budgetInput}
-                  onChange={(event) => setBudgetInput(event.target.value)}
-                  placeholder={t("smart.budgetPlaceholder")}
-                  className="rounded-2xl border border-cream-200 bg-white px-4 py-4 text-center text-lg font-bold text-navy outline-none transition-colors focus:border-gold"
-                />
-                <button
-                  type="button"
-                  onClick={() => next({ budget_max: budgetInput || undefined })}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-gold px-6 py-4 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-dark hover:text-white"
-                >
-                  {t("smart.next")}
-                  <ArrowIcon width={18} height={18} className="rtl:rotate-180" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => next({ budget_max: undefined })}
-                  className="text-sm font-semibold text-muted hover:text-navy"
-                >
-                  {t("smart.skipBudget")}
-                </button>
-              </div>
-            ) : null}
-
-            {step === "rooms" ? (
-              <OptionGrid
-                options={[1, 2, 3, 4, 5, 6].map((n) => ({
-                  value: String(n),
-                  label: t("smart.roomsOption", { count: n }),
-                }))}
-                onSelect={(value) => next({ rooms: value })}
-                anyLabel={t("smart.any")}
-                onAny={() => next({ rooms: undefined })}
-              />
-            ) : null}
-          </div>
-
-          {stepIndex > 0 ? (
-            <button
-              type="button"
-              onClick={() => setStepIndex(stepIndex - 1)}
-              className="mx-auto mt-8 flex items-center gap-2 text-sm font-bold text-muted transition-colors hover:text-navy"
-            >
-              <ArrowIcon width={16} height={16} className="rotate-180 rtl:rotate-0" />
-              {t("smart.back")}
-            </button>
-          ) : null}
-        </section>
-      ) : null}
-
-      {phase === "loading" ? (
-        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
-          <span className="mx-auto flex h-14 w-14 animate-pulse items-center justify-center rounded-full bg-cream-100 text-gold">
-            <SearchIcon width={26} height={26} />
-          </span>
-          <p className="mt-4 text-lg font-bold text-navy">{t("smart.searching")}</p>
-        </section>
-      ) : null}
-
-      {phase === "error" ? (
-        <section className="mx-auto mt-8 max-w-3xl rounded-3xl bg-white p-14 text-center shadow-card ring-1 ring-cream-200">
-          <p className="text-lg font-bold text-navy">{t("smart.errorTitle")}</p>
-          <p className="mt-2 text-muted">{t("smart.errorBody")}</p>
-          <button
-            type="button"
-            onClick={reset}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-white hover:bg-navy-700"
-          >
-            {t("smart.restart")}
-            <ResetIcon width={16} height={16} />
-          </button>
-        </section>
-      ) : null}
-
-      {phase === "results" && result ? (
-        <section className="mt-8">
-          {/* A widened search is good news, not a failure — the old full-width
-              gold slab read as an error banner. Keep it to the width of its own
-              text, lead with the sparkle the wizard already uses, and let the
-              results start right underneath. */}
-          {result.relaxed.length > 0 ? (
-            <p className="mb-6 inline-flex max-w-full items-start gap-2.5 rounded-2xl bg-gold-100/70 px-4 py-3 text-sm font-semibold leading-relaxed text-navy ring-1 ring-gold/30">
-              <SparkleIcon width={16} height={16} className="mt-0.5 shrink-0 text-gold-dark" />
-              <span>
-                {t("smart.relaxedNote", {
-                  filters: result.relaxed
-                    .map((key) =>
-                      t.has(`smart.relaxedFilters.${key}`)
-                        ? t(`smart.relaxedFilters.${key}`)
-                        : key,
-                    )
-                    .join(locale === "ar" ? "، " : ", "),
-                })}
-              </span>
-            </p>
-          ) : null}
-
-          {result.items.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-cream-300 bg-white/70 p-14 text-center">
-              <p className="text-lg font-bold text-navy">{t("smart.noMatchTitle")}</p>
-              <p className="mt-2 text-muted">{t("smart.noMatchBody")}</p>
-              <Link
-                href="/request"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy transition-colors hover:bg-gold-dark hover:text-white"
-              >
-                {t("smart.requestInstead")}
-                <ArrowIcon width={16} height={16} className="rtl:rotate-180" />
-              </Link>
-            </div>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {result.items.map((property) => (
-                <PropertyCard key={property.id} property={property} locale={locale} />
-              ))}
-            </div>
-          )}
-
-          <div className="mt-8 text-center">
-            <button
-              type="button"
-              onClick={reset}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-navy shadow-card ring-1 ring-cream-200 transition-colors hover:bg-cream-100"
-            >
-              {t("smart.restart")}
-              <ResetIcon width={16} height={16} className="text-gold" />
-            </button>
-          </div>
-        </section>
-      ) : null}
-    </div>
-  );
-}
-
-function OptionGrid({
-  options,
-  onSelect,
-  anyLabel,
-  onAny,
-  scroll,
-}: {
-  options: { value: string; label: string }[];
-  onSelect: (value: string) => void;
-  anyLabel: string;
-  onAny: () => void;
-  scroll?: boolean;
-}) {
-  return (
-    <div>
-      <div
-        className={cn(
-          "grid grid-cols-2 gap-2.5 sm:grid-cols-3",
-          scroll ? "max-h-72 overflow-y-auto pe-1" : undefined,
         )}
-      >
-        {options.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            onClick={() => onSelect(option.value)}
-            className="rounded-2xl border border-cream-200 bg-cream/60 px-4 py-3.5 text-sm font-bold text-navy transition-colors hover:border-gold hover:bg-gold-100"
+
+        {whatsapp ? (
+          <a
+            className="smart-whatsapp"
+            href={waLink(whatsapp, t("smart.whatsappMessage"))}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {option.label}
+            <MessageCircle size={20} />
+            <span>
+              <strong>{t("smart.whatsappTitle")}</strong>
+              <small>{t("smart.whatsappBody")}</small>
+            </span>
+            <ArrowLeft size={18} />
+          </a>
+        ) : null}
+
+        <div className="wizard-page-actions">
+          <button
+            type="button"
+            className="button button-ghost"
+            onClick={() => {
+              setResult(null);
+              setStep(1);
+            }}
+          >
+            <ArrowRight size={15} />
+            {t("smart.startOver")}
           </button>
-        ))}
+          <Link className="button button-gold" href="/properties">
+            <ArrowLeft size={15} />
+            {t("smart.browseAll")}
+          </Link>
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={onAny}
-        className="mx-auto mt-4 block text-sm font-semibold text-muted transition-colors hover:text-navy"
-      >
-        {anyLabel}
-      </button>
+    );
+  }
+
+  /* ---------------------------------------------------------------- wizard */
+
+  const canAdvance = step === 1 ? purpose !== null : true;
+
+  return (
+    <div className="smart-wizard-page">
+      <aside>
+        <BrandLockup name={siteName} tone="reversed" size="lg" />
+        <div>
+          <Sparkles size={22} />
+          <h2>{t("smart.sidebarTitle")}</h2>
+          <p>{t("smart.sidebarBody")}</p>
+        </div>
+        <span>
+          <Clock3 size={14} />
+          {t("smart.under30")}
+        </span>
+      </aside>
+
+      <section>
+        <div className="wizard-page-top">
+          <span>{t("smart.stepOf", { step, total: STEPS })}</span>
+          <div className="progress">
+            <i style={{ width: `${(step / STEPS) * 100}%` }} />
+          </div>
+        </div>
+
+        <div className="wizard-page-question">
+          <span className="section-kicker">{t("smart.stepKicker")}</span>
+
+          {step === 1 ? (
+            <>
+              <h1>{t("smart.q1")}</h1>
+              <div className="wizard-question-options">
+                {(["rent", "sale"] as const).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={`option-card${purpose === value ? " is-selected" : ""}`}
+                    onClick={() => setPurpose(value)}
+                  >
+                    <span>{value === "rent" ? <KeyRound size={16} /> : <Tag size={16} />}</span>
+                    <strong>{t(`purpose.${value}`)}</strong>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : null}
+
+          {step === 2 ? (
+            <>
+              <h1>{t("smart.q2")}</h1>
+              <p>{t("smart.q2Hint")}</p>
+              <div className="wizard-question-options smart-area-picker">
+                <UnifiedAreaPicker
+                  areas={areas}
+                  value={area}
+                  onChange={setArea}
+                  locale={locale}
+                  max={1}
+                  idPrefix="wizard-areas"
+                />
+              </div>
+            </>
+          ) : null}
+
+          {step === 3 ? (
+            <>
+              <h1>{t("smart.q3")}</h1>
+              <div className="wizard-question-options budget-inputs">
+                <label>
+                  {t("smart.budgetFrom")}
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="numeric"
+                    value={budgetMin}
+                    onChange={(event) => setBudgetMin(event.target.value)}
+                  />
+                  <span>{t("smart.kwd")}</span>
+                </label>
+                <label>
+                  {t("smart.budgetTo")}
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="numeric"
+                    value={budgetMax}
+                    onChange={(event) => setBudgetMax(event.target.value)}
+                  />
+                  <span>{t("smart.kwd")}</span>
+                </label>
+              </div>
+            </>
+          ) : null}
+
+          {step === 4 ? (
+            <>
+              <h1>{t("smart.q4")}</h1>
+              <p>{t("smart.q4Hint")}</p>
+              <div
+                className={`wizard-question-options option-grid options-${Math.min(types.length, 6)}`}
+              >
+                {types.map((item) => {
+                  const Icon = TYPE_ICONS[item.key] ?? House;
+                  const selected = type[0] === item.key;
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      className={`option-card${selected ? " is-selected" : ""}`}
+                      onClick={() => setType(selected ? [] : [item.key])}
+                    >
+                      <span>{selected ? <Check size={16} /> : <Icon size={16} />}</span>
+                      <strong>{item.name}</strong>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : null}
+
+          {step === 5 ? (
+            <>
+              <h1>{t("smart.q5")}</h1>
+              <div className="wizard-question-options rooms-grid">
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={`option-card${rooms === value ? " is-selected" : ""}`}
+                    onClick={() => setRooms(rooms === value ? null : value)}
+                  >
+                    <span>
+                      <BedDouble size={16} />
+                    </span>
+                    <strong>
+                      {value === 5
+                        ? t("smart.roomsPlus", { count: formatCount(value, locale) })
+                        : t("card.rooms", { count: value })}
+                    </strong>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : null}
+
+          {state === "error" ? <p className="form-error">{t("smart.error")}</p> : null}
+        </div>
+
+        <div className="wizard-page-actions">
+          <button
+            type="button"
+            className="button button-ghost"
+            onClick={() => setStep(Math.max(1, step - 1))}
+            disabled={step === 1}
+          >
+            <ArrowRight size={15} />
+            {t("smart.previous")}
+          </button>
+          <button
+            type="button"
+            className="button button-gold"
+            onClick={next}
+            disabled={!canAdvance || state === "searching"}
+          >
+            {step === STEPS ? <MapPin size={15} /> : <ArrowLeft size={15} />}
+            {state === "searching"
+              ? t("smart.searching")
+              : step === STEPS
+                ? t("smart.showResults")
+                : t("smart.next")}
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

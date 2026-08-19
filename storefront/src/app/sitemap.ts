@@ -10,7 +10,17 @@ import { absoluteUrl } from "@/lib/site";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const STATIC_PATHS = ["", "/properties", "/smart-search", "/map", "/request", "/contact"];
+// `/compare` is deliberately absent: it renders one browser's own shortlist,
+// so there is nothing there for a crawler to index.
+const STATIC_PATHS = [
+  "",
+  "/properties",
+  "/smart-search",
+  "/map",
+  "/request",
+  "/list-property",
+  "/contact",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];

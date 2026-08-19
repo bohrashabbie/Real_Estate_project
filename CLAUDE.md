@@ -54,19 +54,37 @@ site's conversions are phone call, WhatsApp, inquiry form, and the
 
 ## Frontend conventions
 
-- Next.js 15 App Router, TS, Tailwind 4, next-intl (`ar` default + `en`, RTL),
-  TanStack Query for server state (admin), react-hook-form + zod forms,
-  shadcn/ui-style components (admin), sonner toasts.
-- Admin: bearer token in memory + refresh cookie via `/api/auth/*` route handlers
-  (copied from GRC). Errors keyed off the `{code,message,details}` envelope.
-- Storefront: server components fetch from `/public/v1`; maplibre-gl with
-  OpenFreeMap tiles for maps; theme cream `#F7F3EA` / navy `#0E1B2B` / gold `#C9A45D`,
-  sampled from the reference screenshots in `mimic/` (tokens live in
-  `storefront/src/app/globals.css` — retheme there, nowhere else). **Gold is flat**:
-  the reference paints one gold value everywhere, so there is no gradient variant.
-- Every list of options on the storefront goes through `OptionPicker` /
-  `OptionGrid` (`components/ui/option-picker.tsx`) — two columns, never a
-  native `<select>`. Listing filters wrap `OptionGrid` in a `BottomSheet`.
+- Next.js 15 App Router, TS, next-intl (`ar` default + `en`, RTL), TanStack
+  Query for server state, react-hook-form + zod forms and shadcn/ui-style
+  components + sonner toasts **in the admin**.
+- Admin: Tailwind 4. Bearer token in memory + refresh cookie via `/api/auth/*`
+  route handlers (copied from GRC). Errors keyed off the `{code,message,details}`
+  envelope.
+- **Storefront: no Tailwind.** Its whole visual layer is one hand-written
+  stylesheet, `storefront/src/app/globals.css`, ported from the kwt25 reference
+  build (`https://kwt25-preview.vercel.app`). Components render semantic class
+  names the stylesheet defines — `.property-card`, `.launch-hero`,
+  `.unified-area-picker`, `.site-header` — and carry no utility classes at all.
+  Restyle a component by editing its block in that file; retheme by editing the
+  `:root` tokens at the top (navy `#0d1b2a`, gold `#c8a45d`, ivory `#f7f3ea`,
+  cream `#fcfaf5`). Adding a utility framework back would fork the design system.
+- Storefront data: server components fetch from `/public/v1`; maplibre-gl with
+  OpenFreeMap tiles for maps.
+- Icons are `lucide-react`, which is what the reference uses — match its icon
+  for a given role rather than picking a new one (Instagram is `Camera` there,
+  because lucide dropped its brand icons).
+- Digits split by role, per the reference: prices and the area tally render in
+  Arabic-Indic under `ar` (`٤٢٠ د.ك`, `١٥٨ منطقة`), while result counts and
+  specs stay Latin (`8 عقارات`, `145 م²`). `lib/format.ts` owns this.
+- Every area picker on the storefront is `UnifiedAreaPicker`
+  (`components/ui/unified-area-picker.tsx`); every other option list is a
+  `<details>` menu (`.quick-filter-menu`) or an `.option-card` grid — never a
+  native `<select>`, except inside the two long request forms where the
+  reference uses one too.
+- The reference's breakpoint for handing the nav to the phone drawer is 760px,
+  which overflows its own page at 768px. Ours hands over at 1023px instead;
+  the override block lives at the end of `globals.css` with the rest of the
+  deliberate departures (LTR mirroring, the kwt25 lockup, narrow-header rules).
 - Previously-live designs and how to restore them: `deploy/ROLLBACK.md`.
 
 ## Login (dev seed)

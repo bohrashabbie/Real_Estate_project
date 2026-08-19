@@ -31,6 +31,8 @@ PUBLIC_SETTING_KEYS = {
     "site.whatsapp": "whatsapp",
     "site.email": "email",
     "site.instagram": "instagram",
+    "site.x": "x",
+    "site.snapchat": "snapchat",
     "site.name_ar": "name_ar",
     "site.name_en": "name_en",
 }
