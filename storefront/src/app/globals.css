@@ -5308,6 +5308,12 @@ footer {
   display:flex;
 }
 
+/* Everything from here up is fixed chrome, and 38 is the floor of that band:
+   contact-floats 38, chat-launcher 39, compare-bar 40, compare-mini 42,
+   whatsapp-nudge 70, chat-panel 80, global-toast 95, modal-backdrop 100,
+   brand-intro 9999. Page content stays underneath it — a section that climbs
+   above 38 hides these rails wherever the two overlap, silently, because the
+   rails are still there and still rendered. */
 .contact-floats {
   z-index:38;
   flex-direction:column;
@@ -7756,8 +7762,15 @@ body {
   color:var(--gold-dark);
 }
 
+/* 30, not 80: the fixed rails start at 38 (.contact-floats) and everything
+   above that belongs to them. A quick-search band that outranks them covers
+   the share/call/WhatsApp buttons and the chat pill wherever the two overlap,
+   which on this page is the whole first screenful. 30 still clears every
+   section it has to out-stack — .properties-browser is 1, the results strip
+   is 18 — and the section makes its own stacking context, so the menus it
+   raises to 501/1000/1001 keep their order inside it. */
 .properties-quick-search {
-  z-index:80;
+  z-index:30;
   border-bottom:1px solid #c8a45d33;
   position:relative;
   overflow:visible;
@@ -7774,7 +7787,7 @@ body {
     overflow:visible;
   }
   .home-quick-search {
-    z-index:500;
+    z-index:30; /* below the fixed rails at 38 — see .properties-quick-search */
     position:relative;
   }
   .home-quick-search form {
