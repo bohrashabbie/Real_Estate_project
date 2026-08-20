@@ -5943,6 +5943,19 @@ body:has(.mobile-preview-page) .mobile-preview-page~.whatsapp-nudge {
   }
 }
 
+@media (max-width:760px) {
+  .finder-panel {
+    padding:14px;
+  }
+  .finder-frame {
+    height:min(58vh,420px);
+  }
+  .finder-panel-actions .button {
+    flex:1 1 100%;
+    justify-content:center;
+  }
+}
+
 @media (max-width:639px) {
   .type-grid {
     grid-template-columns:repeat(2,1fr);
@@ -7746,6 +7759,40 @@ body {
 .kuwait-finder-button:hover {
   color:#fff!important;
   background:linear-gradient(135deg,#132b43,#17466f)!important;
+}
+
+/* The Kuwait Finder view on the map page. The actions sit above the frame, not
+   inside it: PACI is free to refuse being embedded, and when it does the way
+   through has to already be on screen rather than behind a blank rectangle. */
+.finder-panel {
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:12px;
+  padding:18px;
+}
+
+.finder-panel-actions {
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  margin-bottom:14px;
+  display:flex;
+}
+
+.finder-frame {
+  border:1px solid var(--line);
+  background:var(--ivory);
+  border-radius:10px;
+  width:100%;
+  height:min(64vh,560px);
+  display:block;
+}
+
+.finder-note {
+  color:var(--muted);
+  margin:12px 0 0;
+  font-size:13px;
+  line-height:1.65;
 }
 
 .location-actions {

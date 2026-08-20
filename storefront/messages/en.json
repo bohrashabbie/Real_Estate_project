@@ -305,6 +305,13 @@
     "loadingMap": "Loading the map…",
     "openProperty": "Open the property"
   },
+  "finder": {
+    "finderTab": "Kuwait Finder",
+    "openInFinder": "Open in Kuwait Finder",
+    "embedNote": "Kuwait Finder is the official map of the Public Authority for Civil Information (PACI) — the block, parcel and PACI numbers Kuwait navigates by. If the map above doesn't appear, PACI's site is refusing to be embedded; open it with the button or in the app.",
+    "iosApp": "iPhone app",
+    "androidApp": "Android app"
+  },
   "request": {
     "kicker": "Didn't find the right property?",
     "title": "Request a property we don't list",
