@@ -8834,13 +8834,26 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
+/* The artwork sizes the hero, not the other way round. A fixed hero-shaped
+   box would have to crop a banner that is not that shape, and a banner is
+   cropped exactly where its headline is. So the slides stack in one grid cell
+   at their own height, `contain` guarantees nothing is ever cut off, and only
+   the height cap has a say — past which the artwork centres and the blurred
+   copy behind it fills the rest of the band. */
 .launch-hero.is-artwork {
   min-height: 0;
-  aspect-ratio: 1920 / 720;
+  display: grid;
+  align-items: center;
 }
 
 .launch-hero.is-artwork .hero-slide-image {
-  object-fit: cover;
+  z-index: 1;
+  grid-area: 1 / 1;
+  position: static;
+  width: 100%;
+  height: auto;
+  max-height: min(70vh, 620px);
+  object-fit: contain;
   transform: none;
 }
 
@@ -8848,7 +8861,26 @@ body {
   transform: none;
 }
 
+/* Out of flow on purpose: it fills the section without having a vote in how
+   tall the section is. */
+.hero-slide-backdrop {
+  object-fit: cover;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity .7s;
+  position: absolute;
+  inset: 0;
+  transform: scale(1.12);
+  filter: blur(34px) saturate(1.15) brightness(.62);
+}
+
+.hero-slide-backdrop.is-active {
+  opacity: 1;
+}
+
 .hero-artwork-link {
+  z-index: 2;
   display: block;
   position: absolute;
   inset: 0;
@@ -8864,8 +8896,6 @@ body {
   backdrop-filter: blur(6px);
 }
 
-@media (max-width: 760px) {
-  .launch-hero.is-artwork {
-    aspect-ratio: 4 / 3;
-  }
-}
+/* No portrait override down here. Squeezing a wide banner into a 4/3 phone
+   box crops away more of it than any other breakpoint does; a short hero is
+   the honest shape of a wide picture. */

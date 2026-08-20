@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
 
@@ -21,11 +21,16 @@ const INTERVAL = 6500;
  *
  *   no banners   the four shipped campaign frames, which are plain photography
  *                with a dark scrim, carrying the reference's headline and CTA.
- *   banners      the office's own artwork, shown clean. Those banners arrive
- *                with their message already set in the image ("استثمارك يبدأ من
- *                هنا"), so painting a second headline and a scrim over them
- *                puts two competing sentences on one picture. A banner that
- *                carries an `href` becomes the link for its own slide.
+ *   banners      the office's own artwork, shown clean and shown *whole*.
+ *                Those banners arrive with their message already set in the
+ *                image ("استثمارك يبدأ من هنا"), so painting a second headline
+ *                and a scrim over them puts two competing sentences on one
+ *                picture — and cropping them to a hero-shaped letterbox cuts
+ *                the headline off the top of the artwork, which is the same
+ *                mistake by other means. In artwork mode the image itself
+ *                gives the hero its height (see `.launch-hero.is-artwork` in
+ *                globals.css); a banner that carries an `href` becomes the
+ *                link for its own slide.
  *
  * The rule is simply that whoever wrote the artwork owns the words on it.
  */
@@ -73,26 +78,40 @@ export function LaunchHero({ banners }: { banners: Banner[] }) {
 
   const href = officeArtwork ? published[index]?.href : null;
 
+  /* eslint-disable @next/next/no-img-element */
   const frames = slides.map((src, i) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      key={src}
-      className={`hero-slide-image${i === index ? " is-active" : ""}`}
-      src={src}
-      alt={i === index ? alts[i] : ""}
-      fetchPriority={i === 0 ? "high" : "low"}
-    />
+    <Fragment key={`${i}-${src}`}>
+      {/* The blurred, dimmed copy fills whatever the artwork's own shape leaves
+          over, so a banner that is not the hero's exact ratio sits in a band of
+          itself instead of a slab of dead navy. Artwork mode only: the shipped
+          campaign frames are photography and cover the box on their own. */}
+      {officeArtwork ? (
+        <img
+          className={`hero-slide-backdrop${i === index ? " is-active" : ""}`}
+          src={src}
+          alt=""
+          aria-hidden
+        />
+      ) : null}
+      <img
+        className={`hero-slide-image${i === index ? " is-active" : ""}`}
+        src={src}
+        alt={i === index ? alts[i] : ""}
+        fetchPriority={i === 0 ? "high" : "low"}
+      />
+    </Fragment>
   ));
 
   return (
     <section className={`launch-hero${officeArtwork ? " is-artwork" : ""}`}>
+      {frames}
+
+      {/* The link is an overlay, not a wrapper: in artwork mode the images are
+          what give the hero its height, and wrapping them in a positioned
+          element would take that away. */}
       {href ? (
-        <Link className="hero-artwork-link" href={href} aria-label={alts[index]}>
-          {frames}
-        </Link>
-      ) : (
-        frames
-      )}
+        <Link className="hero-artwork-link" href={href} aria-label={alts[index]} />
+      ) : null}
 
       {officeArtwork ? null : (
         <>
