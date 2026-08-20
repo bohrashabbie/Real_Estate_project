@@ -15,6 +15,7 @@ import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import {
   ContactBand,
+  PropertyTypeGrid,
   RequestTeaser,
   SectionHeading,
   SmartOptionCard,
@@ -23,7 +24,8 @@ import { PropertyCard } from "@/components/property/property-card";
 
 /**
  * The front page, in the reference's order: campaign hero, quick search,
- * the office's picks, everything else, the request nudge, the WhatsApp band.
+ * the office's picks, the property types, everything else, the request nudge,
+ * the WhatsApp band.
  *
  * Every read is a `safeGet`, so an API that is down or a `next build` running
  * without one still produces a page — the grids simply come back empty and
@@ -79,6 +81,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </section>
       ) : null}
+
+      <PropertyTypeGrid types={types} />
 
       {latest.length > 0 ? (
         <section className="section properties-section home-all-properties" id="all-properties">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
 
@@ -28,9 +28,10 @@ const INTERVAL = 6500;
  *                picture — and cropping them to a hero-shaped letterbox cuts
  *                the headline off the top of the artwork, which is the same
  *                mistake by other means. In artwork mode the image itself
- *                gives the hero its height (see `.launch-hero.is-artwork` in
- *                globals.css); a banner that carries an `href` becomes the
- *                link for its own slide.
+ *                gives the hero its height, edge to edge, with nothing added
+ *                around it (see `.launch-hero.is-artwork` in globals.css); a
+ *                banner that carries an `href` becomes the link for its own
+ *                slide.
  *
  * The rule is simply that whoever wrote the artwork owns the words on it.
  */
@@ -78,28 +79,15 @@ export function LaunchHero({ banners }: { banners: Banner[] }) {
 
   const href = officeArtwork ? published[index]?.href : null;
 
-  /* eslint-disable @next/next/no-img-element */
   const frames = slides.map((src, i) => (
-    <Fragment key={`${i}-${src}`}>
-      {/* The blurred, dimmed copy fills whatever the artwork's own shape leaves
-          over, so a banner that is not the hero's exact ratio sits in a band of
-          itself instead of a slab of dead navy. Artwork mode only: the shipped
-          campaign frames are photography and cover the box on their own. */}
-      {officeArtwork ? (
-        <img
-          className={`hero-slide-backdrop${i === index ? " is-active" : ""}`}
-          src={src}
-          alt=""
-          aria-hidden
-        />
-      ) : null}
-      <img
-        className={`hero-slide-image${i === index ? " is-active" : ""}`}
-        src={src}
-        alt={i === index ? alts[i] : ""}
-        fetchPriority={i === 0 ? "high" : "low"}
-      />
-    </Fragment>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      key={`${i}-${src}`}
+      className={`hero-slide-image${i === index ? " is-active" : ""}`}
+      src={src}
+      alt={i === index ? alts[i] : ""}
+      fetchPriority={i === 0 ? "high" : "low"}
+    />
   ));
 
   return (

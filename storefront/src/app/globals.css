@@ -857,6 +857,65 @@ img {
   padding-top:42px;
 }
 
+/* "Browse by property type": the six tiles the pre-reference build had, on
+   cream between two ivory grids so the page alternates rather than running one
+   long ivory band. The shape is that build's — 24px card, a 56px rounded-square
+   chip, one building mark on every tile, six across folding to three and then
+   two — in the palette that replaced its green and terracotta. */
+.type-section {
+  padding-block:80px;
+  scroll-margin-top:92px;
+}
+
+.type-grid {
+  grid-template-columns:repeat(6,1fr);
+  gap:16px;
+  display:grid;
+}
+
+.type-card {
+  text-align:center;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:24px;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  padding:24px;
+  transition:border .2s,transform .2s,box-shadow .2s;
+  display:flex;
+  box-shadow:0 10px 30px -14px #0d1b2a2e;
+}
+
+.type-card>span {
+  background:var(--ivory);
+  width:56px;
+  height:56px;
+  color:var(--gold-dark);
+  border-radius:16px;
+  flex:none;
+  place-items:center;
+  transition:background .2s,color .2s;
+  display:grid;
+}
+
+.type-card strong {
+  color:var(--navy);
+  font-size:14px;
+  font-weight:700;
+}
+
+.type-card:hover {
+  border-color:#c8a45d66;
+  transform:translateY(-4px);
+  box-shadow:0 18px 44px -16px #0d1b2a52;
+}
+
+.type-card:hover>span {
+  background:#f4e9d3;
+}
+
 .heading-row {
   justify-content:space-between;
   align-items:end;
@@ -5878,6 +5937,24 @@ body:has(.mobile-preview-page) .mobile-preview-page~.whatsapp-nudge {
   }
 }
 
+@media (max-width:1023px) {
+  .type-grid {
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media (max-width:639px) {
+  .type-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+  .type-section {
+    padding-block:56px;
+  }
+  .type-card {
+    padding:20px 14px;
+  }
+}
+
 @media (max-width:760px) {
   .header-phone span {
     display:none;
@@ -8834,12 +8911,14 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
-/* The artwork sizes the hero, not the other way round. A fixed hero-shaped
-   box would have to crop a banner that is not that shape, and a banner is
-   cropped exactly where its headline is. So the slides stack in one grid cell
-   at their own height, `contain` guarantees nothing is ever cut off, and only
-   the height cap has a say — past which the artwork centres and the blurred
-   copy behind it fills the rest of the band. */
+/* The artwork sizes the hero, not the other way round: edge to edge at its own
+   ratio, nothing cropped and nothing added around it. The slides stack in one
+   grid cell so a crossfade has somewhere to happen; the cell is as tall as the
+   tallest of them, which for a set of banners drawn at one ratio — the three
+   live ones are all 1672x941 — is exactly the artwork and no margin at all.
+   The hero is therefore as tall as `100vw / ratio`. That is the price of a
+   full-bleed banner nobody has cut: a shorter hero needs wider artwork, not a
+   crop or a letterbox. */
 .launch-hero.is-artwork {
   min-height: 0;
   display: grid;
@@ -8852,7 +8931,6 @@ body {
   position: static;
   width: 100%;
   height: auto;
-  max-height: min(70vh, 620px);
   object-fit: contain;
   transform: none;
 }
@@ -8861,22 +8939,11 @@ body {
   transform: none;
 }
 
-/* Out of flow on purpose: it fills the section without having a vote in how
-   tall the section is. */
-.hero-slide-backdrop {
-  object-fit: cover;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  transition: opacity .7s;
-  position: absolute;
-  inset: 0;
-  transform: scale(1.12);
-  filter: blur(34px) saturate(1.15) brightness(.62);
-}
-
-.hero-slide-backdrop.is-active {
-  opacity: 1;
+/* Nothing sits at the bottom-left corner of the artwork to balance them, the
+   way the campaign hero's headline does, so centred is the only place they
+   do not look dropped. */
+.launch-hero.is-artwork .slider-controls {
+  justify-content: center;
 }
 
 .hero-artwork-link {

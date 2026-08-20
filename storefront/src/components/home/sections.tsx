@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Clock3, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, Clock3, MessageCircle, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
-import type { SiteSettings } from "@/lib/api";
+import type { PropertyType, SiteSettings } from "@/lib/api";
 
 /** The gold-outlined "answer five questions" nudge under each grid. */
 export async function SmartOptionCard() {
@@ -74,6 +74,47 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
           <ArrowLeft size={15} />
           {formatPhone(whatsapp)}
         </a>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * "Browse by property type" — the six tiles between the office's picks and
+ * everything else, restored from the pre-reference build.
+ *
+ * A type is the first cut most people make, before area and before price, and
+ * the quick-search bar only offers it inside a menu they have to open. The
+ * tiles are the same six links spelled out.
+ *
+ * One building mark on every tile, as before: the reader is scanning the six
+ * names, and six different pictograms make them look like six different kinds
+ * of thing rather than six values of one field. The colours are the current
+ * palette's, not that build's retired green-and-terracotta.
+ */
+export async function PropertyTypeGrid({ types }: { types: PropertyType[] }) {
+  const t = await getTranslations("home");
+  const shown = types.slice(0, 6);
+  if (shown.length === 0) return null;
+
+  return (
+    <section className="section type-section" id="property-types">
+      <div className="container">
+        <SectionHeading
+          kicker={t("typesKicker")}
+          title={t("typesTitle")}
+          body={t("typesBody")}
+        />
+        <div className="type-grid">
+          {shown.map((type) => (
+            <Link key={type.key} className="type-card" href={`/properties?type=${type.key}`}>
+              <span>
+                <Building2 size={26} />
+              </span>
+              <strong>{type.name}</strong>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
