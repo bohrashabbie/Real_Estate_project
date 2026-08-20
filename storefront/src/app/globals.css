@@ -8946,6 +8946,12 @@ body {
   justify-content: center;
 }
 
+/* The dots are the one control with no dark disc of its own, so on light
+   artwork they need their own edge rather than a bar behind the whole row. */
+.launch-hero.is-artwork .slider-controls>div button {
+  box-shadow: 0 0 0 1px #0d1b2a3d, 0 1px 3px #0d1b2a4d;
+}
+
 .hero-artwork-link {
   z-index: 2;
   display: block;
@@ -8953,15 +8959,10 @@ body {
   inset: 0;
 }
 
-/* A slideshow whose only affordance sits at the bottom edge needs that edge to
-   stay readable over a light banner. */
-.launch-hero.is-artwork .slider-controls {
-  background: #0d1b2a5c;
-  border-radius: 999px;
-  padding: 5px 8px;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
+/* No backing bar here. `.slider-controls` is also `.container`, so a background
+   on it is not a pill around four buttons — it is a 1180px translucent band
+   across the artwork. The buttons already carry their own dark discs; the dots
+   above carry their own edge. */
 
 /* No portrait override down here. Squeezing a wide banner into a 4/3 phone
    box crops away more of it than any other breakpoint does; a short hero is
