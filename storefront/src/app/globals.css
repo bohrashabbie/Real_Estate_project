@@ -8958,13 +8958,15 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
-/* The artwork sizes the hero, not the other way round — up to a height cap.
-   The slides stack in one grid cell so a crossfade has somewhere to happen,
-   `contain` is the promise that nothing is ever cut off, and the cap keeps a
-   full-bleed 16:9 banner from swallowing the whole fold: uncapped, 1672x941
-   artwork is 810px tall at a 1440 window and 1080px at 1920. Past the cap the
-   artwork centres on the hero's navy, which is the same navy the banners are
-   drawn on. */
+/* Full width, capped height, no band down either side — which means the
+   artwork is cropped rather than fitted, because those three cannot all hold
+   at once for a picture that is not the box's shape.
+
+   The height is `min(56.25vw, 70vh, 620px)`. Below about 1100px the first term
+   wins and it is the artwork's own height, so phones and tablets get the whole
+   banner uncropped; above that the 620px cap wins and `cover` takes the
+   difference off the top and bottom — about 12% each at 1440, 21% at 1920. The
+   slides stack in one grid cell so a crossfade has somewhere to happen. */
 .launch-hero.is-artwork {
   min-height: 0;
   display: grid;
@@ -8976,9 +8978,8 @@ body {
   grid-area: 1 / 1;
   position: static;
   width: 100%;
-  height: auto;
-  max-height: min(70vh, 620px);
-  object-fit: contain;
+  height: min(56.25vw, 70vh, 620px);
+  object-fit: cover;
   transform: none;
 }
 
