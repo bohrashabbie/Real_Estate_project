@@ -8958,14 +8958,13 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
-/* The artwork sizes the hero, not the other way round: edge to edge at its own
-   ratio, nothing cropped and nothing added around it. The slides stack in one
-   grid cell so a crossfade has somewhere to happen; the cell is as tall as the
-   tallest of them, which for a set of banners drawn at one ratio — the three
-   live ones are all 1672x941 — is exactly the artwork and no margin at all.
-   The hero is therefore as tall as `100vw / ratio`. That is the price of a
-   full-bleed banner nobody has cut: a shorter hero needs wider artwork, not a
-   crop or a letterbox. */
+/* The artwork sizes the hero, not the other way round — up to a height cap.
+   The slides stack in one grid cell so a crossfade has somewhere to happen,
+   `contain` is the promise that nothing is ever cut off, and the cap keeps a
+   full-bleed 16:9 banner from swallowing the whole fold: uncapped, 1672x941
+   artwork is 810px tall at a 1440 window and 1080px at 1920. Past the cap the
+   artwork centres on the hero's navy, which is the same navy the banners are
+   drawn on. */
 .launch-hero.is-artwork {
   min-height: 0;
   display: grid;
@@ -8978,6 +8977,7 @@ body {
   position: static;
   width: 100%;
   height: auto;
+  max-height: min(70vh, 620px);
   object-fit: contain;
   transform: none;
 }
