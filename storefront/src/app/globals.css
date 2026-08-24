@@ -8959,38 +8959,97 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
-/* Full width, capped height, no band down either side — which means the
-   artwork is cropped rather than fitted, because those three cannot all hold
-   at once for a picture that is not the box's shape.
+/* The office's banner is a finished poster: gold frame inset from all four
+   edges, headline, tagline, badge and CTA already drawn inside it. Cropping it
+   to a hero-shaped box cuts the frame open and takes words off with it, so
+   here the artwork is never cropped — it is fitted whole and the box bends
+   around it instead.
 
-   The height is `min(56.25vw, 70vh, 620px)`. Below about 1100px the first term
-   wins and it is the artwork's own height, so phones and tablets get the whole
-   banner uncropped; above that the 620px cap wins and `cover` takes the
-   difference off the top and bottom — about 12% each at 1440, 21% at 1920. The
-   slides stack in one grid cell so a crossfade has somewhere to happen. */
+   The band's height is `min(56.25vw, 72vh, 660px)`. Below roughly 1000px the
+   first term wins, the artwork spans the full width at its own height, and
+   there is nothing beside it. Above that the band stops growing and a 16:9
+   banner settles at about the 1180px container width, so its edges line up
+   with the header lockup, the quick-search card and every section below it.
+
+   What is left over at the sides on wide screens is filled by
+   `.hero-artwork-backdrop`: the same image, blown up, blurred and darkened.
+   Navy slabs would read as a mistake at the artwork's right edge, where the
+   picture is sky and lit stone rather than navy; its own out-of-focus colours
+   read as depth. Slides stack in one grid cell so a crossfade has somewhere
+   to happen. */
 .launch-hero.is-artwork {
   min-height: 0;
+  height: min(56.25vw, 72vh, 660px);
   display: grid;
-  align-items: center;
+  /* An explicit `100% / 100%` track, not an implicit one. An auto row is sized
+     from its content first, so the full-width artwork would set the row to its
+     own uncropped height and `overflow: hidden` would clip the band back down
+     — the crop this whole block exists to avoid. A definite track is what lets
+     the images resolve their `height: 100%` against the band instead. */
+  grid-template: 100% / 100%;
   position: relative;
   width: 100%;
   overflow: hidden;
+  background: var(--navy);
 }
 
+/* Backdrop and artwork fade as one unit, so the blurred fill can never be a
+   frame behind the wrong picture mid-transition. */
+.hero-artwork-frame {
+  z-index: 1;
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template: 100% / 100%;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .7s;
+}
+
+.hero-artwork-frame.is-active {
+  opacity: 1;
+}
+
+/* Scaled up before it is blurred, because a 40px blur samples roughly 60px of
+   nothing past each edge; without the overscan the band would fringe pale
+   along its top and bottom. */
+.hero-artwork-backdrop {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(40px) saturate(1.1) brightness(.5);
+  transform: scale(1.25);
+  pointer-events: none;
+}
+
+/* `height: 100%` with `width: auto` makes the element box hug the picture
+   rather than the band, which is what lets the shadow sit on the artwork's
+   real edge instead of on an invisible full-width box. */
 .launch-hero.is-artwork .hero-slide-image {
   z-index: 1;
   grid-area: 1 / 1;
-  position: static;
-  width: 100%;
-  height: auto;
-  max-height: min(56.25vw, 70vh, 620px);
-  min-height: 180px;
-  object-fit: cover;
-  object-position: top center;
+  place-self: center;
+  position: relative;
+  inset: auto;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 1;
   transform: none;
+  transition: none;
+  box-shadow: 0 22px 60px #00000066;
 }
 
 .launch-hero.is-artwork .hero-slide-image.is-active {
+  opacity: 1;
   transform: none;
 }
 
@@ -9015,11 +9074,6 @@ body {
 }
 
 @media (max-width: 760px) {
-  .launch-hero.is-artwork .hero-slide-image {
-    min-height: 160px;
-    max-height: 55vh;
-  }
-
   .slider-controls {
     bottom: 12px;
     gap: 6px;
@@ -9045,6 +9099,7 @@ body {
     bottom: 8px;
   }
 }
+
 
 
 /* No backing bar here. `.slider-controls` is also `.container`, so a background
