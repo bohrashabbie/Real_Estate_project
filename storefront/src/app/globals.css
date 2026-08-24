@@ -8972,6 +8972,9 @@ body {
   min-height: 0;
   display: grid;
   align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
 }
 
 .launch-hero.is-artwork .hero-slide-image {
@@ -8979,7 +8982,9 @@ body {
   grid-area: 1 / 1;
   position: static;
   width: 100%;
-  height: min(56.25vw, 70vh, 620px);
+  height: auto;
+  max-height: min(56.25vw, 70vh, 620px);
+  min-height: 180px;
   object-fit: cover;
   object-position: top center;
   transform: none;
@@ -9008,6 +9013,39 @@ body {
   position: absolute;
   inset: 0;
 }
+
+@media (max-width: 760px) {
+  .launch-hero.is-artwork .hero-slide-image {
+    min-height: 160px;
+    max-height: 55vh;
+  }
+
+  .slider-controls {
+    bottom: 12px;
+    gap: 6px;
+  }
+
+  .slider-controls > button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .slider-controls > div button {
+    width: 18px;
+    height: 4px;
+  }
+
+  .slider-controls > div button.is-active {
+    width: 30px;
+  }
+}
+
+@media (max-width: 430px) {
+  .slider-controls {
+    bottom: 8px;
+  }
+}
+
 
 /* No backing bar here. `.slider-controls` is also `.container`, so a background
    on it is not a pill around four buttons — it is a 1180px translucent band
