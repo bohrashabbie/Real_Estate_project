@@ -21,10 +21,28 @@ running config; that is a record of a past mistake, not the command to copy.
 Its own header says to drop the file once DNS exists. DNS exists — deleting it
 would remove the trap entirely.
 
-`admin` and `caddy` are deliberately not named above: admin is still served
-over plain HTTP on `:8081` and rebuilding it against `ADMIN_DOMAIN` would
-change how its auth cookie is set. Deploy it deliberately, not as a side
-effect.
+`admin` and `caddy` are deliberately not named above — but for `admin` the
+reason has expired. It used to be served over plain HTTP on `:8081`, so a
+rebuild against `ADMIN_DOMAIN` would have baked in an `https://` API base and
+a `Secure` auth cookie that the browser then refused to store.
+
+That is no longer the shape of it. `admin.kwt25.com` is a real HTTPS host in
+`deploy/Caddyfile`, which proxies `/api/v1/*` to the api container, and the
+running admin container already carries `AUTH_COOKIE_SECURE=1`. Rebuilt on
+2026-08-24 to ship the VIP toggle; the login path was checked afterwards and
+answers a clean `401 authentication_failed` rather than a 500, so the cookie
+change the old note warned about did not happen and cannot.
+
+Deploy it deliberately anyway — it is its own app with its own session store,
+and it has no business being rebuilt as a side effect of a storefront CSS
+change:
+
+```sh
+docker compose -f compose.yml -f compose.edge.yml --env-file .env.vps   up -d --build admin
+```
+
+Tag the running image first, so a rollback is one command:
+`docker tag kwt25-realestate-admin kwt25-realestate-admin:rollback-$(date +%Y%m%d-%H%M%S)`.
 
 ## Rollback points
 
