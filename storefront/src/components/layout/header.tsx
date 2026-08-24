@@ -138,7 +138,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 aria-label={t("nav.callAria", { phone: formatPhone(phone) })}
               >
                 <Phone size={16} />
-                <span>{formatPhone(phone)}</span>
               </a>
             ) : null}
 

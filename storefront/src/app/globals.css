@@ -863,8 +863,14 @@ img {
    chip, one building mark on every tile, six across folding to three and then
    two — in the palette that replaced its green and terracotta. */
 .type-section {
-  padding-block:80px;
+  padding-block:56px;
   scroll-margin-top:92px;
+}
+
+/* The six tiles are one short row of links, not a chapter of the page, so they
+   do not need a full section's worth of air above the heading or under them. */
+.type-section .heading-row {
+  margin-bottom:26px;
 }
 
 .type-grid {
@@ -875,7 +881,7 @@ img {
 
 .type-card {
   text-align:center;
-  border:1px solid var(--line);
+  border:2px solid #ded3bd;
   background:#fff;
   border-radius:24px;
   flex-direction:column;
@@ -907,7 +913,7 @@ img {
 }
 
 .type-card:hover {
-  border-color:#c8a45d66;
+  border-color:var(--gold);
   transform:translateY(-4px);
   box-shadow:0 18px 44px -16px #0d1b2a52;
 }
@@ -922,6 +928,21 @@ img {
   gap:20px;
   margin-bottom:36px;
   display:flex;
+}
+
+/* The office's picks carry no sentence under the title — the title already
+   says it — so the button takes that line instead of drifting to the far end
+   of the row, where it read as belonging to nothing in particular. */
+.heading-row.heading-stacked {
+  margin-bottom:26px;
+}
+
+.heading-row.heading-stacked>div>.button {
+  margin-top:14px;
+}
+
+.home-featured-section {
+  padding-block:68px;
 }
 
 .heading-row h2 {
@@ -2719,12 +2740,19 @@ footer {
   display:inline-flex;
 }
 
+/* Icon only, no number. The office's number is already in the footer, in the
+   contact band and on the call float; spelling it out a fourth time in the
+   header only made the button wide enough to crowd the nav. A disc, so it
+   reads as the same control as the call button on the floating rail. */
 .header-phone-button {
   background:var(--navy);
   color:#fff;
-  border-radius:7px;
+  border-radius:50%;
+  width:46px;
   min-height:46px;
-  padding:0 17px;
+  padding:0;
+  place-items:center;
+  display:grid;
   transition:transform .2s,background .2s,box-shadow .2s;
   box-shadow:0 8px 24px #0d1b2a29;
 }
@@ -2779,10 +2807,8 @@ footer {
     display:none;
   }
   .header-phone-button {
-    justify-content:center;
     width:39px;
     min-height:39px;
-    padding:0;
   }
 }
 
@@ -3346,6 +3372,24 @@ footer {
   grid-template-columns:repeat(4,1fr);
 }
 
+/* The promoted home rows scroll instead of wrapping — see `PropertyCarousel`.
+   A fixed card width keeps a row of three and a row of nine looking like the
+   same component, and the block-end padding leaves the cards' shadows room
+   inside `overflow`, which would otherwise slice them off. */
+.property-carousel {
+  scroll-snap-type:x mandatory;
+  scrollbar-color:var(--gold) transparent;
+  gap:22px;
+  padding:4px 2px 20px;
+  display:flex;
+  overflow-x:auto;
+}
+
+.property-carousel-item {
+  scroll-snap-align:start;
+  flex:0 0 min(320px,82vw);
+}
+
 .featured-four .property-image {
   height:200px;
 }
@@ -3359,10 +3403,38 @@ footer {
   font-size:14px;
 }
 
+/* ---------------------------------------------------------------------------
+   The two bands that close the page: "we'll find it for you", then "or just
+   message us now". They were a flat navy strip and a flat gold strip with one
+   line of text on each — accurate, and completely inert at exactly the point
+   where the reader has stopped scrolling and is deciding whether to make
+   contact. Same words, given some depth to stand on.
+   ------------------------------------------------------------------------ */
 .request-teaser {
-  background:var(--navy);
+  background:
+    radial-gradient(880px 420px at 78% -15%, #c8a45d2e, transparent 70%),
+    radial-gradient(620px 340px at 6% 125%, #c8a45d1c, transparent 70%),
+    var(--navy);
   color:#fff;
-  padding:64px 0;
+  padding:86px 0 80px;
+  border-top:1px solid #c8a45d3d;
+  position:relative;
+  overflow:hidden;
+}
+
+/* The plotted grid from the office's own banner artwork, redrawn in CSS so the
+   band joins that family without shipping an image for it. Masked to fade out
+   before the edges, so it reads as depth rather than as graph paper. */
+.request-teaser:before {
+  content:"";
+  background-image:
+    repeating-linear-gradient(90deg, #c8a45d14 0 1px, transparent 1px 78px),
+    repeating-linear-gradient(#c8a45d14 0 1px, transparent 1px 78px);
+  -webkit-mask-image:radial-gradient(72% 130% at 50% 105%, #000, transparent 72%);
+  mask-image:radial-gradient(72% 130% at 50% 105%, #000, transparent 72%);
+  pointer-events:none;
+  position:absolute;
+  inset:0;
 }
 
 .request-teaser-inner {
@@ -3370,47 +3442,78 @@ footer {
   align-items:center;
   gap:35px;
   display:flex;
+  position:relative;
+  z-index:1;
 }
 
 .request-teaser-inner>div {
-  padding-right:70px;
+  padding-right:82px;
   position:relative;
 }
 
-.request-teaser-inner svg {
+/* Direct child only. `.request-teaser-inner svg` also matched the arrow inside
+   the CTA and yanked it out of the button to this same corner, where it landed
+   underneath the sparkle and read as one smudged icon. */
+.request-teaser-inner>div>svg {
   color:var(--gold);
+  background:#c8a45d1f;
+  border:1px solid #c8a45d5c;
+  border-radius:50%;
+  box-sizing:border-box;
+  width:56px;
+  height:56px;
+  padding:16px;
   position:absolute;
-  top:5px;
+  top:0;
   right:0;
 }
 
 .request-teaser span {
   color:var(--gold);
-  font-size:13px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:12px;
+  font-weight:800;
 }
 
 .request-teaser h2 {
-  margin:5px 0 0;
-  font:700 26px Noto Kufi Arabic;
+  letter-spacing:-.03em;
+  max-width:22ch;
+  margin:10px 0 0;
+  font:700 clamp(26px,3.2vw,36px)/1.35 Noto Kufi Arabic;
 }
 
 .contact-band {
-  background:var(--gold);
+  background:linear-gradient(100deg, #dcbc7d, var(--gold) 46%, #b9924e);
   color:var(--navy);
+  border-top:1px solid #ffffff33;
 }
 
 .contact-band>.container {
   justify-content:space-between;
   align-items:center;
   gap:25px;
-  min-height:80px;
+  min-height:98px;
   display:flex;
 }
 
 .contact-band .container>div {
   align-items:center;
-  gap:12px;
+  gap:14px;
   display:flex;
+}
+
+/* The mark gets a navy disc so it reads as the WhatsApp logo rather than as a
+   shape cut out of the gold. */
+.contact-band .container>div>svg {
+  background:var(--navy);
+  color:var(--gold);
+  border-radius:50%;
+  box-sizing:border-box;
+  flex:none;
+  width:46px;
+  height:46px;
+  padding:12px;
 }
 
 .contact-band span {
@@ -3423,12 +3526,30 @@ footer {
   font-size:12px;
 }
 
+.contact-band strong {
+  font-size:17px;
+}
+
+/* A button, not a bare line of text: this is the last call to action on the
+   page and it was styled exactly like the label sitting opposite it. */
 .contact-band a {
   direction:ltr;
+  background:var(--navy);
+  color:#fff;
+  border-radius:999px;
   align-items:center;
-  gap:8px;
+  gap:10px;
+  padding:13px 24px;
+  font-size:18px;
   font-weight:800;
+  transition:transform .2s,box-shadow .2s;
   display:flex;
+  box-shadow:0 12px 30px #0d1b2a3d;
+}
+
+.contact-band a:hover {
+  transform:translateY(-2px);
+  box-shadow:0 17px 40px #0d1b2a52;
 }
 
 .footer-social {
@@ -5374,14 +5495,25 @@ footer {
    brand-intro 9999. Page content stays underneath it — a section that climbs
    above 38 hides these rails wherever the two overlap, silently, because the
    rails are still there and still rendered. */
-.contact-floats {
-  z-index:38;
+/* The launcher and the three buttons are one column now. The rail owns the
+   fixed placement so the two never have to agree on an offset by hand: before,
+   the pill was pinned to the opposite corner, and any float going missing (no
+   phone, no WhatsApp in settings) would have left a hole under it. */
+.contact-rail {
+  z-index:39;
   flex-direction:column;
-  gap:8px;
+  align-items:flex-start;
+  gap:10px;
   display:flex;
   position:fixed;
   bottom:20px;
   left:18px;
+}
+
+.contact-floats {
+  flex-direction:column;
+  gap:8px;
+  display:flex;
 }
 
 .contact-floats a,.contact-floats button {
@@ -5410,7 +5542,6 @@ footer {
 }
 
 .chat-launcher {
-  z-index:39;
   background:var(--gold);
   min-height:56px;
   color:var(--navy);
@@ -5423,9 +5554,6 @@ footer {
   font-weight:900;
   transition:transform .2s,background .2s,box-shadow .2s;
   display:flex;
-  position:fixed;
-  bottom:20px;
-  right:18px;
   box-shadow:0 13px 34px #c8a45d6b;
 }
 
@@ -5459,7 +5587,7 @@ footer {
   display:flex;
   position:fixed;
   bottom:88px;
-  right:18px;
+  left:18px;
   overflow:hidden;
   box-shadow:0 25px 65px #0d1b2a47;
 }
@@ -5970,9 +6098,6 @@ body:has(.mobile-preview-page) .mobile-preview-page~.whatsapp-nudge {
 }
 
 @media (max-width:760px) {
-  .header-phone span {
-    display:none;
-  }
   .launch-hero,.launch-hero-content {
     min-height:600px;
   }
@@ -6121,15 +6246,12 @@ body:has(.mobile-preview-page) .mobile-preview-page~.whatsapp-nudge {
   .contact-grid>a {
     min-height:100px;
   }
-  .contact-floats {
-    bottom:76px;
-  }
-  .chat-launcher {
-    right:10px;
+  .contact-rail {
+    left:10px;
     bottom:calc(72px + env(safe-area-inset-bottom,0px));
   }
   .chat-panel {
-    right:10px;
+    left:10px;
     bottom:calc(138px + env(safe-area-inset-bottom,0px));
     width:calc(100vw - 20px);
   }
@@ -8509,13 +8631,9 @@ body {
    borders need saying twice.
    =========================================================================== */
 
-[dir="ltr"] .contact-floats {
-  left: 18px;
-  right: auto;
-}
-
-[dir="ltr"] .chat-launcher,
-[dir="ltr"] .chat-panel,
+/* `.contact-rail` and `.chat-panel` are pinned with a physical `left` that is
+   correct in both directions — the rail sits bottom-left either way — so only
+   the nudge still has to be said twice. */
 [dir="ltr"] .whatsapp-nudge {
   left: auto;
   right: 18px;
@@ -8959,93 +9077,49 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
-/* The office's banner is a finished poster: gold frame inset from all four
-   edges, headline, tagline, badge and CTA already drawn inside it. Cropping it
-   to a hero-shaped box cuts the frame open and takes words off with it, so
-   here the artwork is never cropped — it is fitted whole and the box bends
-   around it instead.
+/* The office's banner, shown the plain way: full width, edge to edge, at its
+   own proportions, with nothing added beside it and nothing taken off it.
 
-   The band's height is `min(56.25vw, 72vh, 660px)`. Below roughly 1000px the
-   first term wins, the artwork spans the full width at its own height, and
-   there is nothing beside it. Above that the band stops growing and a 16:9
-   banner settles at about the 1180px container width, so its edges line up
-   with the header lockup, the quick-search card and every section below it.
+   No crop, so none of the words baked into the artwork are lost. No letterbox,
+   so no bars down the sides. And therefore no height cap either — capping the
+   height of a full-width picture can only be paid for with one or the other of
+   those two, so the cap is the thing that has to go.
 
-   What is left over at the sides on wide screens is filled by
-   `.hero-artwork-backdrop`: the same image, blown up, blurred and darkened.
-   Navy slabs would read as a mistake at the artwork's right edge, where the
-   picture is sky and lit stone rather than navy; its own out-of-focus colours
-   read as depth. Slides stack in one grid cell so a crossfade has somewhere
-   to happen. */
+   Which means the banner's height is its own aspect ratio and nothing else:
+   the three published banners are 1672x941, so the hero is 56.25% of the
+   viewport width at every size. Re-exporting the artwork wider is the only
+   control over how tall the hero is; there is no CSS answer to it that does
+   not either cut the picture or leave a gap.
+
+   Slides share one grid cell so a crossfade has somewhere to happen, and sit
+   at `align-self: start` rather than stretching, so a banner uploaded at a
+   different shape keeps its own proportions instead of being pulled to the
+   tallest one's height. */
 .launch-hero.is-artwork {
   min-height: 0;
-  height: min(56.25vw, 72vh, 660px);
+  height: auto;
   display: grid;
-  /* An explicit `100% / 100%` track, not an implicit one. An auto row is sized
-     from its content first, so the full-width artwork would set the row to its
-     own uncropped height and `overflow: hidden` would clip the band back down
-     — the crop this whole block exists to avoid. A definite track is what lets
-     the images resolve their `height: 100%` against the band instead. */
-  grid-template: 100% / 100%;
+  grid-template-columns: 100%;
   position: relative;
   width: 100%;
   overflow: hidden;
   background: var(--navy);
 }
 
-/* Backdrop and artwork fade as one unit, so the blurred fill can never be a
-   frame behind the wrong picture mid-transition. */
-.hero-artwork-frame {
-  z-index: 1;
-  grid-area: 1 / 1;
-  display: grid;
-  grid-template: 100% / 100%;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity .7s;
-}
-
-.hero-artwork-frame.is-active {
-  opacity: 1;
-}
-
-/* Scaled up before it is blurred, because a 40px blur samples roughly 60px of
-   nothing past each edge; without the overscan the band would fringe pale
-   along its top and bottom. */
-.hero-artwork-backdrop {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: blur(40px) saturate(1.1) brightness(.5);
-  transform: scale(1.25);
-  pointer-events: none;
-}
-
-/* `height: 100%` with `width: auto` makes the element box hug the picture
-   rather than the band, which is what lets the shadow sit on the artwork's
-   real edge instead of on an invisible full-width box. */
 .launch-hero.is-artwork .hero-slide-image {
   z-index: 1;
   grid-area: 1 / 1;
-  place-self: center;
+  align-self: start;
   position: relative;
   inset: auto;
-  width: auto;
-  height: 100%;
-  max-width: 100%;
+  width: 100%;
+  height: auto;
+  max-width: none;
   object-fit: contain;
   object-position: center;
-  opacity: 1;
+  opacity: 0;
   transform: none;
-  transition: none;
-  box-shadow: 0 22px 60px #00000066;
+  transition: opacity .7s;
 }
 
 .launch-hero.is-artwork .hero-slide-image.is-active {

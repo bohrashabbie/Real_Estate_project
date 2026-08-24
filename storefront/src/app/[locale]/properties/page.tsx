@@ -60,6 +60,7 @@ export default async function PropertiesPage({
   const priceMin = one(query.price_min);
   const priceMax = one(query.price_max);
   const featuredOnly = one(query.featured) === "1";
+  const vipOnly = one(query.vip) === "1";
 
   const filters: Record<string, string> = {};
   if (area) filters.area = area;
@@ -71,6 +72,7 @@ export default async function PropertiesPage({
   // `featured=1` is the admin's own shortlist, which the API exposes as
   // `premium_only` rather than a boolean column on the list endpoint.
   if (featuredOnly) filters.premium_only = "true";
+  if (vipOnly) filters.vip_only = "true";
 
   const [banners, areas, types, results, featured] = await Promise.all([
     getBanners(typedLocale),

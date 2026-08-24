@@ -109,6 +109,9 @@
     "imageAlt": "{title} — main photo"
   },
   "home": {
+    "vipKicker": "VIP",
+    "vipTitle": "VIP properties",
+    "vipCta": "See the VIP properties",
     "featuredKicker": "The office's picks",
     "featuredTitle": "Our featured properties",
     "featuredBody": "The newest listings the office has chosen to feature.",

@@ -131,6 +131,7 @@
     "blockShort": "Block {block}",
     "perMonth": "/ month",
     "featured": "Featured",
+    "vip": "VIP",
     "premium": "Premium",
     "publishedLabel": "Published",
     "draftLabel": "Draft",
@@ -202,10 +203,12 @@
       "locationPicker": "Location on map",
       "locationPickerHint": "Click the map to drop the pin, or drag it — the coordinates fill in automatically.",
       "isFeatured": "Featured property",
+      "isVip": "VIP property",
       "isPremium": "Premium (distinct) badge"
     },
     "hints": {
       "featured": "Shown in \"Our distinctive properties\" on the home page.",
+      "vip": "Shown in the VIP row at the top of the home page.",
       "premium": "Shows the gold ★ distinct badge on the card."
     },
     "media": {

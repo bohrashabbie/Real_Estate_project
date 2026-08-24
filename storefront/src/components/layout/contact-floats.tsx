@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, MessageCircle, Phone, Share2, X } from "lucide-react";
+import { Check, Phone, Share2, X } from "lucide-react";
 
 import type { SiteSettings } from "@/lib/api";
 import { telLink, waLink } from "@/lib/format";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 
 /**
- * The three-button rail: share, call, WhatsApp.
+ * The three-button rail: share, call, WhatsApp — the lower half of the fixed
+ * `.contact-rail`, with the chat launcher sitting above it.
  *
  * Share prefers the OS share sheet and falls back to the clipboard; when
  * neither is available — an insecure origin, or a browser that blocks both —
@@ -67,7 +69,7 @@ export function ContactFloats({ settings }: { settings: SiteSettings }) {
             rel="noopener noreferrer"
             aria-label={t("whatsapp")}
           >
-            <MessageCircle size={19} />
+            <WhatsAppIcon size={20} />
           </a>
         ) : null}
       </div>

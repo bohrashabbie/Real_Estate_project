@@ -96,6 +96,7 @@ export interface PropertyListItem {
   area_sqm: string | number | null;
   is_premium: boolean;
   is_featured: boolean;
+  is_vip: boolean;
   main_image: string | null;
   images_count: number;
   published_at: string | null;
@@ -235,6 +236,18 @@ export function getBanners(locale: Locale): Promise<Banner[]> {
 export async function getFeaturedProperties(locale: Locale): Promise<PropertyListItem[]> {
   const result = await safeGet<{ items: PropertyListItem[] }>(
     "/properties/featured",
+    { locale },
+    { items: [] },
+  );
+  return result.items ?? [];
+}
+
+/** The VIP row. Same `{items:[…]}` envelope as `/properties/featured`, and the
+ *  same empty-list fallback: a VIP row with nothing in it drops out of the
+ *  page rather than rendering an empty carousel. */
+export async function getVipProperties(locale: Locale): Promise<PropertyListItem[]> {
+  const result = await safeGet<{ items: PropertyListItem[] }>(
+    "/properties/vip",
     { locale },
     { items: [] },
   );

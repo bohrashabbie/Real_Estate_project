@@ -304,6 +304,7 @@ export type PropertyOut = {
   latitude: string | null
   longitude: string | null
   is_featured: boolean
+  is_vip: boolean
   is_premium: boolean
   is_active: boolean
   /** Null = draft. */
@@ -333,6 +334,7 @@ export type PropertyCreate = {
   latitude?: string | null
   longitude?: string | null
   is_featured?: boolean
+  is_vip?: boolean
   is_premium?: boolean
   translations: PropertyTranslationIn[]
   amenity_ids?: number[]
@@ -353,6 +355,7 @@ export type PropertyUpdate = {
   latitude?: string | null
   longitude?: string | null
   is_featured?: boolean | null
+  is_vip?: boolean | null
   is_premium?: boolean | null
   is_active?: boolean | null
   translations?: PropertyTranslationIn[] | null
@@ -368,6 +371,7 @@ export type PropertyListParams = {
   type_id?: number | null
   area_id?: number | null
   is_featured?: boolean | null
+  is_vip?: boolean | null
   is_premium?: boolean | null
   published?: boolean | null
 }

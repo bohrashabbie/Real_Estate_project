@@ -109,6 +109,9 @@
     "imageAlt": "{title} — الصورة الرئيسية"
   },
   "home": {
+    "vipKicker": "VIP",
+    "vipTitle": "عقارات VIP",
+    "vipCta": "شاهد عقارات VIP",
     "featuredKicker": "مختارات الإدارة",
     "featuredTitle": "عقاراتنا المميزة",
     "featuredBody": "أحدث العقارات التي اختارها المكتب للعرض المميز.",

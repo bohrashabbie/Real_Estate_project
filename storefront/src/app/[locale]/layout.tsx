@@ -81,8 +81,14 @@ export default async function LocaleLayout({
               {children}
               <Footer settings={settings} />
             </main>
-            <ContactFloats settings={settings} />
-            <ChatLauncher settings={settings} />
+            {/* One rail, not two opposite corners: the launcher and the three
+                buttons are the same offer — reach the office — so they share a
+                column and a stacking context instead of racing each other for
+                the bottom of the viewport from either side. */}
+            <div className="contact-rail">
+              <ChatLauncher settings={settings} />
+              <ContactFloats settings={settings} />
+            </div>
             <CompareBar />
           </QueryProvider>
         </NextIntlClientProvider>

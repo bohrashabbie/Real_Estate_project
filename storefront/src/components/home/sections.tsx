@@ -1,9 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Building2, Clock3, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, Clock3, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
 import type { PropertyType, SiteSettings } from "@/lib/api";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 
 /** The gold-outlined "answer five questions" nudge under each grid. */
 export async function SmartOptionCard() {
@@ -64,7 +65,7 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
     <section className="contact-band">
       <div className="container">
         <div>
-          <MessageCircle size={20} />
+          <WhatsAppIcon size={22} />
           <span>
             <strong>{t("title")}</strong>
             <small>{t("subtitle")}</small>
@@ -120,26 +121,36 @@ export async function PropertyTypeGrid({ types }: { types: PropertyType[] }) {
   );
 }
 
-/** The heading + right-hand button that opens every property section. */
+/**
+ * The heading + button that opens every property section.
+ *
+ * `stackAction` moves the button out of the far end of the row and under the
+ * title, which is where it belongs on a section that has no body sentence:
+ * with nothing between them, a button pinned to the opposite margin reads as
+ * unrelated to the heading it acts on.
+ */
 export function SectionHeading({
   kicker,
   title,
   body,
   action,
+  stackAction = false,
 }: {
   kicker: string;
   title: string;
   body?: string;
   action?: React.ReactNode;
+  stackAction?: boolean;
 }) {
   return (
-    <div className="section-heading heading-row">
+    <div className={`section-heading heading-row${stackAction ? " heading-stacked" : ""}`}>
       <div>
         <span className="section-kicker">{kicker}</span>
         <h2>{title}</h2>
         {body ? <p>{body}</p> : null}
+        {stackAction ? action : null}
       </div>
-      {action}
+      {stackAction ? null : action}
     </div>
   );
 }

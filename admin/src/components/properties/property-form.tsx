@@ -93,6 +93,7 @@ function usePropertySchema() {
       latitude: optionalPattern(COORD_RE, v("coordinate")),
       longitude: optionalPattern(COORD_RE, v("coordinate")),
       is_featured: z.boolean(),
+      is_vip: z.boolean(),
       is_premium: z.boolean(),
       amenity_ids: z.array(z.number()),
       translations: z.object({
@@ -173,6 +174,7 @@ export function PropertyForm({
       latitude: property?.latitude ?? "",
       longitude: property?.longitude ?? "",
       is_featured: property?.is_featured ?? false,
+      is_vip: property?.is_vip ?? false,
       is_premium: property?.is_premium ?? false,
       amenity_ids: property?.amenity_ids ?? [],
       translations: toPropertyTranslationForm(property?.translations),
@@ -206,6 +208,7 @@ export function PropertyForm({
       latitude: toStr(values.latitude),
       longitude: toStr(values.longitude),
       is_featured: values.is_featured,
+      is_vip: values.is_vip,
       is_premium: values.is_premium,
       amenity_ids: values.amenity_ids,
       translations: fromPropertyTranslationForm(values.translations),
@@ -604,6 +607,32 @@ export function PropertyForm({
                     <FormControl>
                       <Switch
                         id="featured-switch"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={!canWrite}
+                      />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="is_vip"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between gap-4 rounded-lg border border-border p-3">
+                    <div className="flex flex-col gap-0.5">
+                      <Label htmlFor="vip-switch">
+                        {t("fields.isVip")}
+                      </Label>
+                      <span className="text-xs text-muted-foreground">
+                        {t("hints.vip")}
+                      </span>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        id="vip-switch"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         disabled={!canWrite}

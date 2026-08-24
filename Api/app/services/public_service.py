@@ -184,6 +184,7 @@ def _item(prop: Property, locale: str, areas: dict, types: dict, urls: dict[int,
         "area_sqm": str(prop.area_sqm) if prop.area_sqm is not None else None,
         "is_premium": prop.is_premium,
         "is_featured": prop.is_featured,
+        "is_vip": prop.is_vip,
         "main_image": _main_image(prop, urls),
         "images_count": len(prop.media_links),
         "published_at": prop.published_at,
@@ -211,6 +212,7 @@ def _apply_filters(
     rooms: int | None = None,
     status: str | None = None,
     premium_only: bool = False,
+    vip_only: bool = False,
     q: str | None = None,
 ) -> Select:
     if purpose:
@@ -231,6 +233,8 @@ def _apply_filters(
         stmt = stmt.where(Property.status == status)
     if premium_only:
         stmt = stmt.where(Property.is_premium.is_(True))
+    if vip_only:
+        stmt = stmt.where(Property.is_vip.is_(True))
     if q:
         like = f"%{q.strip()}%"
         stmt = stmt.where(
@@ -256,6 +260,7 @@ def property_list(
     rooms: int | None = None,
     status: str | None = None,
     premium_only: bool = False,
+    vip_only: bool = False,
     q: str | None = None,
     cursor: str | None = None,
     limit: int = 24,
@@ -270,6 +275,7 @@ def property_list(
         rooms=rooms,
         status=status,
         premium_only=premium_only,
+        vip_only=vip_only,
         q=q,
     )
     props, next_cursor = paginate(db, stmt, Property, cursor, limit)
@@ -281,6 +287,25 @@ def featured_properties(db: Session, locale: str, limit: int = 10) -> dict:
         db.execute(
             _base_stmt()
             .where(Property.is_featured.is_(True))
+            .order_by(Property.created_at.desc(), Property.id.desc())
+            .limit(limit)
+        ).scalars().all()
+    )
+    return {"items": _items(db, props, locale)}
+
+
+def vip_properties(db: Session, locale: str, limit: int = 12) -> dict:
+    """The office's VIP row — same contract as `featured_properties`, own flag.
+
+    Kept as its own query rather than a parameter on the featured one so the
+    two rows can be ordered and capped independently later without either
+    changing shape for the other. `_base_stmt()` already restricts to
+    published + active, so nothing unpublished can reach the VIP row either.
+    """
+    props = list(
+        db.execute(
+            _base_stmt()
+            .where(Property.is_vip.is_(True))
             .order_by(Property.created_at.desc(), Property.id.desc())
             .limit(limit)
         ).scalars().all()

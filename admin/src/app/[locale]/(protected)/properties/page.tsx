@@ -1,7 +1,7 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import { ImageOff, Star } from "lucide-react"
+import { Crown, ImageOff, Star } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -207,6 +207,12 @@ function PropertiesContent() {
             <Badge variant="secondary" className="gap-1">
               <Star className="size-3 text-gold" aria-hidden />
               {t("featured")}
+            </Badge>
+          )}
+          {row.original.is_vip && (
+            <Badge variant="secondary" className="gap-1">
+              <Crown className="size-3 text-gold" aria-hidden />
+              {t("vip")}
             </Badge>
           )}
           {row.original.is_premium && (

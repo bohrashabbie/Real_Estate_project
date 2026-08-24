@@ -87,6 +87,7 @@ class PropertyCreate(BaseModel):
     latitude: Decimal | None = Field(None, ge=-90, le=90)
     longitude: Decimal | None = Field(None, ge=-180, le=180)
     is_featured: bool = False
+    is_vip: bool = False
     is_premium: bool = False
     translations: list[PropertyTranslationIn] = Field(min_length=1)
     amenity_ids: list[int] = []
@@ -107,6 +108,7 @@ class PropertyUpdate(BaseModel):
     latitude: Decimal | None = Field(None, ge=-90, le=90)
     longitude: Decimal | None = Field(None, ge=-180, le=180)
     is_featured: bool | None = None
+    is_vip: bool | None = None
     is_premium: bool | None = None
     translations: list[PropertyTranslationIn] | None = None
     amenity_ids: list[int] | None = None

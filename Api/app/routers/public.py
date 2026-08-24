@@ -58,6 +58,7 @@ def properties(
     rooms: int | None = Query(None, ge=0),  # meaning >=
     status_: str | None = Query(None, alias="status", pattern="^(available|rented|sold|reserved)$"),
     premium_only: bool = False,
+    vip_only: bool = False,
     q: str | None = None,
     cursor: str | None = None,
     limit: int = Query(24, ge=1, le=100),
@@ -75,6 +76,7 @@ def properties(
         rooms=rooms,
         status=status_,
         premium_only=premium_only,
+        vip_only=vip_only,
         q=q,
         cursor=cursor,
         limit=limit,
@@ -84,6 +86,11 @@ def properties(
 @router.get("/properties/featured")
 def featured_properties(locale: str = "ar", db: Session = Depends(get_db)) -> dict:
     return public_service.featured_properties(db, public_service.normalize_locale(locale))
+
+
+@router.get("/properties/vip")
+def vip_properties(locale: str = "ar", db: Session = Depends(get_db)) -> dict:
+    return public_service.vip_properties(db, public_service.normalize_locale(locale))
 
 
 @router.get("/properties/{slug}")

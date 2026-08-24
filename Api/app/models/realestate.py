@@ -139,6 +139,7 @@ class Property(Base, TimestampMixin):
     latitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
     longitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_vip: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     published_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True), nullable=True)

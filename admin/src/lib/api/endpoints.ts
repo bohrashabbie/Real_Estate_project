@@ -185,6 +185,7 @@ export const propertiesApi = {
         type_id: params.type_id ?? undefined,
         area_id: params.area_id ?? undefined,
         is_featured: params.is_featured ?? undefined,
+        is_vip: params.is_vip ?? undefined,
         is_premium: params.is_premium ?? undefined,
         published: params.published ?? undefined,
       },

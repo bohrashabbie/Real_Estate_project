@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Crown, Star } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -10,8 +10,10 @@ import {
   getProperties,
   getPropertyTypes,
   getSettings,
+  getVipProperties,
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
+import { PropertyCarousel } from "@/components/home/property-carousel";
 import { QuickSearch } from "@/components/home/quick-search";
 import {
   ContactBand,
@@ -37,20 +39,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const typedLocale = locale as Locale;
   const t = await getTranslations();
 
-  const [settings, banners, areas, types, featured, all] = await Promise.all([
+  const [settings, banners, areas, types, vip, featured, all] = await Promise.all([
     getSettings(),
     getBanners(typedLocale),
     getAreas(typedLocale),
     getPropertyTypes(typedLocale),
+    getVipProperties(typedLocale),
     getFeaturedProperties(typedLocale),
     getProperties(typedLocale, { limit: 8 }),
   ]);
 
-  // The reference's two grids are four cards each, and the second must not
-  // repeat the first — "all listings" means the newest of what is left.
-  const featuredFour = featured.slice(0, 4);
-  const featuredIds = new Set(featuredFour.map((property) => property.id));
-  const latest = all.items.filter((property) => !featuredIds.has(property.id)).slice(0, 4);
+  // The picks scroll rather than wrap, so the row is no longer cut to the four
+  // that fit across — but "all listings" still must not repeat them, and it now
+  // has to clear the VIP row as well, or the same card appears three times.
+  const promotedIds = new Set([...vip, ...featured].map((property) => property.id));
+  const latest = all.items.filter((property) => !promotedIds.has(property.id)).slice(0, 4);
 
   return (
     <>
@@ -58,13 +61,32 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <QuickSearch areas={areas} types={types} locale={typedLocale} />
 
-      {featuredFour.length > 0 ? (
-        <section className="section properties-section" id="featured-properties">
+      {vip.length > 0 ? (
+        <section className="section properties-section home-vip-section" id="vip-properties">
+          <div className="container">
+            <SectionHeading
+              kicker={t("home.vipKicker")}
+              title={t("home.vipTitle")}
+              stackAction
+              action={
+                <Link className="button button-outline" href="/properties?vip=1">
+                  <Crown size={15} />
+                  {t("home.vipCta")}
+                </Link>
+              }
+            />
+            <PropertyCarousel properties={vip} locale={typedLocale} />
+          </div>
+        </section>
+      ) : null}
+
+      {featured.length > 0 ? (
+        <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
             <SectionHeading
               kicker={t("home.featuredKicker")}
               title={t("home.featuredTitle")}
-              body={t("home.featuredBody")}
+              stackAction
               action={
                 <Link className="button button-outline" href="/properties?featured=1">
                   <Star size={15} />
@@ -72,11 +94,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </Link>
               }
             />
-            <div className="property-grid featured-four">
-              {featuredFour.map((property) => (
-                <PropertyCard key={property.id} property={property} locale={typedLocale} />
-              ))}
-            </div>
+            <PropertyCarousel properties={featured} locale={typedLocale} />
             <SmartOptionCard />
           </div>
         </section>

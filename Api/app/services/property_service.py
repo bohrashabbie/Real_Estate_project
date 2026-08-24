@@ -43,6 +43,7 @@ _SCALAR_FIELDS = (
     "latitude",
     "longitude",
     "is_featured",
+    "is_vip",
     "is_premium",
 )
 
@@ -229,6 +230,7 @@ def detail_out(db: Session, prop: Property) -> dict:
         "latitude": _jsonable(prop.latitude),
         "longitude": _jsonable(prop.longitude),
         "is_featured": prop.is_featured,
+        "is_vip": prop.is_vip,
         "is_premium": prop.is_premium,
         "is_active": prop.is_active,
         "published_at": prop.published_at,
@@ -273,6 +275,7 @@ def list_item_out(db: Session, prop: Property) -> dict:
         "rooms": prop.rooms,
         "bathrooms": prop.bathrooms,
         "is_featured": prop.is_featured,
+        "is_vip": prop.is_vip,
         "is_premium": prop.is_premium,
         "published_at": prop.published_at,
         "main_image": media[0]["url"] if media else None,
@@ -298,6 +301,7 @@ def list_properties(
     type_id: int | None = None,
     area_id: int | None = None,
     is_featured: bool | None = None,
+    is_vip: bool | None = None,
     is_premium: bool | None = None,
     published: bool | None = None,
     cursor: str | None = None,
@@ -334,6 +338,8 @@ def list_properties(
         stmt = stmt.where(Property.area_id == area_id)
     if is_featured is not None:
         stmt = stmt.where(Property.is_featured == is_featured)
+    if is_vip is not None:
+        stmt = stmt.where(Property.is_vip == is_vip)
     if is_premium is not None:
         stmt = stmt.where(Property.is_premium == is_premium)
     if published is not None:
@@ -374,6 +380,7 @@ def create_property(db: Session, data, actor_user_id: int) -> dict:
         latitude=data.latitude,
         longitude=data.longitude,
         is_featured=data.is_featured,
+        is_vip=data.is_vip,
         is_premium=data.is_premium,
         created_by=actor_user_id,
     )

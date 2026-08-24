@@ -131,6 +131,7 @@
     "blockShort": "قطعة {block}",
     "perMonth": "/ شهرياً",
     "featured": "مميز",
+    "vip": "VIP",
     "premium": "distinct",
     "publishedLabel": "منشور",
     "draftLabel": "مسودة",
@@ -202,10 +203,12 @@
       "locationPicker": "الموقع على الخريطة",
       "locationPickerHint": "اضغط على الخريطة لتثبيت الدبوس أو اسحبه — وتُعبّأ الإحداثيات تلقائياً.",
       "isFeatured": "عقار مميز",
+      "isVip": "عقار VIP",
       "isPremium": "شارة distinct المميزة"
     },
     "hints": {
       "featured": "يظهر في قسم \"عقاراتنا المميزة\" في الصفحة الرئيسية.",
+      "vip": "يظهر في صف VIP أعلى الصفحة الرئيسية.",
       "premium": "تظهر شارة ★ الذهبية المميزة على البطاقة."
     },
     "media": {
