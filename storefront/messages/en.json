@@ -106,7 +106,8 @@
     "bathrooms": "{count} bath",
     "viewDetails": "View details",
     "viewAria": "View details of {title}",
-    "imageAlt": "{title} — main photo"
+    "imageAlt": "{title} — main photo",
+    "vip": "VIP"
   },
   "home": {
     "vipKicker": "VIP",
@@ -396,5 +397,8 @@
     "body": "The property may have been moved or removed. Browse the available properties instead.",
     "cta": "Browse properties",
     "backHome": "Back to the home page"
+  },
+  "vip": {
+    "goToPage": "Go to slide {page}"
   }
 }

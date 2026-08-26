@@ -3410,20 +3410,6 @@ footer {
    card width keeps a row of three and a row of nine looking like the same
    component, and the block-end padding leaves the cards' shadows room inside
    `overflow`, which would otherwise slice them off. */
-.property-carousel {
-  scroll-snap-type:x mandatory;
-  scrollbar-color:var(--gold) transparent;
-  gap:22px;
-  padding:4px 2px 20px;
-  display:flex;
-  overflow-x:auto;
-}
-
-.property-carousel-item {
-  scroll-snap-align:start;
-  flex:0 0 min(320px,82vw);
-}
-
 .featured-four .property-image {
   height:200px;
 }
@@ -9231,3 +9217,351 @@ body {
 /* No portrait override down here. Squeezing a wide banner into a 4/3 phone
    box crops away more of it than any other breakpoint does; a short hero is
    the honest shape of a wide picture. */
+
+/* ---------------------------------------------------------------------------
+   VIP slider
+
+   Two showcase slides to a view, photograph-led, with the copy on the picture
+   rather than in a panel under it. Deliberately unlike `.property-card`: the
+   VIP row is the one place on the page that should not look like the grid it
+   sits above.
+
+   The track is a scroll container with snap points — the browser owns the
+   direction, so RTL needs nothing said here. `scrollIntoView` in the component
+   drives it, which is why there is no transform to keep in step.
+   --------------------------------------------------------------------------- */
+.vip-carousel {
+  --vip-gap:24px;
+}
+
+.vip-carousel-track {
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  gap:var(--vip-gap);
+  padding:4px 2px 8px;
+  display:flex;
+  overflow-x:auto;
+  overscroll-behavior-x:contain;
+}
+
+.vip-carousel-track::-webkit-scrollbar {
+  display:none;
+}
+
+.vip-carousel-item {
+  scroll-snap-align:start;
+  flex:0 0 calc((100% - var(--vip-gap))/2);
+}
+
+.vip-slide {
+  border:1px solid #c8a45d47;
+  border-radius:16px;
+  height:452px;
+  position:relative;
+  overflow:hidden;
+  transition:transform .35s,box-shadow .35s,border-color .35s;
+  box-shadow:0 18px 46px #0d1b2a1f;
+}
+
+.vip-slide:hover {
+  border-color:#c8a45d8f;
+  transform:translateY(-6px);
+  box-shadow:0 30px 70px #0d1b2a38;
+}
+
+.vip-slide-shot {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:var(--navy);
+  display:block;
+}
+
+.vip-slide-shot img {
+  object-fit:cover;
+  width:100%;
+  height:100%;
+  transition:transform .9s cubic-bezier(.2,.7,.3,1);
+}
+
+.vip-slide:hover .vip-slide-shot img {
+  transform:scale(1.06);
+}
+
+/* One scrim doing two jobs: the copy needs a dark floor to sit on, and the
+   photograph needs to stay a photograph above it. */
+.vip-slide:after {
+  content:"";
+  background:linear-gradient(to top,#04101fF5 0%,#04101fEB 22%,#04101f96 46%,#04101f36 68%,#04101f1a 100%);
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  z-index:1;
+}
+
+.vip-slide-crown,
+.vip-slide-status {
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  padding:7px 13px;
+  font-size:12px;
+  font-weight:800;
+  position:absolute;
+  top:16px;
+  z-index:3;
+  display:inline-flex;
+}
+
+.vip-slide-crown {
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  color:#20170a;
+  inset-inline-start:16px;
+  letter-spacing:.06em;
+  box-shadow:0 6px 18px #0d1b2a4d;
+}
+
+.vip-slide-status {
+  background:#04101fa8;
+  border:1px solid #ffffff2e;
+  color:#fff;
+  inset-inline-end:16px;
+  backdrop-filter:blur(6px);
+}
+
+.vip-slide-status i {
+  border-radius:50%;
+  width:7px;
+  height:7px;
+  background:var(--green);
+  display:block;
+}
+
+.vip-slide-status.state-sold i,
+.vip-slide-status.state-rented i {
+  background:#c96a4f;
+}
+
+.vip-slide-status.state-reserved i {
+  background:var(--gold);
+}
+
+.vip-slide-body {
+  padding:26px 24px 22px;
+  position:absolute;
+  inset-inline:0;
+  bottom:0;
+  z-index:2;
+}
+
+.vip-slide-kicker {
+  color:#e7cd92;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+
+.vip-slide-body h3 {
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  margin:9px 0 8px;
+  min-height:2.7em;
+  font:800 22px/1.35 Noto Kufi Arabic;
+  display:-webkit-box;
+  overflow:hidden;
+}
+
+.vip-slide-body h3 a {
+  color:#fff;
+  text-shadow:0 2px 14px #04101f80;
+}
+
+.vip-slide-body h3 a:hover {
+  color:var(--gold);
+}
+
+.vip-slide-where {
+  color:#ffffffc2;
+  align-items:center;
+  gap:6px;
+  margin:0;
+  font-size:13px;
+  display:flex;
+}
+
+.vip-slide-where svg {
+  color:var(--gold);
+}
+
+.vip-slide-specs {
+  border-top:1px solid #ffffff26;
+  justify-content:flex-start;
+  gap:18px;
+  margin-top:14px;
+  padding-top:14px;
+  display:flex;
+}
+
+.vip-slide-specs span {
+  color:#ffffffd1;
+  white-space:nowrap;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  display:flex;
+}
+
+.vip-slide-specs svg {
+  color:var(--gold);
+}
+
+.vip-slide-foot {
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-top:16px;
+  display:flex;
+}
+
+.vip-slide-price {
+  color:var(--gold);
+  font-size:25px;
+  font-weight:800;
+  text-shadow:0 2px 14px #04101f80;
+}
+
+.vip-slide-actions {
+  align-items:center;
+  gap:10px;
+  display:flex;
+}
+
+.vip-slide-cta {
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  color:#20170a;
+  align-items:center;
+  gap:7px;
+  border-radius:999px;
+  padding:11px 19px;
+  font-size:14px;
+  font-weight:800;
+  display:inline-flex;
+  box-shadow:0 8px 22px #c8a45d3d;
+}
+
+.vip-slide-cta:hover {
+  filter:brightness(1.08);
+}
+
+/* The compare toggle is drawn for a white card; on the scrim it needs the
+   inverse treatment rather than a second component. */
+.vip-slide-actions .compare-toggle {
+  color:#ffffffcc;
+}
+
+.vip-slide-actions .compare-toggle:hover,
+.vip-slide-actions .compare-toggle.is-active {
+  color:var(--gold);
+}
+
+.vip-carousel-controls {
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  margin-top:18px;
+  display:flex;
+}
+
+.vip-carousel-controls > button {
+  color:var(--navy);
+  cursor:pointer;
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:50%;
+  justify-content:center;
+  align-items:center;
+  width:40px;
+  height:40px;
+  transition:background .2s,color .2s,border-color .2s,opacity .2s;
+  display:inline-flex;
+}
+
+.vip-carousel-controls > button:hover:not(:disabled) {
+  background:var(--navy);
+  border-color:var(--navy);
+  color:var(--gold);
+}
+
+.vip-carousel-controls > button:disabled {
+  cursor:default;
+  opacity:.34;
+}
+
+.vip-carousel-dots {
+  align-items:center;
+  gap:8px;
+  display:flex;
+}
+
+.vip-carousel-dots button {
+  cursor:pointer;
+  background:#0d1b2a2e;
+  border:0;
+  border-radius:999px;
+  width:9px;
+  height:9px;
+  padding:0;
+  transition:width .3s,background .3s;
+}
+
+.vip-carousel-dots button.is-active {
+  background:var(--gold);
+  width:26px;
+}
+
+@media (max-width:1023px) {
+  .vip-slide {
+    height:412px;
+  }
+
+  .vip-slide-body h3 {
+    font-size:20px;
+  }
+
+  .vip-slide-price {
+    font-size:22px;
+  }
+}
+
+/* One to a view once a pair would be too narrow to read; the sliver of the
+   next slide is what tells the reader it moves. */
+@media (max-width:899px) {
+  .vip-carousel {
+    --vip-gap:16px;
+  }
+
+  .vip-carousel-item {
+    flex:0 0 min(430px,88%);
+  }
+
+  .vip-slide {
+    height:392px;
+  }
+}
+
+@media (max-width:520px) {
+  .vip-slide {
+    height:368px;
+  }
+
+  .vip-slide-body {
+    padding:22px 18px 18px;
+  }
+
+  .vip-slide-foot {
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+}
