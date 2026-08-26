@@ -979,11 +979,20 @@ img {
   display:grid;
 }
 
+/* Cards in a row are the same height, but that only squared up the outer box —
+   inside, a title running to three lines pushed that card's specs and its
+   "view details" row a line lower than its neighbours', so the four cards read
+   as ragged along every horizontal they share. The body is a column that grows,
+   the title reserves a fixed two lines, and the footer is pinned to the bottom,
+   which puts all three rows on the same line across the whole grid. */
 .property-card {
   border:1px solid var(--line);
   background:#fff;
   border-radius:10px;
+  flex-direction:column;
+  height:100%;
   transition:transform .25s,box-shadow .25s;
+  display:flex;
   overflow:hidden;
 }
 
@@ -1085,7 +1094,10 @@ img {
 }
 
 .property-body {
+  flex-direction:column;
+  flex:1;
   padding:20px 20px 17px;
+  display:flex;
 }
 
 .property-price-row {
@@ -1106,9 +1118,17 @@ img {
   font-size:13px;
 }
 
+/* Two lines reserved, two lines maximum. The area name sits directly beneath,
+   so a title clipped at the second line loses nothing the card does not
+   already say a line later. */
 .property-body h3 {
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  min-height:3.1em;
   margin:13px 0 7px;
   font:700 17px/1.55 Noto Kufi Arabic;
+  display:-webkit-box;
+  overflow:hidden;
 }
 
 .property-body h3 a:hover {
@@ -1153,9 +1173,16 @@ img {
   color:var(--gold-dark);
 }
 
+/* Reserves the row even on a listing with no rooms, baths or area, so a land
+   plot's footer still lines up with the flats either side of it. */
+.property-specs {
+  min-height:54px;
+}
+
 .property-footer {
   justify-content:space-between;
   align-items:center;
+  margin-top:auto;
   padding-top:15px;
   display:flex;
 }
