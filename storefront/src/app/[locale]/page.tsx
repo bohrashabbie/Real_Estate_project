@@ -49,10 +49,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getProperties(typedLocale, { limit: 8 }),
   ]);
 
-  // The picks scroll rather than wrap, so the row is no longer cut to the four
-  // that fit across — but "all listings" still must not repeat them, and it now
-  // has to clear the VIP row as well, or the same card appears three times.
-  const promotedIds = new Set([...vip, ...featured].map((property) => property.id));
+  // The reference's two grids are four cards each, and the second must not
+  // repeat the first — "all listings" means the newest of what is left. It has
+  // to clear the VIP row too, or the same card can appear in all three.
+  const featuredFour = featured.slice(0, 4);
+  const promotedIds = new Set([...vip, ...featuredFour].map((property) => property.id));
   const latest = all.items.filter((property) => !promotedIds.has(property.id)).slice(0, 4);
 
   return (
@@ -80,7 +81,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      {featured.length > 0 ? (
+      {featuredFour.length > 0 ? (
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
             <SectionHeading
@@ -94,7 +95,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </Link>
               }
             />
-            <PropertyCarousel properties={featured} locale={typedLocale} />
+            <div className="property-grid featured-four">
+              {featuredFour.map((property) => (
+                <PropertyCard key={property.id} property={property} locale={typedLocale} />
+              ))}
+            </div>
             <SmartOptionCard />
           </div>
         </section>

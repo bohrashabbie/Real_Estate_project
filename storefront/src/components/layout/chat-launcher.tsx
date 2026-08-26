@@ -8,7 +8,11 @@ import { apiPost, type SiteSettings } from "@/lib/api";
 import { formatPhone, waLink } from "@/lib/format";
 
 /**
- * The "talk to us" pill and its panel.
+ * The "talk to us" button and its panel.
+ *
+ * The button is the top of the fixed `.contact-rail`, icon only like the three
+ * under it — `aria-label` still names it, so dropping the visible word costs
+ * screen readers nothing.
  *
  * There is no live-chat backend behind this and the panel does not pretend
  * otherwise: it opens in the reference's offline state — the amber note, the
@@ -62,8 +66,7 @@ export function ChatLauncher({ settings }: { settings: SiteSettings }) {
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        <MessageCircle size={19} />
-        <span>{t("launcher")}</span>
+        <MessageCircle size={21} />
         <i />
       </button>
 

@@ -3372,10 +3372,10 @@ footer {
   grid-template-columns:repeat(4,1fr);
 }
 
-/* The promoted home rows scroll instead of wrapping — see `PropertyCarousel`.
-   A fixed card width keeps a row of three and a row of nine looking like the
-   same component, and the block-end padding leaves the cards' shadows room
-   inside `overflow`, which would otherwise slice them off. */
+/* The VIP row scrolls instead of wrapping — see `PropertyCarousel`. A fixed
+   card width keeps a row of three and a row of nine looking like the same
+   component, and the block-end padding leaves the cards' shadows room inside
+   `overflow`, which would otherwise slice them off. */
 .property-carousel {
   scroll-snap-type:x mandatory;
   scrollbar-color:var(--gold) transparent;
@@ -5541,19 +5541,23 @@ footer {
   transform:translateY(-2px);
 }
 
+/* Icon only, like the three buttons under it — the label was the one thing in
+   the rail that had to be read rather than recognised. Kept larger than those
+   discs and given the status dot, so it still leads the column rather than
+   reading as a second gold share button. */
 .chat-launcher {
   background:var(--gold);
-  min-height:56px;
   color:var(--navy);
   border:1px solid #d7b871;
-  border-radius:29px;
-  align-items:center;
-  gap:10px;
-  padding:0 22px;
-  font-size:14px;
-  font-weight:900;
+  border-radius:50%;
+  width:54px;
+  height:54px;
+  min-height:54px;
+  padding:0;
+  place-items:center;
   transition:transform .2s,background .2s,box-shadow .2s;
-  display:flex;
+  display:grid;
+  position:relative;
   box-shadow:0 13px 34px #c8a45d6b;
 }
 
@@ -5563,12 +5567,16 @@ footer {
   box-shadow:0 16px 38px #c8a45d80;
 }
 
+/* A corner badge now that there is no line of text to sit beside. */
 .chat-launcher i {
   background:#78818a;
   border:2px solid #ffffffb8;
   border-radius:50%;
-  width:9px;
-  height:9px;
+  width:12px;
+  height:12px;
+  position:absolute;
+  top:1px;
+  right:1px;
 }
 
 .chat-launcher i.online {
@@ -6004,19 +6012,11 @@ footer {
   font-size:.75rem;
 }
 
-body:has(.mobile-preview-page)>.contact-floats {
-  display:none;
-}
-
-body:has(.mobile-preview-page) .mobile-preview-page~.contact-floats {
-  display:none;
-}
-
-body:has(.mobile-preview-page) .mobile-preview-page~.chat-launcher {
-  display:none;
-}
-
-body:has(.mobile-preview-page) .mobile-preview-page~.whatsapp-nudge {
+/* One descendant rule, because the launcher and the floats share `.contact-rail`
+   now — the old sibling selectors named them individually and matched neither
+   once they moved inside it, so the preview page kept showing both. */
+body:has(.mobile-preview-page) .contact-rail,
+body:has(.mobile-preview-page) .whatsapp-nudge {
   display:none;
 }
 

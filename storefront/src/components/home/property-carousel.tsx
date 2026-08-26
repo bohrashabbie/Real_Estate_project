@@ -5,11 +5,10 @@ import { PropertyCard } from "@/components/property/property-card";
 /**
  * A horizontal row of property cards that scrolls rather than wrapping.
  *
- * The home page's promoted rows — VIP and the office's picks — are a ranked
- * shortlist, not a catalogue: a four-across grid silently truncates them at
- * whatever fits, and the office's fifth pick may as well not exist. A track
- * shows the whole list in the order the office chose and lets the reader push
- * along it.
+ * Used by the VIP row only. The office's picks stay a four-across grid — that
+ * row is deliberately a fixed shortlist of four and reads as one block. VIP is
+ * the open-ended one: however many the office promotes, all of them show, in
+ * the order chosen, and the reader pushes along the track.
  *
  * Native overflow scrolling with `scroll-snap`, the same as the related-listings
  * strip on the detail page — no JS, no library, and it stays keyboard- and
