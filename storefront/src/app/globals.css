@@ -1124,11 +1124,17 @@ img {
   display:flex;
 }
 
+/* Spread, not a fixed 20px gap. "2 rooms / 5 bath / 500 m2" is roughly half
+   again as wide as the Arabic it was measured against, so on a four-across
+   card the third item ran out of room and each label wrapped under its own
+   number. `nowrap` keeps a spec on one line and `space-between` gives the row
+   whatever slack is left rather than insisting on a gap it cannot afford. */
 .property-specs {
   border-top:1px solid var(--line);
   border-bottom:1px solid var(--line);
+  justify-content:space-between;
   align-items:center;
-  gap:20px;
+  gap:8px;
   margin-top:14px;
   padding:16px 0;
   display:flex;
@@ -1136,6 +1142,7 @@ img {
 
 .property-specs span {
   color:#626b72;
+  white-space:nowrap;
   align-items:center;
   gap:6px;
   font-size:13px;
@@ -6541,7 +6548,6 @@ body {
 .property-price-row span,
 .property-price-row strong,
 .property-location,
-.property-specs span,
 .property-link,
 .compare-toggle {
   font-size:14px;
@@ -8637,6 +8643,20 @@ body {
 [dir="ltr"] .whatsapp-nudge {
   left: auto;
   right: 18px;
+}
+
+/* Every arrow in this build is drawn for Arabic: `ArrowLeft` means *forward*
+   ("view details", "next step") and `ArrowRight` means *back* ("start over"),
+   because that is the way reading travels in RTL. Under `dir="ltr"` both then
+   point at the wrong end of their own sentence — "← View details".
+
+   lucide stamps each icon's name onto its `svg`, which is what makes this two
+   rules instead of a class threaded through nineteen call sites — and it flips
+   only the arrows, leaving the magnifier, the star and the building mark
+   alone, which a blanket `.button > svg` would not. */
+[dir="ltr"] .lucide-arrow-left,
+[dir="ltr"] .lucide-arrow-right {
+  transform: scaleX(-1);
 }
 
 [dir="ltr"] .hero:before {
