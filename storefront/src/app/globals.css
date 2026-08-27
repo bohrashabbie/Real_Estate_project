@@ -5568,17 +5568,16 @@ footer {
 }
 
 /* Icon only, like the three buttons under it — the label was the one thing in
-   the rail that had to be read rather than recognised. Kept larger than those
-   discs and given the status dot, so it still leads the column rather than
-   reading as a second gold share button. */
+   the rail that had to be read rather than recognised. Sized to match those
+   discs, with the status dot the only thing that still sets it apart. */
 .chat-launcher {
   background:var(--gold);
   color:#fff;
   border:1px solid #d7b871;
   border-radius:50%;
-  width:54px;
-  height:54px;
-  min-height:54px;
+  width:46px;
+  height:46px;
+  min-height:46px;
   padding:0;
   place-items:center;
   transition:transform .2s,background .2s,box-shadow .2s;
