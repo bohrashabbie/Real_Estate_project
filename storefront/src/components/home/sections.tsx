@@ -3,8 +3,9 @@ import { ArrowLeft, Building2, Clock3, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
-import type { PropertyType, SiteSettings } from "@/lib/api";
+import { siteText, type PropertyType, type SiteSettings } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
+import type { Locale } from "@/i18n/routing";
 
 /** The gold-outlined "answer five questions" nudge under each grid. */
 export async function SmartOptionCard() {
@@ -93,7 +94,15 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
  * of thing rather than six values of one field. The colours are the current
  * palette's, not that build's retired green-and-terracotta.
  */
-export async function PropertyTypeGrid({ types }: { types: PropertyType[] }) {
+export async function PropertyTypeGrid({
+  types,
+  settings,
+  locale,
+}: {
+  types: PropertyType[];
+  settings: SiteSettings;
+  locale: Locale;
+}) {
   const t = await getTranslations("home");
   // The reference showed six because it only ever had six; `.type-grid` now
   // scrolls sideways instead of wrapping, so an office that adds a seventh
@@ -105,9 +114,9 @@ export async function PropertyTypeGrid({ types }: { types: PropertyType[] }) {
     <section className="section type-section" id="property-types">
       <div className="container">
         <SectionHeading
-          kicker={t("typesKicker")}
-          title={t("typesTitle")}
-          body={t("typesBody")}
+          kicker={siteText(settings, "types_kicker", locale) ?? t("typesKicker")}
+          title={siteText(settings, "types_title", locale) ?? t("typesTitle")}
+          body={siteText(settings, "types_body", locale) ?? t("typesBody")}
         />
         <div className="type-grid">
           {shown.map((type) => (

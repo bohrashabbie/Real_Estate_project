@@ -2,9 +2,10 @@ import { getTranslations } from "next-intl/server";
 import { Camera, MessageCircle, Phone } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
-import type { SiteSettings } from "@/lib/api";
+import { siteText, type SiteSettings } from "@/lib/api";
 import { formatPhone, telLink, waLink } from "@/lib/format";
 import { BrandLockup } from "@/components/layout/brand-lockup";
+import type { Locale } from "@/i18n/routing";
 
 /** `w91111`, `@w91111` and a full profile URL all end up as one link. */
 function socialUrl(base: string, handle: string | null | undefined): string | null {
@@ -14,7 +15,7 @@ function socialUrl(base: string, handle: string | null | undefined): string | nu
   return `${base}${value.replace(/^@/, "")}`;
 }
 
-export async function Footer({ settings }: { settings: SiteSettings }) {
+export async function Footer({ settings, locale }: { settings: SiteSettings; locale: Locale }) {
   const t = await getTranslations();
 
   const phone = settings.phone?.trim();
@@ -28,7 +29,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
       <div className="container footer-grid">
         <div>
           <BrandLockup name={t("app.name")} tone="reversed" size="lg" />
-          <p>{t("footer.blurb")}</p>
+          <p>{siteText(settings, "footer_blurb", locale) ?? t("footer.blurb")}</p>
           <div className="footer-social">
             {instagram ? (
               <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -85,7 +86,9 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
       </div>
 
       <div className="container footer-bottom">
-        <span className="footer-tagline">{t("footer.tagline")}</span>
+        <span className="footer-tagline">
+          {siteText(settings, "footer_tagline", locale) ?? t("footer.tagline")}
+        </span>
       </div>
     </footer>
   );

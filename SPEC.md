@@ -52,7 +52,19 @@ are rows in `*_translations` keyed by `locale`, slugs unique per locale):
 - **inquiries** — id, property_id FK nullable, name, phone, message, source ENUM `property|contact|home`, status ENUM `new|contacted|closed` default new, created_at. Public insert; admin list/update-status.
 - **property_requests** — "Request your property": id, name, phone, purpose ENUM `rent|sale` null, property_type_id FK null, area_id FK null, budget_min NUMERIC(12,3) null, budget_max NUMERIC(12,3) null, rooms SMALLINT null, notes TEXT null, status ENUM `new|in_progress|matched|closed` default new, created_at.
 
-Settings seeded keys: `site.phone` (+965 XXXXXXXX), `site.whatsapp`, `site.email`, `site.instagram`, `site.name_ar` (Kwt25), `site.name_en` (Kwt25).
+Settings seeded keys: `site.phone` (+965 XXXXXXXX), `site.whatsapp`, `site.email`, `site.instagram`, `site.x`, `site.snapchat`, `site.name_ar` (Kwt25), `site.name_en` (Kwt25).
+
+The `Setting` model is a generic key/value store — `bulk_upsert_settings`
+upserts any `{key, value}` pair with no whitelist, so page copy the office
+edits without a deploy piggybacks on the same table rather than a new one:
+`site.footer_blurb_{ar,en}`, `site.footer_tagline_{ar,en}`,
+`site.hero_{title,subtitle,cta}_{ar,en}` (the campaign hero's fallback copy,
+shown only when no banner is uploaded), and
+`site.{vip,featured,all,types}_{kicker,title,cta|body}_{ar,en}` for the home
+page's four section headings. Each is public (`PUBLIC_SETTING_KEYS` in
+`public_service.py`) and optional — the storefront reads `settings.<key>` and
+falls back to its own next-intl string when a value is blank, so an empty
+Setting table still renders the full page.
 
 ## API (FastAPI, port 8000)
 

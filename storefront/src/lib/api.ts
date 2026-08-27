@@ -43,6 +43,49 @@ export interface SiteSettings {
   snapchat: string | null;
   name_ar: string;
   name_en: string;
+  // Page copy the office can edit from the admin's Settings screen without a
+  // deploy — one `site.<field>_<locale>` setting per string, not a
+  // translations table (see SPEC.md). Every one of these is optional: null
+  // means "not set", and every reader falls back to its own next-intl copy
+  // for that string. Read these through `siteText()` below rather than
+  // indexing the object directly, so a blank string and a missing key are
+  // never treated differently by accident.
+  footer_blurb_ar: string | null;
+  footer_blurb_en: string | null;
+  footer_tagline_ar: string | null;
+  footer_tagline_en: string | null;
+  hero_title_ar: string | null;
+  hero_title_en: string | null;
+  hero_subtitle_ar: string | null;
+  hero_subtitle_en: string | null;
+  hero_cta_ar: string | null;
+  hero_cta_en: string | null;
+  vip_kicker_ar: string | null;
+  vip_kicker_en: string | null;
+  vip_title_ar: string | null;
+  vip_title_en: string | null;
+  vip_cta_ar: string | null;
+  vip_cta_en: string | null;
+  featured_kicker_ar: string | null;
+  featured_kicker_en: string | null;
+  featured_title_ar: string | null;
+  featured_title_en: string | null;
+  featured_cta_ar: string | null;
+  featured_cta_en: string | null;
+  all_kicker_ar: string | null;
+  all_kicker_en: string | null;
+  all_title_ar: string | null;
+  all_title_en: string | null;
+  all_body_ar: string | null;
+  all_body_en: string | null;
+  all_cta_ar: string | null;
+  all_cta_en: string | null;
+  types_kicker_ar: string | null;
+  types_kicker_en: string | null;
+  types_title_ar: string | null;
+  types_title_en: string | null;
+  types_body_ar: string | null;
+  types_body_en: string | null;
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -54,7 +97,79 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   snapchat: null,
   name_ar: "kwt25",
   name_en: "kwt25",
+  footer_blurb_ar: null,
+  footer_blurb_en: null,
+  footer_tagline_ar: null,
+  footer_tagline_en: null,
+  hero_title_ar: null,
+  hero_title_en: null,
+  hero_subtitle_ar: null,
+  hero_subtitle_en: null,
+  hero_cta_ar: null,
+  hero_cta_en: null,
+  vip_kicker_ar: null,
+  vip_kicker_en: null,
+  vip_title_ar: null,
+  vip_title_en: null,
+  vip_cta_ar: null,
+  vip_cta_en: null,
+  featured_kicker_ar: null,
+  featured_kicker_en: null,
+  featured_title_ar: null,
+  featured_title_en: null,
+  featured_cta_ar: null,
+  featured_cta_en: null,
+  all_kicker_ar: null,
+  all_kicker_en: null,
+  all_title_ar: null,
+  all_title_en: null,
+  all_body_ar: null,
+  all_body_en: null,
+  all_cta_ar: null,
+  all_cta_en: null,
+  types_kicker_ar: null,
+  types_kicker_en: null,
+  types_title_ar: null,
+  types_title_en: null,
+  types_body_ar: null,
+  types_body_en: null,
 };
+
+/** Base name of every admin-editable, locale-suffixed setting string —
+ *  `siteText(settings, "vip_kicker", locale)` reads `vip_kicker_ar` or
+ *  `vip_kicker_en`. Kept as a type rather than a bare `string` parameter so a
+ *  typo in the base name is a build error, not a silent always-null field. */
+export type SiteTextField =
+  | "footer_blurb"
+  | "footer_tagline"
+  | "hero_title"
+  | "hero_subtitle"
+  | "hero_cta"
+  | "vip_kicker"
+  | "vip_title"
+  | "vip_cta"
+  | "featured_kicker"
+  | "featured_title"
+  | "featured_cta"
+  | "all_kicker"
+  | "all_title"
+  | "all_body"
+  | "all_cta"
+  | "types_kicker"
+  | "types_title"
+  | "types_body";
+
+/** The admin-edited string for this field and locale, or null when the
+ *  office has never set it (or cleared it back to blank) — callers fall back
+ *  to their own next-intl copy in that case: `siteText(...) ?? t(...)`. */
+export function siteText(
+  settings: SiteSettings,
+  field: SiteTextField,
+  locale: Locale,
+): string | null {
+  const value = settings[`${field}_${locale}` as keyof SiteSettings];
+  return typeof value === "string" && value.trim() !== "" ? value : null;
+}
 
 export interface Area {
   id: number;

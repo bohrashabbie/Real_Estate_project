@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
-import { mediaUrl, type Banner } from "@/lib/api";
+import { mediaUrl, siteText, type Banner, type SiteSettings } from "@/lib/api";
+import type { Locale } from "@/i18n/routing";
 
 const INTERVAL = 6500;
 
@@ -42,7 +43,15 @@ const FALLBACK_SLIDES = [
   "/hero/campaign-properties.webp",
 ];
 
-export function LaunchHero({ banners }: { banners: Banner[] }) {
+export function LaunchHero({
+  banners,
+  settings,
+  locale,
+}: {
+  banners: Banner[];
+  settings: SiteSettings;
+  locale: Locale;
+}) {
   const t = useTranslations("hero");
 
   const published = banners
@@ -113,12 +122,12 @@ export function LaunchHero({ banners }: { banners: Banner[] }) {
               <Sparkles size={15} />
               {t("eyebrow")}
             </span>
-            <h1>{t("title")}</h1>
-            <p>{t("subtitle")}</p>
+            <h1>{siteText(settings, "hero_title", locale) ?? t("title")}</h1>
+            <p>{siteText(settings, "hero_subtitle", locale) ?? t("subtitle")}</p>
             <div className="hero-actions">
               <Link className="button button-gold button-large" href="/smart-search">
                 <ArrowLeft size={16} />
-                {t("cta")}
+                {siteText(settings, "hero_cta", locale) ?? t("cta")}
               </Link>
             </div>
           </div>

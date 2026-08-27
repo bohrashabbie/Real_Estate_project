@@ -35,6 +35,48 @@ PUBLIC_SETTING_KEYS = {
     "site.snapchat": "snapchat",
     "site.name_ar": "name_ar",
     "site.name_en": "name_en",
+    # Page copy the office can edit without a deploy. Each is a plain
+    # site.<field>_<locale> pair rather than a translations table — these are
+    # singleton strings (one hero, one footer), not rows keyed by an entity,
+    # so the *_translations pattern the rest of the schema uses would only
+    # add a join for no benefit. A blank value means "not set"; every reader
+    # falls back to the storefront's own next-intl copy for that string.
+    "site.footer_blurb_ar": "footer_blurb_ar",
+    "site.footer_blurb_en": "footer_blurb_en",
+    "site.footer_tagline_ar": "footer_tagline_ar",
+    "site.footer_tagline_en": "footer_tagline_en",
+    "site.hero_title_ar": "hero_title_ar",
+    "site.hero_title_en": "hero_title_en",
+    "site.hero_subtitle_ar": "hero_subtitle_ar",
+    "site.hero_subtitle_en": "hero_subtitle_en",
+    "site.hero_cta_ar": "hero_cta_ar",
+    "site.hero_cta_en": "hero_cta_en",
+    "site.vip_kicker_ar": "vip_kicker_ar",
+    "site.vip_kicker_en": "vip_kicker_en",
+    "site.vip_title_ar": "vip_title_ar",
+    "site.vip_title_en": "vip_title_en",
+    "site.vip_cta_ar": "vip_cta_ar",
+    "site.vip_cta_en": "vip_cta_en",
+    "site.featured_kicker_ar": "featured_kicker_ar",
+    "site.featured_kicker_en": "featured_kicker_en",
+    "site.featured_title_ar": "featured_title_ar",
+    "site.featured_title_en": "featured_title_en",
+    "site.featured_cta_ar": "featured_cta_ar",
+    "site.featured_cta_en": "featured_cta_en",
+    "site.all_kicker_ar": "all_kicker_ar",
+    "site.all_kicker_en": "all_kicker_en",
+    "site.all_title_ar": "all_title_ar",
+    "site.all_title_en": "all_title_en",
+    "site.all_body_ar": "all_body_ar",
+    "site.all_body_en": "all_body_en",
+    "site.all_cta_ar": "all_cta_ar",
+    "site.all_cta_en": "all_cta_en",
+    "site.types_kicker_ar": "types_kicker_ar",
+    "site.types_kicker_en": "types_kicker_en",
+    "site.types_title_ar": "types_title_ar",
+    "site.types_title_en": "types_title_en",
+    "site.types_body_ar": "types_body_ar",
+    "site.types_body_en": "types_body_en",
 }
 
 

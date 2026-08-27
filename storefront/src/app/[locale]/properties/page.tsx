@@ -9,6 +9,7 @@ import {
   getFeaturedProperties,
   getProperties,
   getPropertyTypes,
+  getSettings,
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
@@ -74,7 +75,8 @@ export default async function PropertiesPage({
   if (featuredOnly) filters.premium_only = "true";
   if (vipOnly) filters.vip_only = "true";
 
-  const [banners, areas, types, results, featured] = await Promise.all([
+  const [settings, banners, areas, types, results, featured] = await Promise.all([
+    getSettings(),
     getBanners(typedLocale),
     getAreas(typedLocale),
     getPropertyTypes(typedLocale),
@@ -86,7 +88,7 @@ export default async function PropertiesPage({
 
   return (
     <>
-      <LaunchHero banners={banners} />
+      <LaunchHero banners={banners} settings={settings} locale={typedLocale} />
 
       <QuickSearch
         areas={areas}

@@ -11,6 +11,7 @@ import {
   getPropertyTypes,
   getSettings,
   getVipProperties,
+  siteText,
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { VipCarousel } from "@/components/home/vip-carousel";
@@ -62,7 +63,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      <LaunchHero banners={banners} />
+      <LaunchHero banners={banners} settings={settings} locale={typedLocale} />
 
       <QuickSearch areas={areas} types={types} locale={typedLocale} />
 
@@ -70,13 +71,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section properties-section home-vip-section" id="vip-properties">
           <div className="container">
             <SectionHeading
-              kicker={t("home.vipKicker")}
-              title={t("home.vipTitle")}
+              kicker={siteText(settings, "vip_kicker", typedLocale) ?? t("home.vipKicker")}
+              title={siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle")}
               stackAction
               action={
                 <Link className="button button-outline" href="/properties?vip=1">
                   <Crown size={15} />
-                  {t("home.vipCta")}
+                  {siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
                 </Link>
               }
             />
@@ -89,13 +90,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
             <SectionHeading
-              kicker={t("home.featuredKicker")}
-              title={t("home.featuredTitle")}
+              kicker={siteText(settings, "featured_kicker", typedLocale) ?? t("home.featuredKicker")}
+              title={siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle")}
               stackAction
               action={
                 <Link className="button button-outline" href="/properties?featured=1">
                   <Star size={15} />
-                  {t("home.featuredCta")}
+                  {siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
                 </Link>
               }
             />
@@ -104,19 +105,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      <PropertyTypeGrid types={types} />
+      <PropertyTypeGrid types={types} settings={settings} locale={typedLocale} />
 
       {latest.length > 0 ? (
         <section className="section properties-section home-all-properties" id="all-properties">
           <div className="container">
             <SectionHeading
-              kicker={t("home.allKicker")}
-              title={t("home.allTitle")}
-              body={t("home.allBody")}
+              kicker={siteText(settings, "all_kicker", typedLocale) ?? t("home.allKicker")}
+              title={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
+              body={siteText(settings, "all_body", typedLocale) ?? t("home.allBody")}
               action={
                 <Link className="button button-outline home-all-properties-link" href="/properties">
                   <ArrowLeft size={15} />
-                  {t("home.allCta")}
+                  {siteText(settings, "all_cta", typedLocale) ?? t("home.allCta")}
                 </Link>
               }
             />

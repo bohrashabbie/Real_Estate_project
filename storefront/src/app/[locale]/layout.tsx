@@ -79,7 +79,7 @@ export default async function LocaleLayout({
             <main>
               <Header settings={settings} />
               {children}
-              <Footer settings={settings} />
+              <Footer settings={settings} locale={typedLocale} />
             </main>
             {/* One rail, not two opposite corners: the launcher and the three
                 buttons are the same offer — reach the office — so they share a
