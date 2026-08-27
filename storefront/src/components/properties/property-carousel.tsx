@@ -28,15 +28,17 @@ const NARROW_QUERY = "(max-width: 430px)";
 export function PropertyCarousel({
   properties,
   locale,
-  hasMore,
-  loading,
-  onNeedMore,
+  hasMore = false,
+  loading = false,
+  onNeedMore = () => {},
 }: {
   properties: PropertyListItem[];
   locale: Locale;
-  hasMore: boolean;
-  loading: boolean;
-  onNeedMore: () => void;
+  /** Omit all three when `properties` is the whole set already — the home
+   *  page's rows (fixed, server-fetched, no cursor) never need to fetch more. */
+  hasMore?: boolean;
+  loading?: boolean;
+  onNeedMore?: () => void;
 }) {
   const t = useTranslations();
   const trackRef = useRef<HTMLDivElement>(null);

@@ -868,16 +868,35 @@ img {
   scroll-margin-top:92px;
 }
 
+/* The featured carousel no longer ends with the smart-option-card's own
+   margin beneath it, so its section's bottom padding was stacking with this
+   one's top padding into a much wider gap than the beat above it. */
+.home-featured-section+.type-section {
+  padding-top:0;
+}
+
 /* The six tiles are one short row of links, not a chapter of the page, so they
    do not need a full section's worth of air above the heading or under them. */
 .type-section .heading-row {
   margin-bottom:26px;
 }
 
+/* A flex row with overflow, not a wrapping grid: the six tiles the reference
+   shipped still fill one row exactly, but the office can add an arbitrary
+   seventh, eighth, ninth type without pushing "everything else" down a row —
+   it just becomes reachable by scrolling the row sideways instead. */
 .type-grid {
-  grid-template-columns:repeat(6,1fr);
   gap:16px;
-  display:grid;
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type:x proximity;
+  scrollbar-width:thin;
+  scrollbar-color:#c8a45db3 transparent;
+  padding-bottom:6px;
+}
+
+.type-grid::-webkit-scrollbar {
+  height:6px;
 }
 
 .type-card {
@@ -885,6 +904,7 @@ img {
   border:2px solid #ded3bd;
   background:#fff;
   border-radius:24px;
+  flex:0 0 calc((100% - 5*16px)/6);
   flex-direction:column;
   justify-content:center;
   align-items:center;
@@ -892,6 +912,7 @@ img {
   padding:24px;
   transition:border .2s,transform .2s,box-shadow .2s;
   display:flex;
+  scroll-snap-align:start;
   box-shadow:0 10px 30px -14px #0d1b2a2e;
 }
 
@@ -6092,8 +6113,8 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
 }
 
 @media (max-width:1023px) {
-  .type-grid {
-    grid-template-columns:repeat(3,1fr);
+  .type-card {
+    flex-basis:calc((100% - 2*16px)/3);
   }
 }
 
@@ -6111,13 +6132,11 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
 }
 
 @media (max-width:639px) {
-  .type-grid {
-    grid-template-columns:repeat(2,1fr);
-  }
   .type-section {
     padding-block:56px;
   }
   .type-card {
+    flex-basis:calc((100% - 16px)/2);
     padding:20px 14px;
   }
 }

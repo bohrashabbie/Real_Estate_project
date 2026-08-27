@@ -95,7 +95,10 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
  */
 export async function PropertyTypeGrid({ types }: { types: PropertyType[] }) {
   const t = await getTranslations("home");
-  const shown = types.slice(0, 6);
+  // The reference showed six because it only ever had six; `.type-grid` now
+  // scrolls sideways instead of wrapping, so an office that adds a seventh
+  // type doesn't need this cut raised by hand.
+  const shown = types;
   if (shown.length === 0) return null;
 
   return (

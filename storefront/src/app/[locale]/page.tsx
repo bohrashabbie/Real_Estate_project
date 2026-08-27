@@ -20,9 +20,9 @@ import {
   PropertyTypeGrid,
   RequestTeaser,
   SectionHeading,
-  SmartOptionCard,
 } from "@/components/home/sections";
 import { PropertyCard } from "@/components/property/property-card";
+import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 /**
  * The front page, in the reference's order: campaign hero, quick search,
@@ -49,11 +49,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getProperties(typedLocale, { limit: 8 }),
   ]);
 
-  // The reference's two grids are four cards each, and the second must not
-  // repeat the first — "all listings" means the newest of what is left. It has
-  // to clear the VIP row too, or the same card can appear in all three.
-  const featuredFour = featured.slice(0, 4);
-  const promotedIds = new Set([...vip, ...featuredFour].map((property) => property.id));
+  // "All listings" means the newest of what is left — it has to clear
+  // everything already promoted above it (VIP and every Featured pick, not
+  // just the first page of the Featured carousel), or the same card can
+  // appear twice on the front page.
+  const promotedIds = new Set([...vip, ...featured].map((property) => property.id));
   const latest = all.items.filter((property) => !promotedIds.has(property.id)).slice(0, 4);
 
   return (
@@ -81,7 +81,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      {featuredFour.length > 0 ? (
+      {featured.length > 0 ? (
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
             <SectionHeading
@@ -95,12 +95,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </Link>
               }
             />
-            <div className="property-grid featured-four">
-              {featuredFour.map((property) => (
-                <PropertyCard key={property.id} property={property} locale={typedLocale} />
-              ))}
-            </div>
-            <SmartOptionCard />
+            <PropertyCarousel properties={featured} locale={typedLocale} />
           </div>
         </section>
       ) : null}
