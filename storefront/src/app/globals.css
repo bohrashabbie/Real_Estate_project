@@ -868,9 +868,8 @@ img {
   scroll-margin-top:92px;
 }
 
-/* The featured carousel no longer ends with the smart-option-card's own
-   margin beneath it, so its section's bottom padding was stacking with this
-   one's top padding into a much wider gap than the beat above it. */
+/* The featured carousel's section had its own bottom padding stacking with
+   this one's top padding into a much wider gap than the beat above it. */
 .home-featured-section+.type-section {
   padding-top:0;
 }
@@ -3388,67 +3387,6 @@ footer {
   max-width:570px;
   color:var(--muted);
   line-height:2;
-}
-
-.smart-option-card {
-  border:1px solid var(--line);
-  background:var(--cream);
-  border-radius:10px;
-  grid-template-columns:48px 1fr auto;
-  align-items:center;
-  gap:16px;
-  width:min(820px,100%);
-  margin:30px auto 0;
-  padding:16px 18px;
-  display:grid;
-}
-
-.smart-option-icon {
-  background:var(--navy);
-  width:44px;
-  height:44px;
-  color:var(--gold);
-  border-radius:50%;
-  place-items:center;
-  display:grid;
-}
-
-.smart-option-copy>span {
-  color:var(--gold-dark);
-  font-size:12px;
-  font-weight:800;
-}
-
-.smart-option-copy h3 {
-  margin:2px 0;
-  font:700 14px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
-}
-
-.smart-option-copy p {
-  color:var(--muted);
-  margin:0;
-  font-size:12px;
-}
-
-.smart-option-action {
-  align-items:center;
-  gap:13px;
-  display:flex;
-}
-
-.smart-option-action small {
-  color:var(--muted);
-  white-space:nowrap;
-  align-items:center;
-  gap:5px;
-  font-size:12px;
-  display:flex;
-}
-
-.smart-option-action .button {
-  min-height:38px;
-  padding-inline:13px;
-  font-size:12px;
 }
 
 .featured-four {
@@ -6204,13 +6142,6 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   .area-filter-card strong {
     font-size:13px;
   }
-  .smart-option-card {
-    grid-template-columns:44px 1fr;
-  }
-  .smart-option-action {
-    grid-column:2;
-    justify-content:space-between;
-  }
   .featured-four,.path-grid,.contact-grid {
     grid-template-columns:1fr;
   }
@@ -6389,21 +6320,6 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   }
   .featured-four {
     grid-template-columns:1fr;
-  }
-  .smart-option-card {
-    grid-template-columns:1fr;
-    justify-items:start;
-    padding:16px;
-  }
-  .smart-option-action {
-    grid-column:1;
-    width:100%;
-  }
-  .smart-option-action small {
-    display:none;
-  }
-  .smart-option-action .button {
-    width:100%;
   }
   .demo-notice .container {
     align-items:flex-start;
@@ -6650,18 +6566,6 @@ body {
 }
 
 .non-applicable-step span {
-  font-size:14px;
-}
-
-.smart-option-copy>span,.smart-option-copy p,.smart-option-action small {
-  font-size:13px;
-}
-
-.smart-option-copy h3 {
-  font-size:16px;
-}
-
-.smart-option-action .button {
   font-size:14px;
 }
 

@@ -291,11 +291,7 @@
     "browseAll": "Browse every property",
     "whatsappTitle": "Prefer to talk directly?",
     "whatsappBody": "Send your requirements on WhatsApp and the office will reply.",
-    "whatsappMessage": "Hello, I've finished the smart search and would like help choosing.",
-    "optionKicker": "Another way",
-    "optionTitle": "Let us line up the right properties for you",
-    "optionBody": "Answer five quick questions and get the results closest to your request.",
-    "optionCta": "Smart search"
+    "whatsappMessage": "Hello, I've finished the smart search and would like help choosing."
   },
   "mapPage": {
     "kicker": "Map of Kuwait",

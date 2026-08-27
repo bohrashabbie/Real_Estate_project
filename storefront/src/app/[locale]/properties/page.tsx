@@ -13,7 +13,6 @@ import {
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
-import { SmartOptionCard } from "@/components/home/sections";
 import { FeaturedStrip } from "@/components/properties/featured-strip";
 import { ResultsGrid } from "@/components/properties/results-grid";
 
@@ -116,8 +115,6 @@ export default async function PropertiesPage({
               {featuredOnly ? null : (
                 <FeaturedStrip properties={featured.slice(0, 6)} locale={typedLocale} />
               )}
-
-              <SmartOptionCard />
 
               <ResultsGrid initial={results} filters={filters} locale={typedLocale} />
             </section>

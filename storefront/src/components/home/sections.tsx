@@ -1,39 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Building2, Clock3, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
 import { siteText, type PropertyType, type SiteSettings } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import type { Locale } from "@/i18n/routing";
-
-/** The gold-outlined "answer five questions" nudge under each grid. */
-export async function SmartOptionCard() {
-  const t = await getTranslations("smart");
-
-  return (
-    <div className="smart-option-card">
-      <span className="smart-option-icon">
-        <Sparkles size={19} />
-      </span>
-      <div className="smart-option-copy">
-        <span>{t("optionKicker")}</span>
-        <h3>{t("optionTitle")}</h3>
-        <p>{t("optionBody")}</p>
-      </div>
-      <div className="smart-option-action">
-        <small>
-          <Clock3 size={14} />
-          {t("under30")}
-        </small>
-        <Link className="button button-outline small-button" href="/smart-search">
-          <Sparkles size={14} />
-          {t("optionCta")}
-        </Link>
-      </div>
-    </div>
-  );
-}
 
 /** "Didn't find it? Tell us what you want." */
 export async function RequestTeaser() {
