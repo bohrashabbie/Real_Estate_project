@@ -1033,7 +1033,7 @@ img {
 .match-badge {
   z-index:2;
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
   border-radius:5px;
   align-items:center;
   gap:5px;
@@ -1424,7 +1424,12 @@ img {
 
 .map-pin:hover,.map-pin.is-active {
   background:var(--gold);
+  color:#fff;
   transform:translate(-50%,-50%)scale(1.08);
+}
+
+.map-pin:hover svg,.map-pin.is-active svg {
+  color:#fff;
 }
 
 .locate-button {
@@ -2026,7 +2031,7 @@ footer {
 
 .option-card.is-selected>span {
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
 }
 
 .wizard-actions {
@@ -2800,7 +2805,7 @@ footer {
 
 .header-list-property {
   min-height:42px;
-  color:var(--navy);
+  color:#fff;
   white-space:nowrap;
   background:linear-gradient(135deg,#d9b55e,#c89f45);
   border:1px solid #c3993f;
@@ -2823,7 +2828,7 @@ footer {
 }
 
 .header-list-property svg {
-  color:var(--navy);
+  color:#fff;
 }
 
 @media (max-width:760px) {
@@ -3231,7 +3236,7 @@ footer {
 .all-areas-option.is-selected>span {
   border-color:var(--gold-dark);
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
 }
 
 .home-area-options {
@@ -5550,7 +5555,7 @@ footer {
 
 .contact-floats .share-float {
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
   border:1px solid #d8b86d;
 }
 
@@ -5568,7 +5573,7 @@ footer {
    reading as a second gold share button. */
 .chat-launcher {
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
   border:1px solid #d7b871;
   border-radius:50%;
   width:54px;
@@ -7781,7 +7786,7 @@ body {
   z-index:1;
   background:var(--gold);
   min-height:30px;
-  color:var(--navy);
+  color:#fff;
   white-space:nowrap;
   border-radius:999px;
   align-items:center;
@@ -9316,7 +9321,7 @@ body {
 
 .vip-slide-crown {
   background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
-  color:#20170a;
+  color:#fff;
   inset-inline-start:16px;
   letter-spacing:.06em;
   box-shadow:0 6px 18px #0d1b2a4d;
