@@ -6,13 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import type { Map as MapLibreMap, Marker } from "maplibre-gl";
 import {
   ArrowLeft,
-  ExternalLink,
   List,
   Map as MapIcon,
   MapPin,
-  MapPinned,
   RefreshCw,
-  Smartphone,
 } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -26,11 +23,6 @@ import {
   type PropertyListItem,
 } from "@/lib/api";
 import { formatBareAmount, formatPrice, formatSqm } from "@/lib/format";
-import {
-  KUWAIT_FINDER_ANDROID_URL,
-  KUWAIT_FINDER_IOS_URL,
-  KUWAIT_FINDER_URL,
-} from "@/lib/kuwait-finder";
 import { PropertyCard } from "@/components/property/property-card";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
@@ -61,11 +53,7 @@ async function fetchAll(locale: Locale): Promise<PropertyListItem[]> {
 
 /**
  * The map browser: gold price pins over Kuwait, a card for whichever is
- * selected, a list view for anyone who would rather scroll than pan, and
- * PACI's Kuwait Finder for anyone navigating by the address system Kuwait
- * actually uses — block, parcel, PACI number, none of which a world map
- * carries. The property page already links into the finder per listing; this
- * is the same map at country scale.
+ * selected, and a list view for anyone who would rather scroll than pan.
  *
  * The list endpoint carries no coordinates, so each listing is resolved through
  * the detail endpoint once and the ones the office never pinned drop out — the
@@ -78,7 +66,7 @@ export function MapExplorer({ locale }: { locale: Locale }) {
   const map = useRef<MapLibreMap | null>(null);
   const markers = useRef<Marker[]>([]);
 
-  const [view, setView] = useState<"map" | "list" | "finder">("map");
+  const [view, setView] = useState<"map" | "list">("map");
   const [selected, setSelected] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -208,29 +196,14 @@ export function MapExplorer({ locale }: { locale: Locale }) {
             <List size={15} />
             {t("mapPage.listView")}
           </button>
-          <button
-            type="button"
-            className={view === "finder" ? "is-active" : undefined}
-            onClick={() => setView("finder")}
-          >
-            <MapPinned size={15} />
-            {t("finder.finderTab")}
-          </button>
         </div>
 
-        {/* Both are about our own listings; neither means anything over PACI's
-            map, and a listing count beside it would read as a claim about
-            what the finder is showing. */}
-        {view === "finder" ? null : (
-          <>
-            <button type="button" className="button button-outline" onClick={recenter}>
-              <RefreshCw size={14} />
-              {t("mapPage.reset")}
-            </button>
+        <button type="button" className="button button-outline" onClick={recenter}>
+          <RefreshCw size={14} />
+          {t("mapPage.reset")}
+        </button>
 
-            <span>{isLoading ? t("mapPage.loading") : t("mapPage.count", { count })}</span>
-          </>
-        )}
+        <span>{isLoading ? t("mapPage.loading") : t("mapPage.count", { count })}</span>
       </div>
 
       {view === "map" ? (
@@ -273,73 +246,13 @@ export function MapExplorer({ locale }: { locale: Locale }) {
             </aside>
           ) : null}
         </div>
-      ) : view === "list" ? (
+      ) : (
         <div className="property-grid two-column">
           {(located ?? []).map((entry) => (
             <PropertyCard key={entry.item.id} property={entry.item} locale={locale} />
           ))}
         </div>
-      ) : (
-        <FinderPanel />
       )}
     </>
-  );
-}
-
-/**
- * PACI's client, embedded — with the way out sitting above the frame rather
- * than inside it.
- *
- * A government host is free to refuse framing, and `gis.paci.gov.kw` answers
- * nothing at all from outside Kuwait, so this frame coming up blank is a
- * normal outcome and not an error worth hiding. The button and the two app
- * links are plain links: they work whatever the frame does, and they are on
- * screen before the visitor has to go looking for them.
- */
-function FinderPanel() {
-  const t = useTranslations("finder");
-
-  return (
-    <div className="finder-panel">
-      <div className="finder-panel-actions">
-        <a
-          className="button kuwait-finder-button"
-          href={KUWAIT_FINDER_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <ExternalLink size={15} />
-          {t("openInFinder")}
-        </a>
-        <a
-          className="button button-outline"
-          href={KUWAIT_FINDER_IOS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Smartphone size={14} />
-          {t("iosApp")}
-        </a>
-        <a
-          className="button button-outline"
-          href={KUWAIT_FINDER_ANDROID_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Smartphone size={14} />
-          {t("androidApp")}
-        </a>
-      </div>
-
-      <iframe
-        className="finder-frame"
-        src={KUWAIT_FINDER_URL}
-        title={t("finderTab")}
-        loading="lazy"
-        referrerPolicy="no-referrer"
-      />
-
-      <p className="finder-note">{t("embedNote")}</p>
-    </div>
   );
 }
