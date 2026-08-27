@@ -9266,14 +9266,12 @@ body {
   height:452px;
   position:relative;
   overflow:hidden;
-  transition:transform .35s,box-shadow .35s,border-color .35s;
-  box-shadow:0 18px 46px #0d1b2a1f;
+  transition:transform .35s,border-color .35s;
 }
 
 .vip-slide:hover {
   border-color:#c8a45d8f;
   transform:translateY(-6px);
-  box-shadow:0 30px 70px #0d1b2a38;
 }
 
 .vip-slide-shot {
