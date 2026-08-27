@@ -3628,8 +3628,6 @@ footer {
 }
 
 .footer-social a {
-  border:1px solid #ffffff1f;
-  border-radius:50%;
   place-items:center;
   width:34px;
   height:34px;
