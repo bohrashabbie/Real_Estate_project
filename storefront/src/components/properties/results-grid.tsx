@@ -2,27 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, SearchX } from "lucide-react";
+import { SearchX } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { apiGet, type Paginated, type PropertyListItem } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
-import { PropertyCard } from "@/components/property/property-card";
+import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 /**
- * The results grid, with the "show more" that the API's cursor pagination
- * implies — there are no page numbers to render because there is no offset.
+ * Every listing view (for-sale, for-rent, Featured, all) pages sideways
+ * through `PropertyCarousel`, same as the home page's own Featured row.
+ * Paging past the last loaded card fetches the next cursor page instead of
+ * requiring a "show more" click — see `PropertyCarousel`'s `onNeedMore`.
  *
- * The first page arrives already rendered from the server, so a cold visit and
- * a crawler both get real listings; this component only appends. It keys off
- * the serialised filters, so changing a filter resets the appended tail rather
- * than stacking new results under stale ones.
- *
- * Every listing view (for-sale, for-rent, Featured, all) uses this same grid —
- * only the home page's own Featured row is the sideways-paging
- * `PropertyCarousel` instead; a full listing page keeps "show more" so
- * browsing the whole catalogue reads as one continuous list, not laps around
- * a curated rail.
+ * The first page still arrives already rendered from the server, so a cold
+ * visit and a crawler both get real listings; this component only appends.
+ * It keys off the serialised filters, so changing a filter resets the
+ * appended tail rather than stacking new results under stale ones.
  */
 export function ResultsGrid({
   initial,
@@ -99,20 +95,13 @@ export function ResultsGrid({
         </div>
       </div>
 
-      <div className="property-grid featured-four">
-        {[...initial.items, ...extra].map((property) => (
-          <PropertyCard key={property.id} property={property} locale={locale} />
-        ))}
-      </div>
-
-      {cursor ? (
-        <div className="property-pagination">
-          <button type="button" onClick={more} disabled={loading}>
-            <ChevronDown size={15} />
-            {loading ? t("loading") : t("showMore")}
-          </button>
-        </div>
-      ) : null}
+      <PropertyCarousel
+        properties={[...initial.items, ...extra]}
+        locale={locale}
+        hasMore={Boolean(cursor)}
+        loading={loading}
+        onNeedMore={more}
+      />
     </>
   );
 }
