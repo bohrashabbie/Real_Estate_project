@@ -51,6 +51,9 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
         <div>
           <strong>{t("footer.properties")}</strong>
           <Link href="/properties">{t("footer.allProperties")}</Link>
+          <Link href="/properties?purpose=sale">{t("nav.sale")}</Link>
+          <Link href="/properties?purpose=rent">{t("nav.rent")}</Link>
+          <Link href="/properties?featured=1">{t("nav.featured")}</Link>
           <Link href="/smart-search">{t("footer.smartChoice")}</Link>
           <Link href="/compare">{t("footer.compare")}</Link>
           <Link href="/map">{t("footer.mapSearch")}</Link>

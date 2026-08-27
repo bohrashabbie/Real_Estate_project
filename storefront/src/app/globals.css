@@ -818,7 +818,7 @@ img {
   border:1px solid #c8a45d7a;
   border-radius:50%;
   place-items:center;
-  font:600 14px Noto Kufi Arabic;
+  font:600 14px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:grid;
   position:relative;
 }
@@ -1127,7 +1127,7 @@ img {
   -webkit-box-orient:vertical;
   min-height:3.1em;
   margin:13px 0 7px;
-  font:700 17px/1.55 Noto Kufi Arabic;
+  font:700 17px/1.55 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:-webkit-box;
   overflow:hidden;
 }
@@ -1336,7 +1336,7 @@ img {
 
 .map-water span {
   color:#aad2dc52;
-  font:500 13px Noto Kufi Arabic;
+  font:500 13px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   position:absolute;
   top:50%;
   left:14px;
@@ -1466,7 +1466,7 @@ img {
 
 .map-property-content h3 {
   margin:8px 0 7px;
-  font:700 17px/1.55 Noto Kufi Arabic;
+  font:700 17px/1.55 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .map-property-content>p {
@@ -1580,7 +1580,7 @@ img {
 }
 
 .form-title strong {
-  font:700 17px Noto Kufi Arabic;
+  font:700 17px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .form-title small {
@@ -1590,7 +1590,7 @@ img {
 
 .form-title>span {
   color:#c8a45d70;
-  font:700 32px Noto Kufi Arabic;
+  font:700 32px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .form-row {
@@ -1661,7 +1661,7 @@ img {
 
 .success-state h3 {
   margin:0 0 10px;
-  font:700 23px Noto Kufi Arabic;
+  font:700 23px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .success-state p {
@@ -1915,7 +1915,7 @@ footer {
 
 .wizard-sidebar h3 {
   margin:13px 0 10px;
-  font:700 20px/1.7 Noto Kufi Arabic;
+  font:700 20px/1.7 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .wizard-sidebar p {
@@ -2102,7 +2102,7 @@ footer {
 }
 
 .comparison-scroll th strong {
-  font:700 13px/1.6 Noto Kufi Arabic;
+  font:700 13px/1.6 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:block;
 }
 
@@ -2273,7 +2273,7 @@ footer {
 
 .detail-description h3 {
   margin-top:35px;
-  font:700 17px Noto Kufi Arabic;
+  font:700 17px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .feature-list {
@@ -2312,7 +2312,7 @@ footer {
 
 .inquiry-card h3 {
   margin:8px 0;
-  font:700 18px/1.7 Noto Kufi Arabic;
+  font:700 18px/1.7 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .inquiry-card p {
@@ -2413,7 +2413,7 @@ footer {
     display:flex;
   }
   .mobile-nav-head strong {
-    font:700 16px Noto Kufi Arabic;
+    font:700 16px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   }
   .mobile-nav-head small {
     color:var(--muted);
@@ -2460,7 +2460,7 @@ footer {
     display:flex;
   }
   .nav-card-copy b {
-    font:700 13px Noto Kufi Arabic;
+    font:700 13px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   }
   .nav-card-copy small {
     color:var(--muted);
@@ -2898,7 +2898,7 @@ footer {
   letter-spacing:-.05em;
   max-width:790px;
   margin:24px 0 15px;
-  font:700 clamp(42px,6vw,72px)/1.45 Noto Kufi Arabic;
+  font:700 clamp(42px,6vw,72px)/1.45 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .launch-hero-content>p {
@@ -2923,7 +2923,7 @@ footer {
   width:158px;
   height:158px;
   padding:16px;
-  font:900 20px/1.35 Noto Kufi Arabic;
+  font:900 20px/1.35 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:inline-flex;
   position:absolute;
   top:42%;
@@ -3044,7 +3044,7 @@ footer {
 }
 
 .home-search-title strong {
-  font:700 13px/1.7 Noto Kufi Arabic;
+  font:700 13px/1.7 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .home-search-field {
@@ -3378,7 +3378,7 @@ footer {
 
 .smart-option-copy h3 {
   margin:2px 0;
-  font:700 14px Noto Kufi Arabic;
+  font:700 14px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .smart-option-copy p {
@@ -3506,7 +3506,7 @@ footer {
   letter-spacing:-.03em;
   max-width:22ch;
   margin:10px 0 0;
-  font:700 clamp(26px,3.2vw,36px)/1.35 Noto Kufi Arabic;
+  font:700 clamp(26px,3.2vw,36px)/1.35 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .contact-band {
@@ -3630,7 +3630,7 @@ footer {
 
 .page-hero h1 {
   margin:0 0 12px;
-  font:700 clamp(34px,5vw,54px) Noto Kufi Arabic;
+  font:700 clamp(34px,5vw,54px) Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .page-hero p {
@@ -3680,7 +3680,7 @@ footer {
 }
 
 .filter-title strong {
-  font:700 14px Noto Kufi Arabic;
+  font:700 14px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .filter-title span {
@@ -3838,7 +3838,7 @@ footer {
   overflow-wrap:anywhere;
   grid-column:1;
   min-width:0;
-  font:700 12px/1.55 Noto Kufi Arabic;
+  font:700 12px/1.55 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .area-filter-card i {
@@ -3935,7 +3935,7 @@ footer {
 }
 
 .results-top strong {
-  font:700 16px Noto Kufi Arabic;
+  font:700 16px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .two-column {
@@ -3960,7 +3960,7 @@ footer {
 
 .no-results h2 {
   margin:15px 0 5px;
-  font:700 22px Noto Kufi Arabic;
+  font:700 22px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .no-results p {
@@ -4009,7 +4009,7 @@ footer {
 .active-filters-label {
   color:var(--navy);
   white-space:nowrap;
-  font:700 12px Noto Kufi Arabic;
+  font:700 12px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .active-filter-chips {
@@ -4276,7 +4276,7 @@ footer {
 
 .non-applicable-step strong {
   color:var(--navy);
-  font:700 14px Noto Kufi Arabic;
+  font:700 14px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .non-applicable-step span {
@@ -4346,7 +4346,7 @@ footer {
 
 .property-title-block h1 {
   margin:4px 0 8px;
-  font:700 32px/1.5 Noto Kufi Arabic;
+  font:700 32px/1.5 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .property-title-block p {
@@ -4400,7 +4400,7 @@ footer {
 }
 
 .property-description h2 {
-  font:700 25px Noto Kufi Arabic;
+  font:700 25px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .property-description>p {
@@ -4411,7 +4411,7 @@ footer {
 
 .property-description h3 {
   margin-top:30px;
-  font:700 17px Noto Kufi Arabic;
+  font:700 17px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .property-contact-card {
@@ -4432,7 +4432,7 @@ footer {
 
 .property-contact-card h3 {
   margin:7px 0 18px;
-  font:700 16px/1.6 Noto Kufi Arabic;
+  font:700 16px/1.6 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .property-contact-card>.button {
@@ -4551,7 +4551,7 @@ footer {
 }
 
 .smart-wizard-page aside h2 {
-  font:700 22px/1.7 Noto Kufi Arabic;
+  font:700 22px/1.7 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .smart-wizard-page aside p {
@@ -4591,7 +4591,7 @@ footer {
 
 .wizard-page-question h1 {
   margin:0 0 8px;
-  font:700 32px Noto Kufi Arabic;
+  font:700 32px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .wizard-page-question>p {
@@ -4673,7 +4673,7 @@ footer {
 
 .smart-results-head h2 {
   margin:0;
-  font:700 30px Noto Kufi Arabic;
+  font:700 30px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .smart-results-head p {
@@ -4835,7 +4835,7 @@ footer {
 
 .map-selected-card h2 {
   margin:20px 6px 7px;
-  font:700 18px/1.6 Noto Kufi Arabic;
+  font:700 18px/1.6 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .map-selected-card>p {
@@ -4885,7 +4885,7 @@ footer {
 
 .map-unconfigured h2 {
   margin:14px 0 5px;
-  font:700 23px Noto Kufi Arabic;
+  font:700 23px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .map-unconfigured p {
@@ -4910,7 +4910,7 @@ footer {
 
 .property-location-section h2 {
   margin:4px 0 7px;
-  font:700 27px Noto Kufi Arabic;
+  font:700 27px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .property-location-section header p {
@@ -5016,7 +5016,7 @@ footer {
 
 .request-page-grid h1 {
   margin:0 0 10px;
-  font:700 38px/1.5 Noto Kufi Arabic;
+  font:700 38px/1.5 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .request-page-grid aside>p {
@@ -5213,7 +5213,7 @@ footer {
 }
 
 .request-success h2 {
-  font:700 25px Noto Kufi Arabic;
+  font:700 25px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .request-success p {
@@ -5381,7 +5381,7 @@ footer {
 }
 
 .about-grid h2 {
-  font:700 34px Noto Kufi Arabic;
+  font:700 34px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .about-grid>div:first-child p {
@@ -5407,7 +5407,7 @@ footer {
 }
 
 .value-grid h3 {
-  font:700 14px Noto Kufi Arabic;
+  font:700 14px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .value-grid p {
@@ -5451,7 +5451,7 @@ footer {
 }
 
 .contact-grid strong {
-  font:700 13px Noto Kufi Arabic;
+  font:700 13px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .contact-grid small {
@@ -5471,7 +5471,7 @@ footer {
 }
 
 .legal-content h2 {
-  font:700 20px Noto Kufi Arabic;
+  font:700 20px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .legal-content p {
@@ -5498,11 +5498,11 @@ footer {
 .not-found>span {
   color:#c8a45d59;
   margin-top:30px;
-  font:700 90px/1 Noto Kufi Arabic;
+  font:700 90px/1 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .not-found h1 {
-  font:700 28px Noto Kufi Arabic;
+  font:700 28px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .not-found p {
@@ -6817,7 +6817,7 @@ body {
 
 .featured-results-strip>header strong {
   color:var(--navy);
-  font:700 15px Noto Kufi Arabic;
+  font:700 15px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .featured-results-strip>header small {
@@ -6920,7 +6920,7 @@ body {
   color:var(--navy);
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
-  font:700 13px/1.65 Noto Kufi Arabic;
+  font:700 13px/1.65 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:-webkit-box;
   overflow:hidden;
 }
@@ -6949,7 +6949,7 @@ body {
 
 .regular-results-heading span {
   color:var(--navy);
-  font:700 17px Noto Kufi Arabic;
+  font:700 17px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .regular-results-heading strong,.regular-results-heading small {
@@ -7146,7 +7146,7 @@ body {
 .list-property-form-heading h2 {
   color:var(--navy);
   margin:5px 0 7px;
-  font:700 23px/1.55 Noto Kufi Arabic;
+  font:700 23px/1.55 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .list-property-form-heading p {
@@ -7807,7 +7807,7 @@ body {
   min-width:100%;
   margin:0;
   padding-inline:26px;
-  font:900 14px/1.7 Noto Kufi Arabic;
+  font:900 14px/1.7 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   animation:16s linear infinite announcementMarquee;
   display:inline-flex;
   color:#fff!important;
@@ -8112,7 +8112,7 @@ body {
 
 .property-filter-toolbar>header strong {
   color:var(--navy);
-  font:900 20px Noto Kufi Arabic;
+  font:900 20px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .property-filter-toolbar>header small {
@@ -8151,7 +8151,7 @@ body {
 .property-filter-card>strong {
   color:var(--navy);
   margin-bottom:10px;
-  font:900 15px Noto Kufi Arabic;
+  font:900 15px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:block;
 }
 
@@ -8426,7 +8426,7 @@ body {
 .related-properties-header h2 {
   color:var(--navy);
   margin:4px 0 0;
-  font:700 28px Noto Kufi Arabic;
+  font:700 28px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .related-properties-track {
@@ -9170,11 +9170,8 @@ body {
   transform: none;
 }
 
-/* Nothing sits at the bottom-left corner of the artwork to balance them, the
-   way the campaign hero's headline does, so centred is the only place they
-   do not look dropped. */
 .launch-hero.is-artwork .slider-controls {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 /* The dots are the one control with no dark disc of its own, so on light
@@ -9377,7 +9374,7 @@ body {
   -webkit-box-orient:vertical;
   margin:9px 0 8px;
   min-height:2.7em;
-  font:800 22px/1.35 Noto Kufi Arabic;
+  font:800 22px/1.35 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   display:-webkit-box;
   overflow:hidden;
 }
