@@ -4590,6 +4590,15 @@ footer {
   margin:0 4px;
 }
 
+/* The purpose picker above is the only step that actually wants that fixed
+   50% card — every other step's options sit in `.option-grid`/`.options-N`
+   (a real CSS grid), and the 50%-wide card from the rule above was
+   overflowing its 33%-wide column instead of filling it. */
+.option-grid.wizard-question-options>.option-card {
+  width:100%;
+  margin:0;
+}
+
 .wizard-area-grid {
   grid-template-columns:repeat(3,1fr);
   gap:10px;
