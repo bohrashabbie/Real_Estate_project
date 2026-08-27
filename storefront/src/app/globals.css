@@ -963,8 +963,11 @@ img {
   margin-top:14px;
 }
 
+/* Bottom is tighter than top: the type grid right after it is "one short row
+   of links, not a chapter of the page" (see its own comment below) and reads
+   as a continuation of this section more than a new one. */
 .home-featured-section {
-  padding-block:68px;
+  padding-block:68px 24px;
 }
 
 /* VIP has no section of its own to inherit a tighter band from, so it was
