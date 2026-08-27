@@ -8726,7 +8726,6 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   transition: background 0.2s, color 0.2s;
 }
 
@@ -9018,11 +9017,6 @@ body {
     min-width: 39px;
     height: 39px;
     padding: 0;
-    gap: 0;
-  }
-
-  .locale-toggle svg {
-    display: none;
   }
 }
 

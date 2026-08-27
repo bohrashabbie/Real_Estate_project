@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Languages } from "lucide-react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -29,8 +28,7 @@ export function LocaleToggle() {
       aria-label={next === "en" ? t("switchToEnglish") : t("switchToArabic")}
       hrefLang={next}
     >
-      <Languages size={15} aria-hidden />
-      <span>{next === "en" ? "EN" : "ع"}</span>
+      <span>{next === "en" ? "EN" : "AR"}</span>
     </Link>
   );
 }
