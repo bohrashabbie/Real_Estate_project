@@ -356,12 +356,13 @@ img {
 
 .button-gold {
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
   box-shadow:0 9px 25px #c8a45d38;
 }
 
 .button-gold:hover {
   background:#d4b36f;
+  color:#fff;
 }
 
 .button-ghost {
@@ -5745,7 +5746,7 @@ footer {
 
 .chat-send button {
   background:var(--gold);
-  color:var(--navy);
+  color:#fff;
   border-radius:5px;
   place-items:center;
   display:grid;
@@ -6843,7 +6844,7 @@ body {
 
 .featured-results-link:hover {
   background:var(--gold);
-  color:var(--navy)!important;
+  color:#fff!important;
 }
 
 .featured-results-track {
@@ -8742,7 +8743,7 @@ body {
 
 .locale-toggle:hover {
   background: var(--gold);
-  color: var(--navy);
+  color: #fff;
 }
 
 /* ===========================================================================
@@ -9439,7 +9440,7 @@ body {
 
 .vip-slide-cta {
   background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
-  color:#20170a;
+  color:#fff;
   align-items:center;
   gap:7px;
   border-radius:999px;
