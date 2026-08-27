@@ -212,7 +212,7 @@ export function VipCarousel({
       </div>
 
       {pages > 1 ? (
-        <div className="vip-carousel-controls">
+        <div className="carousel-controls">
           <button
             type="button"
             aria-label={t("hero.previous")}
@@ -222,7 +222,7 @@ export function VipCarousel({
             <ChevronLeft size={17} />
           </button>
 
-          <div className="vip-carousel-dots">
+          <div className="carousel-dots">
             {Array.from({ length: pages }, (_, index) => (
               <button
                 key={index}

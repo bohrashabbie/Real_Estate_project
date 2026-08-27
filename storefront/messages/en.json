@@ -400,5 +400,10 @@
   },
   "vip": {
     "goToPage": "Go to slide {page}"
+  },
+  "carousel": {
+    "previous": "Previous",
+    "next": "Next",
+    "goToPage": "Go to page {page}"
   }
 }

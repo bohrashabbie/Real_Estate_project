@@ -400,5 +400,10 @@
   },
   "vip": {
     "goToPage": "الذهاب إلى الشريحة {page}"
+  },
+  "carousel": {
+    "previous": "السابق",
+    "next": "التالي",
+    "goToPage": "الانتقال إلى الصفحة {page}"
   }
 }
