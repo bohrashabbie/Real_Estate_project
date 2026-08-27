@@ -21,7 +21,6 @@ import {
   RequestTeaser,
   SectionHeading,
 } from "@/components/home/sections";
-import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 /**
@@ -54,7 +53,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // just the first page of the Featured carousel), or the same card can
   // appear twice on the front page.
   const promotedIds = new Set([...vip, ...featured].map((property) => property.id));
-  const latest = all.items.filter((property) => !promotedIds.has(property.id)).slice(0, 4);
+  const latest = all.items.filter((property) => !promotedIds.has(property.id));
 
   return (
     <>
@@ -116,11 +115,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </Link>
               }
             />
-            <div className="property-grid featured-four">
-              {latest.map((property) => (
-                <PropertyCard key={property.id} property={property} locale={typedLocale} />
-              ))}
-            </div>
+            <PropertyCarousel properties={latest} locale={typedLocale} />
           </div>
         </section>
       ) : null}
