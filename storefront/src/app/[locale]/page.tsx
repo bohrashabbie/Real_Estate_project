@@ -45,7 +45,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getPropertyTypes(typedLocale),
     getVipProperties(typedLocale),
     getFeaturedProperties(typedLocale),
-    getProperties(typedLocale, { limit: 8 }),
+    // Wide enough that excluding every VIP/Featured pick still leaves the
+    // rest of the catalogue behind it — at 8, a handful of promoted ids
+    // inside that window was enough to starve this row down to almost
+    // nothing, which is exactly backwards for the one row meant to catch
+    // everything the two curated rows above it didn't.
+    getProperties(typedLocale, { limit: 24 }),
   ]);
 
   // "All listings" means the newest of what is left — it has to clear
