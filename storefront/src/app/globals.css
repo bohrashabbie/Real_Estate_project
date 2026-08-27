@@ -967,6 +967,25 @@ img {
   padding-block:68px;
 }
 
+/* VIP has no section of its own to inherit a tighter band from, so it was
+   sitting on the default `.section` padding (104px) on both edges — stacked
+   with Featured's own 68px top, that put roughly three empty screen-widths
+   of ivory between the VIP carousel's arrows and the Featured heading. */
+.home-vip-section {
+  padding-bottom:68px;
+}
+
+.home-vip-section+.home-featured-section {
+  padding-top:0;
+}
+
+/* Same stacking, between the type grid and "All listings": collapse it to
+   the type grid's own (smaller) bottom band rather than adding the all-
+   properties section's full default top padding on as well. */
+.type-section+.home-all-properties {
+  padding-top:0;
+}
+
 .heading-row h2 {
   font-size:clamp(28px,3.3vw,40px);
 }
