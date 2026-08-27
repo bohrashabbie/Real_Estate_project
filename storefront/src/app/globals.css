@@ -4503,7 +4503,7 @@ footer {
 }
 
 .smart-wizard-page {
-  min-height:620px;
+  min-height:480px;
   box-shadow:var(--shadow);
   background:#fff;
   border-radius:16px;
@@ -4561,10 +4561,13 @@ footer {
   display:flex;
 }
 
+/* Not `flex:1`/`justify-content:center` any more — that stretched this to
+   fill the panel and centred the question inside it, which for a short step
+   (two option cards) put a wide gap above the heading *and* stranded
+   Back/Next far below the options instead of following right after them. */
 .wizard-page-question {
   flex-direction:column;
-  flex:1;
-  justify-content:center;
+  margin-top:28px;
   display:flex;
 }
 
