@@ -117,12 +117,7 @@ export default async function PropertiesPage({
 
               <SmartOptionCard />
 
-              <ResultsGrid
-                initial={results}
-                filters={filters}
-                locale={typedLocale}
-                carousel={featuredOnly}
-              />
+              <ResultsGrid initial={results} filters={filters} locale={typedLocale} />
             </section>
           </div>
         </div>

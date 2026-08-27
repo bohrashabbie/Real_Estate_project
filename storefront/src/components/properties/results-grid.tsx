@@ -8,7 +8,6 @@ import { Link } from "@/i18n/navigation";
 import { apiGet, type Paginated, type PropertyListItem } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
 import { PropertyCard } from "@/components/property/property-card";
-import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 /**
  * The results grid, with the "show more" that the API's cursor pagination
@@ -19,21 +18,20 @@ import { PropertyCarousel } from "@/components/properties/property-carousel";
  * the serialised filters, so changing a filter resets the appended tail rather
  * than stacking new results under stale ones.
  *
- * `carousel` swaps the grid-plus-"show more" for `PropertyCarousel`: on the
- * "Featured" view, the office's shortlist grows over time, and a wrapping
- * grid pushed everything below it down a row every time it did. Paging
- * sideways with arrows keeps the section's height fixed instead.
+ * Every listing view (for-sale, for-rent, Featured, all) uses this same grid —
+ * only the home page's own Featured row is the sideways-paging
+ * `PropertyCarousel` instead; a full listing page keeps "show more" so
+ * browsing the whole catalogue reads as one continuous list, not laps around
+ * a curated rail.
  */
 export function ResultsGrid({
   initial,
   filters,
   locale,
-  carousel = false,
 }: {
   initial: Paginated<PropertyListItem>;
   filters: Record<string, string>;
   locale: Locale;
-  carousel?: boolean;
 }) {
   const t = useTranslations("listing");
   const key = JSON.stringify(filters);
@@ -101,32 +99,20 @@ export function ResultsGrid({
         </div>
       </div>
 
-      {carousel ? (
-        <PropertyCarousel
-          properties={[...initial.items, ...extra]}
-          locale={locale}
-          hasMore={Boolean(cursor)}
-          loading={loading}
-          onNeedMore={more}
-        />
-      ) : (
-        <>
-          <div className="property-grid featured-four">
-            {[...initial.items, ...extra].map((property) => (
-              <PropertyCard key={property.id} property={property} locale={locale} />
-            ))}
-          </div>
+      <div className="property-grid featured-four">
+        {[...initial.items, ...extra].map((property) => (
+          <PropertyCard key={property.id} property={property} locale={locale} />
+        ))}
+      </div>
 
-          {cursor ? (
-            <div className="property-pagination">
-              <button type="button" onClick={more} disabled={loading}>
-                <ChevronDown size={15} />
-                {loading ? t("loading") : t("showMore")}
-              </button>
-            </div>
-          ) : null}
-        </>
-      )}
+      {cursor ? (
+        <div className="property-pagination">
+          <button type="button" onClick={more} disabled={loading}>
+            <ChevronDown size={15} />
+            {loading ? t("loading") : t("showMore")}
+          </button>
+        </div>
+      ) : null}
     </>
   );
 }
