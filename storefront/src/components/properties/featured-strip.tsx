@@ -7,11 +7,12 @@ import { formatPrice } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
 
 /**
- * The sticky gold rail of the office's picks that rides above the results.
+ * The gold rail of the office's picks that rides above the results.
  *
- * It stays pinned while the grid scrolls, which is the point: the featured
- * listings are what the office is paid to surface, and they should not scroll
- * away after the first four results.
+ * It used to stay pinned (`position: sticky`) while the grid scrolled, but
+ * the sticky rail rode on top of whatever scrolled under it — visually
+ * overlapping the results below rather than making way for them. It now
+ * scrolls with the page like every other section.
  */
 export async function FeaturedStrip({
   properties,

@@ -6782,16 +6782,11 @@ body {
 }
 
 .featured-results-strip {
-  z-index:18;
-  -webkit-backdrop-filter:blur(12px);
-  backdrop-filter:blur(12px);
   background:#f7f3eaf5;
   border:1px solid #c8a45d7a;
   border-radius:13px;
   margin-bottom:26px;
   padding:13px;
-  position:sticky;
-  top:92px;
   box-shadow:0 12px 32px #0d1b2a21;
 }
 
@@ -7034,7 +7029,6 @@ body {
   .featured-results-strip {
     margin-inline:-2px;
     padding:11px;
-    top:76px;
   }
   .featured-results-strip>header strong {
     font-size:14px;
