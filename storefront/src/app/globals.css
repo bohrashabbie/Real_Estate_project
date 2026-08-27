@@ -8684,6 +8684,17 @@ body {
   transform: translate(50%, -50%);
 }
 
+/* .featured-label is drawn to sit over a photo's corner, which is true for
+   the full-image property-card but not for the featured-strip's side-by-side
+   card: there the image is a fixed-width column, not the whole background,
+   and under RTL that column falls at the physical right, so `right:12px`
+   lands on it. Mirrored to LTR it falls at the physical left instead — left
+   unmirrored, the badge drifts onto the title text beside it. */
+[dir="ltr"] .featured-strip-card .featured-label {
+  right: auto;
+  left: 12px;
+}
+
 /* The advert marquee is pinned to RTL in the reference, which puts English
    sentence-final punctuation at the head of the line. */
 [dir="ltr"] .home-announcement-banner p {

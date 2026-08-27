@@ -93,7 +93,7 @@ export function ResultsGrid({
         </div>
       </div>
 
-      <div className="property-grid two-column">
+      <div className="property-grid featured-four">
         {[...initial.items, ...extra].map((property) => (
           <PropertyCard key={property.id} property={property} locale={locale} />
         ))}
