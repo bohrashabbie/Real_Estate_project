@@ -1,10 +1,12 @@
 import { getTranslations } from "next-intl/server";
-import { Camera, MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { siteText, type SiteSettings } from "@/lib/api";
 import { formatPhone, telLink, waLink } from "@/lib/format";
 import { BrandLockup } from "@/components/layout/brand-lockup";
+import { InstagramIcon } from "@/components/ui/instagram-icon";
+import { SnapchatIcon } from "@/components/ui/snapchat-icon";
 import type { Locale } from "@/i18n/routing";
 
 /** `w91111`, `@w91111` and a full profile URL all end up as one link. */
@@ -33,7 +35,7 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
           <div className="footer-social">
             {instagram ? (
               <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <Camera size={16} />
+                <InstagramIcon size={16} />
               </a>
             ) : null}
             {x ? (
@@ -43,7 +45,7 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
             ) : null}
             {snapchat ? (
               <a href={snapchat} target="_blank" rel="noopener noreferrer" aria-label="Snapchat">
-                ◉
+                <SnapchatIcon size={16} />
               </a>
             ) : null}
           </div>

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Camera, Mail, MessageCircle, Phone } from "lucide-react";
+import { Mail, MessageCircle, Phone } from "lucide-react";
 
 import { localeAlternates } from "@/i18n/routing";
 import { getSettings } from "@/lib/api";
 import { formatPhone, telLink, waLink } from "@/lib/format";
+import { InstagramIcon } from "@/components/ui/instagram-icon";
+import { SnapchatIcon } from "@/components/ui/snapchat-icon";
 
 export async function generateMetadata({
   params,
@@ -92,7 +94,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
           {instagram ? (
             <a href={instagram} target="_blank" rel="noopener noreferrer">
-              <Camera size={18} />
+              <InstagramIcon size={18} />
               <span>
                 <strong>Instagram</strong>
                 <small>{t("officialAccount")}</small>
@@ -112,7 +114,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
           {snapchat ? (
             <a href={snapchat} target="_blank" rel="noopener noreferrer">
-              <b>◉</b>
+              <SnapchatIcon size={18} />
               <span>
                 <strong>Snapchat</strong>
                 <small>{t("officialAccount")}</small>
