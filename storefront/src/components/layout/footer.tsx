@@ -45,7 +45,7 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
             ) : null}
             {snapchat ? (
               <a href={snapchat} target="_blank" rel="noopener noreferrer" aria-label="Snapchat">
-                <SnapchatIcon size={16} />
+                <SnapchatIcon size={18} />
               </a>
             ) : null}
           </div>

@@ -114,7 +114,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
           {snapchat ? (
             <a href={snapchat} target="_blank" rel="noopener noreferrer">
-              <SnapchatIcon size={18} />
+              <SnapchatIcon size={20} />
               <span>
                 <strong>Snapchat</strong>
                 <small>{t("officialAccount")}</small>
