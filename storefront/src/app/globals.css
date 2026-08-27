@@ -8712,26 +8712,30 @@ body {
 }
 
 /* The locale switch is the one control the reference has no slot for; it sits
-   next to the phone button and borrows the icon-button shape. */
+   next to the phone button. Dark pill / gold ink always, not just on hover —
+   it names the language you're switching *to*, so it reads as its own small
+   badge rather than a state that only shows itself on interaction. */
 .locale-toggle {
   height: 42px;
-  min-width: 46px;
-  padding: 0 13px;
+  padding: 0 16px;
   border-radius: 999px;
-  background: #f2eee6;
-  color: var(--navy);
-  font-size: 12px;
+  background: var(--navy);
+  color: var(--gold);
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  transition: background 0.2s, color 0.2s;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.locale-toggle svg {
+  flex: none;
 }
 
 .locale-toggle:hover {
-  background: var(--gold);
-  color: #fff;
+  background: #152b40;
 }
 
 /* ===========================================================================
@@ -9017,6 +9021,14 @@ body {
     min-width: 39px;
     height: 39px;
     padding: 0;
+    justify-content: center;
+  }
+
+  /* "العربية" / "English" no longer fits a 39px circle the way "AR"/"EN"
+     did — the icon alone carries the control on narrow screens, same as
+     the phone button beside it; the full name stays in the aria-label. */
+  .locale-toggle span {
+    display: none;
   }
 }
 
