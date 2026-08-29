@@ -1295,21 +1295,42 @@ img {
 }
 
 /* "View details" — the card's primary action, and the same gold pill the VIP
-   slide's CTA wears. The two share one rule rather than each carrying its own
-   copy of the gradient: they are the same button on two card designs, and the
-   VIP row is exactly where the treatment is set. */
+   slide's CTA wears. The two share the paint rather than each carrying its
+   own copy of the gradient: they are the same button on two card designs.
+   They do *not* share a size — see the two rules below.
+
+   `white-space:nowrap` is not cosmetic here. "View details" is materially
+   wider than the Arabic "عرض التفاصيل", and in the 4-up grid the English
+   label wrapped onto two lines, turning the pill into a tall blob. The
+   label is two words and belongs on one line at every width; the sizes
+   below are what make that fit rather than overflow. */
 .property-link,
 .vip-slide-cta {
   background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
   color:#fff;
   align-items:center;
-  gap:7px;
   border-radius:999px;
-  padding:11px 19px;
-  font-size:14px;
   font-weight:800;
+  white-space:nowrap;
   display:inline-flex;
   box-shadow:0 8px 22px #c8a45d3d;
+}
+
+/* The standard card's footer also carries the compare toggle, and in a 4-up
+   grid that leaves roughly 240px for the pair — so this one is sized to sit
+   beside it with room to spare, not to fill the row. */
+.property-link {
+  gap:6px;
+  padding:9px 15px;
+  font-size:13px;
+}
+
+/* The VIP slide is half the row wide and its footer has room to match, so
+   the CTA keeps the larger, more deliberate size it was drawn at. */
+.vip-slide-cta {
+  gap:7px;
+  padding:11px 19px;
+  font-size:14px;
 }
 
 .property-link:hover,
