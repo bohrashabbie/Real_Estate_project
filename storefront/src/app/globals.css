@@ -1294,13 +1294,28 @@ img {
   display:flex;
 }
 
-.property-link {
-  color:var(--navy);
+/* "View details" — the card's primary action, and the same gold pill the VIP
+   slide's CTA wears. The two share one rule rather than each carrying its own
+   copy of the gradient: they are the same button on two card designs, and the
+   VIP row is exactly where the treatment is set. */
+.property-link,
+.vip-slide-cta {
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  color:#fff;
   align-items:center;
   gap:7px;
-  font-size:13px;
+  border-radius:999px;
+  padding:11px 19px;
+  font-size:14px;
   font-weight:800;
   display:inline-flex;
+  box-shadow:0 8px 22px #c8a45d3d;
+}
+
+.property-link:hover,
+.vip-slide-cta:hover {
+  filter:brightness(1.08);
+  color:#fff;
 }
 
 .compare-toggle {
@@ -9407,22 +9422,8 @@ body {
   display:flex;
 }
 
-.vip-slide-cta {
-  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
-  color:#fff;
-  align-items:center;
-  gap:7px;
-  border-radius:999px;
-  padding:11px 19px;
-  font-size:14px;
-  font-weight:800;
-  display:inline-flex;
-  box-shadow:0 8px 22px #c8a45d3d;
-}
-
-.vip-slide-cta:hover {
-  filter:brightness(1.08);
-}
+/* `.vip-slide-cta` is drawn with `.property-link` — see that rule. Both are
+   the "view details" button; only the card around them differs. */
 
 /* The compare toggle is drawn for a white card; on the scrim it needs the
    inverse treatment rather than a second component. */
