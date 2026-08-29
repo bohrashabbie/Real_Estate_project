@@ -84,8 +84,13 @@ export function TypeGridSlider({ types }: { types: PropertyType[] }) {
     <div
       className="type-grid"
       ref={trackRef}
-      onPointerEnter={() => setPlaying(false)}
-      onPointerLeave={() => setPlaying(true)}
+      // Paused only for an actual drag/touch, not a mouse merely resting
+      // over the row — an ad strip like this one keeps moving under a
+      // stationary cursor; only pausing for a passing hover would make it
+      // look stalled to anyone looking straight at it with a mouse nearby.
+      onPointerDown={() => setPlaying(false)}
+      onPointerUp={() => setPlaying(true)}
+      onPointerCancel={() => setPlaying(true)}
     >
       {types.map((type) => (
         <Link key={type.key} className="type-card" href={`/properties?type=${type.key}`}>
