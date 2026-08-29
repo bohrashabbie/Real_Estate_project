@@ -9144,25 +9144,37 @@ body {
    artwork whole, and lets each slide link where its banner points.
    =========================================================================== */
 
-/* The office's banner, shown the plain way: full width, edge to edge, at its
-   own proportions, with nothing added beside it and nothing taken off it.
+/* The office's banner, full width and edge to edge, in a box very slightly
+   taller than the artwork's own shape.
 
-   No crop, so none of the words baked into the artwork are lost. No letterbox,
-   so no bars down the sides. And therefore no height cap either — capping the
-   height of a full-width picture can only be paid for with one or the other of
-   those two, so the cap is the thing that has to go.
+   This used to be a strict "never crop" rule: the hero simply took whatever
+   height the artwork's ratio produced, on the grounds that cropping a banner
+   risks cutting the words baked into it. The published banners are all 3:1,
+   which made the hero only ~427px at a 1280 viewport, and the office asked
+   for more height than that.
 
-   Which means the banner's height is its own aspect ratio and nothing else:
-   the three published banners are 1672x941, so the hero is 56.25% of the
-   viewport width at every size. Re-exporting the artwork wider is the only
-   control over how tall the hero is; there is no CSS answer to it that does
-   not either cut the picture or leave a gap.
+   A fixed-ratio full-bleed image can only be made taller by cropping it or by
+   padding it, and padding was the worse of the two here: all three banners run
+   photography right off their top and bottom edges, so a letterbox bar would
+   read as a seam where the picture stops. So the box is 2.8:1 and the artwork
+   fills it — about 3.3% comes off each side, taken evenly so nothing shifts
+   off-centre.
 
-   Slides share one grid cell so a crossfade has somewhere to happen, and sit
-   at `align-self: start` rather than stretching, so a banner uploaded at a
-   different shape keeps its own proportions instead of being pulled to the
-   tallest one's height. */
+   What that costs, concretely: the third banner carries a thin gold border
+   about 16px in from its edge, and at this ratio that border is outside the
+   crop. Every headline, badge and CTA in all three banners is well inside it.
+
+   To get the height back without any crop at all, re-export the banners at
+   2.8:1 — 2400x860 rather than 2400x800 — and this box stops trimming them,
+   with no CSS change needed. Raising the height further means a deeper crop:
+   2.7:1 takes 5% a side, and at some point it does reach the artwork.
+
+   Slides share one grid cell so a crossfade has somewhere to happen. They
+   stretch to fill that cell, which is what applies the crop; a banner
+   uploaded at a very different shape will therefore be cropped to this box
+   rather than setting its own height. */
 .launch-hero.is-artwork {
+  aspect-ratio: 2.8 / 1;
   min-height: 0;
   height: auto;
   display: grid;
@@ -9176,13 +9188,13 @@ body {
 .launch-hero.is-artwork .hero-slide-image {
   z-index: 1;
   grid-area: 1 / 1;
-  align-self: start;
+  align-self: stretch;
   position: relative;
   inset: auto;
   width: 100%;
-  height: auto;
+  height: 100%;
   max-width: none;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   opacity: 0;
   transform: none;
