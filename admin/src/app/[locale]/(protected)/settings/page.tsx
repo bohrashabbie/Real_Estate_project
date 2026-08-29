@@ -102,8 +102,6 @@ const GROUPS = [
     titleKey: "vipTitle",
     descriptionKey: "vipDescription",
     fields: [
-      { key: "site.vip_kicker_ar", name: "vip_kicker_ar", dir: "rtl" },
-      { key: "site.vip_kicker_en", name: "vip_kicker_en", dir: "ltr" },
       { key: "site.vip_title_ar", name: "vip_title_ar", dir: "rtl" },
       { key: "site.vip_title_en", name: "vip_title_en", dir: "ltr" },
       { key: "site.vip_cta_ar", name: "vip_cta_ar", dir: "rtl" },
@@ -114,8 +112,6 @@ const GROUPS = [
     titleKey: "featuredTitle",
     descriptionKey: "featuredDescription",
     fields: [
-      { key: "site.featured_kicker_ar", name: "featured_kicker_ar", dir: "rtl" },
-      { key: "site.featured_kicker_en", name: "featured_kicker_en", dir: "ltr" },
       { key: "site.featured_title_ar", name: "featured_title_ar", dir: "rtl" },
       { key: "site.featured_title_en", name: "featured_title_en", dir: "ltr" },
       { key: "site.featured_cta_ar", name: "featured_cta_ar", dir: "rtl" },
@@ -126,8 +122,6 @@ const GROUPS = [
     titleKey: "allTitle",
     descriptionKey: "allDescription",
     fields: [
-      { key: "site.all_kicker_ar", name: "all_kicker_ar", dir: "rtl" },
-      { key: "site.all_kicker_en", name: "all_kicker_en", dir: "ltr" },
       { key: "site.all_title_ar", name: "all_title_ar", dir: "rtl" },
       { key: "site.all_title_en", name: "all_title_en", dir: "ltr" },
       { key: "site.all_body_ar", name: "all_body_ar", dir: "rtl" },
@@ -140,8 +134,6 @@ const GROUPS = [
     titleKey: "typesTitle",
     descriptionKey: "typesDescription",
     fields: [
-      { key: "site.types_kicker_ar", name: "types_kicker_ar", dir: "rtl" },
-      { key: "site.types_kicker_en", name: "types_kicker_en", dir: "ltr" },
       { key: "site.types_title_ar", name: "types_title_ar", dir: "rtl" },
       { key: "site.types_title_en", name: "types_title_en", dir: "ltr" },
       { key: "site.types_body_ar", name: "types_body_ar", dir: "rtl" },
