@@ -284,8 +284,12 @@ img {
   display:flex;
 }
 
+/* The lockup is the office's own artwork with its wordmark baked in, so it
+   has to carry legible Arabic at header size rather than just read as a
+   mark. 164px puts it at ~68px tall inside the 82px header — about 7px
+   clear above and below. Past ~172px it starts crowding the header edges. */
 .brand img {
-  width:154px;
+  width:164px;
   height:auto;
 }
 
@@ -2516,8 +2520,9 @@ footer {
   .site-header {
     height:70px;
   }
+  /* Same bump as the desktop rule, against a 70px header rather than 82px. */
   .brand img {
-    width:135px;
+    width:144px;
   }
   .nav-search {
     display:none;
