@@ -86,7 +86,6 @@ export async function PropertyTypeGrid({
     <section className="section type-section" id="property-types">
       <div className="container">
         <SectionHeading
-          kicker={siteText(settings, "types_kicker", locale) ?? t("typesKicker")}
           title={siteText(settings, "types_title", locale) ?? t("typesTitle")}
           body={siteText(settings, "types_body", locale) ?? t("typesBody")}
         />
@@ -120,7 +119,7 @@ export function SectionHeading({
   action,
   stackAction = false,
 }: {
-  kicker: string;
+  kicker?: string;
   title: string;
   body?: string;
   action?: React.ReactNode;
@@ -129,7 +128,7 @@ export function SectionHeading({
   return (
     <div className={`section-heading heading-row${stackAction ? " heading-stacked" : ""}`}>
       <div>
-        <span className="section-kicker">{kicker}</span>
+        {kicker ? <span className="section-kicker">{kicker}</span> : null}
         <h2>{title}</h2>
         {body ? <p>{body}</p> : null}
         {stackAction ? action : null}

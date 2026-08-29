@@ -6,7 +6,12 @@
  * the mark instead — which also means the name reads correctly to a screen
  * reader and stays crisp at every density without shipping two more files.
  *
- * `tone` picks the surface: `light` for the cream header, `reversed` for the
+ * The header carries the office's own logo artwork instead (see
+ * `components/layout/header.tsx`) — its wordmark is already baked into that
+ * image and cuts cleanly only against a light ground, so this lockup remains
+ * for the navy surfaces: the footer and the wizard sidebar.
+ *
+ * `tone` picks the surface: `light` for a cream ground, `reversed` for the
  * navy footer and the wizard sidebar.
  */
 export function BrandLockup({

@@ -21,7 +21,6 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { NAV_ITEMS, type NavIcon } from "@/lib/nav";
 import { formatPhone, telLink } from "@/lib/format";
 import type { SiteSettings } from "@/lib/api";
-import { BrandLockup } from "@/components/layout/brand-lockup";
 import { LocaleToggle } from "@/components/layout/locale-toggle";
 
 const ICONS: Record<NavIcon, typeof House> = {
@@ -77,7 +76,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
       <header className="site-header">
         <div className="container nav-wrap">
           <Link className="brand" href="/" aria-label={`${t("app.name")} — ${t("nav.home")}`}>
-            <BrandLockup name={t("app.name")} />
+            {/* The office's own logo artwork bakes the wordmark in, so this is
+                the whole mark — no separate live text beside it. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/kwt25-logo-full.png" alt="" aria-hidden />
           </Link>
 
           {/* The backdrop is a child of the header, not a sibling: `.site-header`

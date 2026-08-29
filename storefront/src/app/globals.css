@@ -888,7 +888,11 @@ img {
   gap:16px;
   display:flex;
   overflow-x:auto;
-  scroll-snap-type:x proximity;
+  /* "proximity" only snaps a scroll that already stops near a card's edge —
+     drag it a little further and the row can rest with a card sliced in
+     half, which read as broken spacing rather than "there's more, scroll".
+     "mandatory" always settles on a card boundary. */
+  scroll-snap-type:x mandatory;
   scrollbar-width:thin;
   scrollbar-color:#c8a45db3 transparent;
   padding-bottom:6px;
@@ -1088,17 +1092,21 @@ img {
   right:14px;
 }
 
+/* Same gold-gradient pill as the VIP crown badge (`.vip-slide-crown`) — one
+   promoted-listing badge language across the site instead of Featured
+   reading as a lesser, navy-toned version of it. */
 .featured-label {
   z-index:3;
-  color:var(--gold);
-  background:#0d1b2adb;
-  border:1px solid #ffffff8c;
+  color:#fff;
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
   border-radius:999px;
   align-items:center;
-  gap:4px;
-  padding:6px 9px;
+  gap:6px;
+  padding:7px 13px;
   font-size:12px;
   font-weight:800;
+  letter-spacing:.06em;
+  box-shadow:0 6px 18px #0d1b2a4d;
   display:inline-flex;
   position:absolute;
   top:12px;
@@ -3385,6 +3393,7 @@ footer {
 
 .heading-row .section-heading p {
   max-width:570px;
+  margin-top:0;
   color:var(--muted);
   line-height:2;
 }
@@ -8731,23 +8740,6 @@ body {
 
 .brand-lockup-lg .brand-lockup-copy small {
   font-size: 12px;
-}
-
-/* The `.brand img { width:154px }` rule from the reference would blow the mark
-   up to the width of the whole lockup; scope it back to the mark's own size. */
-.brand .brand-lockup img {
-  width: 38px;
-}
-
-@media (max-width: 430px) {
-  .brand .brand-lockup img {
-    width: 32px;
-    height: 32px;
-  }
-
-  .brand .brand-lockup-copy b {
-    font-size: 17px;
-  }
 }
 
 /* The reference's footer logo is a monochrome SVG it can safely invert to

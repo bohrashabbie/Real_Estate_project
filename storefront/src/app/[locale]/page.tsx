@@ -71,7 +71,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section properties-section home-vip-section" id="vip-properties">
           <div className="container">
             <SectionHeading
-              kicker={siteText(settings, "vip_kicker", typedLocale) ?? t("home.vipKicker")}
               title={siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle")}
               stackAction
               action={
@@ -90,7 +89,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
             <SectionHeading
-              kicker={siteText(settings, "featured_kicker", typedLocale) ?? t("home.featuredKicker")}
               title={siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle")}
               stackAction
               action={
@@ -111,7 +109,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section properties-section home-all-properties" id="all-properties">
           <div className="container">
             <SectionHeading
-              kicker={siteText(settings, "all_kicker", typedLocale) ?? t("home.allKicker")}
               title={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
               body={siteText(settings, "all_body", typedLocale) ?? t("home.allBody")}
               action={
