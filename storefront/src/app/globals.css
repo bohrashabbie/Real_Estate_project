@@ -1317,11 +1317,13 @@ img {
 }
 
 /* The standard card's footer also carries the compare toggle, and in a 4-up
-   grid that leaves roughly 240px for the pair — so this one is sized to sit
-   beside it with room to spare, not to fill the row. */
+   grid that leaves the pair only ~235px — measured on the real page, not
+   guessed: the English label in the shipped font is wide enough that 14px
+   with a 19px inset overran the card's own padding. Sized to sit beside the
+   toggle with a visible gap instead of filling the row edge to edge. */
 .property-link {
-  gap:6px;
-  padding:9px 15px;
+  gap:5px;
+  padding:8px 14px;
   font-size:13px;
 }
 
@@ -6612,13 +6614,16 @@ body {
   font-size:13px;
 }
 
+/* `.property-link` and `.compare-toggle` are deliberately not in this list.
+   They are the card's footer controls, not its copy, and they share one
+   fixed-width row — bumping them to 14px here (this rule is top-level, so it
+   outranks the button's own size) pushed the pair past the card's padding in
+   the 4-up English grid. Each now keeps the size its own rule sets. */
 .match-badge,
 .property-status,
 .property-price-row span,
 .property-price-row strong,
-.property-location,
-.property-link,
-.compare-toggle {
+.property-location {
   font-size:14px;
 }
 
