@@ -1,11 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
 import { siteText, type PropertyType, type SiteSettings } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
-import { TypeGridSlider } from "@/components/home/type-grid-slider";
 import type { Locale } from "@/i18n/routing";
 
 /** "Didn't find it? Tell us what you want." */
@@ -67,8 +66,17 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
  * of thing rather than six values of one field. The colours are the current
  * palette's, not that build's retired green-and-terracotta.
  *
- * The row itself (`TypeGridSlider`) is a client component so it can advance
- * on its own like an ad strip; everything above it stays server-rendered.
+ * The row is a marquee, not a scroller: it drifts continuously like an ad
+ * strip rather than sitting still behind a scrollbar waiting to be dragged.
+ * That is done entirely in CSS (`.type-marquee` in globals.css), so this
+ * stays a server component — an earlier JS version drove a scroll container
+ * on a timer and deadlocked against its own scroll handler.
+ *
+ * The list is rendered twice for that, as two identical sibling copies: the
+ * track animates by exactly half its width, which is exactly one copy, so
+ * the seam lands where the loop began and the drift never visibly jumps.
+ * The second copy is `aria-hidden` and untabbable — it is the same set of
+ * links, and a screen reader should hear each type once.
  */
 export async function PropertyTypeGrid({
   types,
@@ -80,11 +88,25 @@ export async function PropertyTypeGrid({
   locale: Locale;
 }) {
   const t = await getTranslations("home");
-  // The reference showed six because it only ever had six; `.type-grid` now
-  // scrolls sideways instead of wrapping, so an office that adds a seventh
+  // The reference showed six because it only ever had six; the marquee now
+  // carries the row sideways on its own, so an office that adds a seventh
   // type doesn't need this cut raised by hand.
   const shown = types;
   if (shown.length === 0) return null;
+
+  const card = (type: PropertyType, clone: boolean) => (
+    <Link
+      key={`${clone ? "clone" : "real"}-${type.key}`}
+      className="type-card"
+      href={`/properties?type=${type.key}`}
+      tabIndex={clone ? -1 : undefined}
+    >
+      <span>
+        <Building2 size={26} />
+      </span>
+      <strong>{type.name}</strong>
+    </Link>
+  );
 
   return (
     <section className="section type-section" id="property-types">
@@ -93,7 +115,22 @@ export async function PropertyTypeGrid({
           title={siteText(settings, "types_title", locale) ?? t("typesTitle")}
           body={siteText(settings, "types_body", locale) ?? t("typesBody")}
         />
-        <TypeGridSlider types={shown} />
+        <div className="type-marquee">
+          {/* The loop is timed per card (5s each), not per lap: a nine-type
+              office drifts at the same speed as a six-type one instead of
+              racing to finish a fixed-length lap. */}
+          <div
+            className="type-marquee-track"
+            style={{ animationDuration: `${shown.length * 5}s` }}
+          >
+            <div className="type-marquee-copy">
+              {shown.map((type) => card(type, false))}
+            </div>
+            <div className="type-marquee-copy" aria-hidden>
+              {shown.map((type) => card(type, true))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

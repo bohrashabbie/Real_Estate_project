@@ -864,7 +864,7 @@ img {
    chip, one building mark on every tile, six across folding to three and then
    two — in the palette that replaced its green and terracotta. */
 .type-section {
-  /* .type-grid now carries its own 28px of bottom padding (room for its
+  /* .type-marquee now carries its own 28px of bottom padding (room for its
      cards' shadow, see its rule) — trimmed here so the two don't stack into
      a much wider gap than this "one short row" beat is meant to have. */
   padding-block:56px 4px;
@@ -883,44 +883,88 @@ img {
   margin-bottom:26px;
 }
 
-/* A flex row with overflow, not a wrapping grid: the six tiles the reference
-   shipped still fill one row exactly, but the office can add an arbitrary
-   seventh, eighth, ninth type without pushing "everything else" down a row —
-   it just becomes reachable by scrolling the row sideways instead. */
-.type-grid {
-  gap:16px;
-  display:flex;
-  overflow-x:auto;
-  /* "proximity" only snaps a scroll that already stops near a card's edge —
-     drag it a little further and the row can rest with a card sliced in
-     half, which read as broken spacing rather than "there's more, scroll".
-     "mandatory" always settles on a card boundary. */
-  scroll-snap-type:x mandatory;
-  scrollbar-width:thin;
-  scrollbar-color:#c8a45db3 transparent;
-  /* Scrolling on one axis computes the other axis's overflow to `auto` too
-     (it can't stay `visible`), so this box clips anything a card draws
-     outside its own border box. `.type-card`'s resting shadow reaches about
-     8px above, 16px to each side and 26px below its box — this padding
-     gives it that room instead of getting a hard-edged crop; the larger
-     hover shadow can still graze the bottom edge, which only shows up
-     mid-interaction rather than in the row's resting state. The row bleeds
-     back out to the container's edge via the negative margin, so the cards
-     still start flush with the heading above them. */
+/* A marquee, not a scroller: the row drifts on its own like an ad strip so
+   the office's full type list is seen without anyone dragging anything.
+   There is deliberately no scrollbar and no snap — an earlier version was a
+   scroll container advanced by a timer, and its scroll handler fought the
+   timer's own smooth-scroll into a standstill.
+
+   `overflow:hidden` clips whatever leaves this box, and `.type-card`'s
+   shadow reaches ~8px above, ~16px to each side and ~26px below its border
+   box; the padding is that room, and the negative margin bleeds the strip
+   back out to the container's edge so the cards still line up under the
+   heading. The mask fades both ends, which is what makes the drift read as
+   a continuous belt rather than cards appearing at a hard edge. */
+.type-marquee {
+  overflow:hidden;
   margin-inline:-16px;
   padding:8px 16px 28px;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 42px,#000 calc(100% - 42px),transparent);
+  mask-image:linear-gradient(to right,transparent,#000 42px,#000 calc(100% - 42px),transparent);
 }
 
-.type-grid::-webkit-scrollbar {
-  height:6px;
+.type-marquee-track {
+  display:flex;
+  width:max-content;
+  animation:type-marquee-drift 45s linear infinite;
 }
 
+/* The track holds exactly two of these, identical in content and therefore
+   in width, which is what makes `translateX(50%)` land precisely one copy
+   along and the seam invisible. Getting that pitch from per-card margins
+   instead does *not* work: the final card's trailing margin falls outside
+   the track's `max-content` width, so half the track came up ~72px short of
+   a copy and the strip jumped every lap. Keeping the gap *inside* each copy
+   (including the trailing one, as padding) keeps the two exactly equal. */
+.type-marquee-copy {
+  display:flex;
+  flex:none;
+  gap:16px;
+  padding-inline-end:16px;
+}
+
+@keyframes type-marquee-drift {
+  from {
+    transform:translateX(0);
+  }
+  to {
+    transform:translateX(50%);
+  }
+}
+
+/* Motion nobody asked for is the whole point of this component, so when it
+   is declined the row falls back to what it was: a plain scrollable strip,
+   still holding every type. */
+@media (prefers-reduced-motion:reduce) {
+  .type-marquee {
+    overflow-x:auto;
+    scrollbar-width:thin;
+    scrollbar-color:#c8a45db3 transparent;
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+
+  .type-marquee-track {
+    animation:none;
+  }
+
+  /* The clone only exists to hide the loop's seam. With the loop stopped it
+     is just every type listed a second time, so it goes away. */
+  .type-marquee-copy[aria-hidden="true"] {
+    display:none;
+  }
+}
+
+/* A fixed width, not a fraction of the row: the marquee track is sized
+   `max-content`, so a percentage basis would resolve against the track's own
+   (content-derived) width and collapse. At the container's full 1180px this
+   still lands six across, which is the row the reference shipped. */
 .type-card {
   text-align:center;
   border:2px solid #ded3bd;
   background:#fff;
   border-radius:24px;
-  flex:0 0 calc((100% - 5*16px)/6);
+  flex:0 0 clamp(150px,17vw,184px);
   flex-direction:column;
   justify-content:center;
   align-items:center;
@@ -928,7 +972,6 @@ img {
   padding:24px;
   transition:border .2s,transform .2s,box-shadow .2s;
   display:flex;
-  scroll-snap-align:start;
   box-shadow:0 10px 30px -14px #0d1b2a2e;
 }
 
@@ -6104,18 +6147,14 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   }
 }
 
-@media (max-width:1023px) {
-  .type-card {
-    flex-basis:calc((100% - 2*16px)/3);
-  }
-}
-
+/* No per-breakpoint `.type-card` width any more: the card's own
+   `clamp(150px, 17vw, 184px)` covers every width, and a percentage basis
+   cannot work against the marquee's `max-content` track (see `.type-card`). */
 @media (max-width:639px) {
   .type-section {
     padding-block:56px 4px;
   }
   .type-card {
-    flex-basis:calc((100% - 16px)/2);
     padding:20px 14px;
   }
 }
@@ -8617,6 +8656,25 @@ body {
    sentence-final punctuation at the head of the line. */
 [dir="ltr"] .home-announcement-banner p {
   direction: ltr;
+}
+
+/* The type marquee travels toward its own trailing edge, which physically
+   reverses with direction: under RTL the row starts at the right and later
+   cards sit to the left, so the track moves right (+50%) to bring them in;
+   under LTR that is mirrored. Translating the wrong way would still animate
+   — it would just drag the strip away from its cards and leave the row
+   blank for most of the lap. */
+[dir="ltr"] .type-marquee-track {
+  animation-name: type-marquee-drift-ltr;
+}
+
+@keyframes type-marquee-drift-ltr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 [dir="ltr"] .brand-intro:before {
