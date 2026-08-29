@@ -8754,30 +8754,41 @@ body {
 }
 
 /* The locale switch is the one control the reference has no slot for; it sits
-   next to the phone button. Dark pill / gold ink always, not just on hover —
-   it names the language you're switching *to*, so it reads as its own small
-   badge rather than a state that only shows itself on interaction. */
+   next to the phone button and is drawn as the same disc, so the two read as
+   one pair of header controls rather than a button beside a badge. Every
+   dimension here is `.header-phone-button`'s — change them together. */
 .locale-toggle {
-  height: 42px;
-  padding: 0 16px;
-  border-radius: 999px;
+  width: 46px;
+  min-height: 46px;
+  padding: 0;
+  border-radius: 50%;
   background: var(--navy);
-  color: var(--gold);
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.2s;
-}
-
-.locale-toggle svg {
-  flex: none;
+  color: #fff;
+  font-weight: 800;
+  line-height: 1;
+  place-items: center;
+  display: grid;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 24px #0d1b2a29;
 }
 
 .locale-toggle:hover {
   background: #152b40;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 11px 28px #0d1b2a33;
+}
+
+/* Two Latin letters and one Arabic letter do not read at the same size: "ع"
+   at 15px looks like a speck next to "En". Sized per script so the disc
+   carries the same visual weight whichever way it is pointing. */
+.locale-toggle-en {
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+.locale-toggle-ar {
+  font-size: 20px;
 }
 
 /* ===========================================================================
@@ -9041,19 +9052,21 @@ body {
    phone button drops its number — otherwise it is the 20px that pushes a
    320px viewport into a sideways scroll. */
 @media (max-width: 760px) {
+  /* Matches `.header-phone-button`'s own narrow size, as above. The label
+     is two characters at most, so unlike the old full-name pill it still
+     fits the smaller disc and is not hidden here. */
   .locale-toggle {
     width: 39px;
     min-width: 39px;
-    height: 39px;
-    padding: 0;
-    justify-content: center;
+    min-height: 39px;
   }
 
-  /* "العربية" / "English" no longer fits a 39px circle the way "AR"/"EN"
-     did — the icon alone carries the control on narrow screens, same as
-     the phone button beside it; the full name stays in the aria-label. */
-  .locale-toggle span {
-    display: none;
+  .locale-toggle-en {
+    font-size: 14px;
+  }
+
+  .locale-toggle-ar {
+    font-size: 18px;
   }
 }
 
