@@ -864,7 +864,10 @@ img {
    chip, one building mark on every tile, six across folding to three and then
    two — in the palette that replaced its green and terracotta. */
 .type-section {
-  padding-block:56px 24px;
+  /* .type-grid now carries its own 28px of bottom padding (room for its
+     cards' shadow, see its rule) — trimmed here so the two don't stack into
+     a much wider gap than this "one short row" beat is meant to have. */
+  padding-block:56px 4px;
   scroll-margin-top:92px;
 }
 
@@ -895,7 +898,17 @@ img {
   scroll-snap-type:x mandatory;
   scrollbar-width:thin;
   scrollbar-color:#c8a45db3 transparent;
-  padding-bottom:6px;
+  /* Scrolling on one axis computes the other axis's overflow to `auto` too
+     (it can't stay `visible`), so this box clips anything a card draws
+     outside its own border box. `.type-card`'s resting shadow reaches about
+     8px above, 16px to each side and 26px below its box — this padding
+     gives it that room instead of getting a hard-edged crop; the larger
+     hover shadow can still graze the bottom edge, which only shows up
+     mid-interaction rather than in the row's resting state. The row bleeds
+     back out to the container's edge via the negative margin, so the cards
+     still start flush with the heading above them. */
+  margin-inline:-16px;
+  padding:8px 16px 28px;
 }
 
 .type-grid::-webkit-scrollbar {
@@ -6099,7 +6112,7 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
 
 @media (max-width:639px) {
   .type-section {
-    padding-block:56px 24px;
+    padding-block:56px 4px;
   }
   .type-card {
     flex-basis:calc((100% - 16px)/2);

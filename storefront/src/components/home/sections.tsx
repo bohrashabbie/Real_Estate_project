@@ -1,10 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Building2, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
 import { siteText, type PropertyType, type SiteSettings } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
+import { TypeGridSlider } from "@/components/home/type-grid-slider";
 import type { Locale } from "@/i18n/routing";
 
 /** "Didn't find it? Tell us what you want." */
@@ -65,6 +66,9 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
  * names, and six different pictograms make them look like six different kinds
  * of thing rather than six values of one field. The colours are the current
  * palette's, not that build's retired green-and-terracotta.
+ *
+ * The row itself (`TypeGridSlider`) is a client component so it can advance
+ * on its own like an ad strip; everything above it stays server-rendered.
  */
 export async function PropertyTypeGrid({
   types,
@@ -89,16 +93,7 @@ export async function PropertyTypeGrid({
           title={siteText(settings, "types_title", locale) ?? t("typesTitle")}
           body={siteText(settings, "types_body", locale) ?? t("typesBody")}
         />
-        <div className="type-grid">
-          {shown.map((type) => (
-            <Link key={type.key} className="type-card" href={`/properties?type=${type.key}`}>
-              <span>
-                <Building2 size={26} />
-              </span>
-              <strong>{type.name}</strong>
-            </Link>
-          ))}
-        </div>
+        <TypeGridSlider types={shown} />
       </div>
     </section>
   );
