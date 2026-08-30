@@ -4,7 +4,6 @@ import { MessageCircle, Phone } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { siteText, type SiteSettings } from "@/lib/api";
 import { formatPhone, telLink, waLink } from "@/lib/format";
-import { BrandLockup } from "@/components/layout/brand-lockup";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { SnapchatIcon } from "@/components/ui/snapchat-icon";
 import type { Locale } from "@/i18n/routing";
@@ -30,7 +29,11 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
     <footer>
       <div className="container footer-grid">
         <div>
-          <BrandLockup name={t("app.name")} tone="reversed" size="lg" />
+          {/* The office's own logo artwork, same asset and treatment as the
+              header — see components/layout/header.tsx. Its wordmark is
+              baked in, so no separate live text sits beside it here either. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="footer-logo" src="/brand/kwt25-logo-full.png" alt={t("app.name")} />
           <p>{siteText(settings, "footer_blurb", locale) ?? t("footer.blurb")}</p>
           <div className="footer-social">
             {instagram ? (

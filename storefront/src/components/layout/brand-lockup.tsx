@@ -6,13 +6,17 @@
  * the mark instead — which also means the name reads correctly to a screen
  * reader and stays crisp at every density without shipping two more files.
  *
- * The header carries the office's own logo artwork instead (see
- * `components/layout/header.tsx`) — its wordmark is already baked into that
- * image and cuts cleanly only against a light ground, so this lockup remains
- * for the navy surfaces: the footer and the wizard sidebar.
+ * The header and the footer carry the office's own logo artwork instead
+ * (see `components/layout/header.tsx` and `footer.tsx`) — its wordmark is
+ * already baked into that image, and at footer scale its faint cutout halo
+ * (see the header's own comment on it) is unobtrusive enough to use there
+ * too. This lockup now remains for one surface: the smart-search wizard's
+ * navy sidebar, which is narrower and darker, where that halo would read
+ * as more of a smudge.
  *
- * `tone` picks the surface: `light` for a cream ground, `reversed` for the
- * navy footer and the wizard sidebar.
+ * `tone` still picks the surface a lockup sits on — `light` for a cream
+ * ground, `reversed` for navy — in case a future surface needs the
+ * live-text version again.
  */
 export function BrandLockup({
   name,

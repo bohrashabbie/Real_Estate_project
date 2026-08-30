@@ -111,8 +111,8 @@ body {
 .brand-intro-content img {
   object-fit:contain;
   filter:drop-shadow(0 20px 38px #00000047);
-  width:clamp(245px,42vw,390px);
-  max-height:min(47vh,345px);
+  width:clamp(280px,62vw,480px);
+  max-height:min(40vh,250px);
 }
 
 .brand-intro-lines {
@@ -215,8 +215,8 @@ body {
 
 @media (max-width:520px) {
   .brand-intro-content img {
-    width:min(78vw,315px);
-    max-height:39vh;
+    width:min(84vw,340px);
+    max-height:34vh;
   }
   .brand-intro-lines {
     gap:6px;
@@ -1308,16 +1308,23 @@ img {
    label wrapped onto two lines, turning the pill into a tall blob. The
    label is two words and belongs on one line at every width; the sizes
    below are what make that fit rather than overflow. */
+/* This gradient's three stops were sampled directly from the office's own
+   logo artwork (the gold "عقار الكويت" wordmark) rather than reused from
+   the site's --gold/--gold-dark tokens -- a richer, warmer gold than the
+   badges elsewhere on the card (.featured-label, .vip-slide-crown), which
+   keep the token-based gradient. Scoped to this button on purpose: the ask
+   was to match the logo's gold specifically here, not to retheme every
+   gold element on the card. */
 .property-link,
 .vip-slide-cta {
-  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  background:linear-gradient(135deg,#e6d29c,#cc9f4e 55%,#96661c);
   color:#fff;
   align-items:center;
   border-radius:999px;
   font-weight:800;
   white-space:nowrap;
   display:inline-flex;
-  box-shadow:0 8px 22px #c8a45d3d;
+  box-shadow:0 8px 22px #cc9f4e42;
 }
 
 /* The standard card's footer also carries the compare toggle, and in a 4-up
@@ -1345,8 +1352,12 @@ img {
   color:#fff;
 }
 
+/* Black, not the previous muted grey -- scoped to this light-card
+   context. The VIP slide's own `.vip-slide-actions .compare-toggle`
+   variant sits on a dark photo scrim and keeps its white-ish tone;
+   black text there would be unreadable. */
 .compare-toggle {
-  color:#788088;
+  color:#000;
   background:0 0;
   align-items:center;
   gap:5px;
@@ -1869,6 +1880,17 @@ footer {
   filter:brightness(0)invert();
   opacity:.93;
   width:145px;
+}
+
+/* Opts the footer logo out of the invert-to-white rule above -- kwt25's mark
+   is gold artwork, not the reference's flat monochrome SVG, and inverting it
+   throws the brand colour away. Same asset as the header; sized up a little
+   for the footer's own column, which has the depth to carry it. */
+.footer-grid .footer-logo {
+  filter:none;
+  opacity:1;
+  width:190px;
+  height:auto;
 }
 
 .footer-grid p {
@@ -3138,8 +3160,10 @@ footer {
   transition:width .2s,background .2s;
 }
 
+/* Same navy as `.carousel-dots button.is-active` -- one active-dot
+   colour across every carousel on the site, not just the light ones. */
 .slider-controls>div button.is-active {
-  background:var(--gold);
+  background:var(--navy);
   width:42px;
 }
 
@@ -8900,10 +8924,11 @@ body {
   font-size: 12px;
 }
 
-/* The reference's footer logo is a monochrome SVG it can safely invert to
-   white. kwt25's mark is gold artwork, and inverting it throws the brand
-   colour away — so the footer lockup keeps its own paint. */
-.footer-grid .brand-lockup img,
+/* The reference's wizard-sidebar logo is a monochrome SVG it can safely
+   invert to white. kwt25's mark is gold artwork, and inverting it throws
+   the brand colour away — so this lockup keeps its own paint. (The footer
+   uses the same office logo the header does now, via .footer-logo above,
+   rather than this lockup at all.) */
 .wizard-sidebar .brand-lockup img {
   filter: none;
   opacity: 1;
@@ -9322,10 +9347,12 @@ body {
   flex:0 0 calc((100% - var(--vip-gap))/2);
 }
 
+/* Height only, per request -- the width already comes out right from
+   `.vip-carousel-item`'s own `flex-basis` (two to a view), untouched here. */
 .vip-slide {
   border:1px solid #c8a45d47;
   border-radius:16px;
-  height:452px;
+  height:500px;
   position:relative;
   overflow:hidden;
   transition:transform .35s,border-color .35s;
@@ -9571,8 +9598,12 @@ body {
   transition:width .3s,background .3s;
 }
 
+/* Navy, not gold -- the theme's own dark blue, matching what the rest
+   of the chrome (nav, headings, the property-card price) already uses,
+   rather than a second accent colour competing with the gold buttons
+   beside it. */
 .carousel-dots button.is-active {
-  background:var(--gold);
+  background:var(--navy);
   width:26px;
 }
 
@@ -9613,7 +9644,7 @@ body {
 
 @media (max-width:1023px) {
   .vip-slide {
-    height:412px;
+    height:456px;
   }
 
   .vip-slide-body h3 {
@@ -9637,13 +9668,13 @@ body {
   }
 
   .vip-slide {
-    height:392px;
+    height:436px;
   }
 }
 
 @media (max-width:520px) {
   .vip-slide {
-    height:368px;
+    height:408px;
   }
 
   .vip-slide-body {

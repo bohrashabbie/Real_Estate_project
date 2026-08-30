@@ -51,7 +51,7 @@ export function BrandIntro() {
       <div className="brand-intro-glow" aria-hidden />
       <div className="brand-intro-content">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/intro-building.png" alt={t("logoAlt")} />
+        <img src="/brand/intro-logo.jpg" alt={t("logoAlt")} />
         <div className="brand-intro-lines">
           <p className="intro-line-primary">{t("primary")}</p>
           <p className="intro-line-trust">{t("trust")}</p>
