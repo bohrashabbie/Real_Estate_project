@@ -3095,6 +3095,11 @@ footer {
   font-size:13px;
 }
 
+/* bottom:28px used to be enough room on its own; now .home-quick-search
+   overlaps the hero by 53px (see that rule), so the controls are raised to
+   stay clear of the card riding up over them instead of disappearing
+   behind it. Each narrower tier below raises this further to match its
+   own, larger overlap. */
 .slider-controls {
   z-index:3;
   direction:ltr;
@@ -3102,7 +3107,7 @@ footer {
   gap:8px;
   display:flex;
   position:absolute;
-  bottom:28px;
+  bottom:68px;
   left:50%;
   transform:translate(-50%);
 }
@@ -3157,9 +3162,16 @@ footer {
   color:var(--gold-dark);
 }
 
+/* Pulled up over the hero by half its own height, so the card reads as
+   floating across the banner/content seam rather than sitting on either
+   side of it. -53px is half of the ~107px this card renders at above the
+   1100px breakpoint (measured live) -- the two narrower tiers below carry
+   their own half-height values, because the card itself is a different
+   height at each. `.slider-controls` is pulled up to match, in its own
+   rule, so the hero's arrows/dots always clear the card's top edge. */
 .home-quick-search {
   z-index:6;
-  margin-top:-92px;
+  margin-top:-53px;
   padding-bottom:24px;
   position:relative;
 }
@@ -6174,6 +6186,16 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   .home-quick-search form {
     grid-template-columns:repeat(3,1fr) auto;
   }
+  /* The title wrapping onto its own row (above) makes the card taller —
+     ~163px measured live, versus ~107px above this breakpoint — so its
+     half-height overlap and the hero controls' clearance both grow to
+     match; see the un-media-queried versions of both rules. */
+  .home-quick-search {
+    margin-top:-82px;
+  }
+  .slider-controls {
+    bottom:96px;
+  }
   .home-search-title {
     grid-column:1/-1;
     min-width:0;
@@ -6220,8 +6242,13 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   .slider-controls {
     bottom:105px;
   }
+  /* Not half-height here -- the stacked mobile form runs ~393px tall
+     (measured live), and half of that exceeds the hero's own height at
+     narrow widths. Capped at a fixed 48px so the card still visibly rides
+     up onto the banner without the overlap outgrowing the banner itself;
+     see the paired clearance on `.slider-controls` below. */
   .home-quick-search {
-    margin-top:-72px;
+    margin-top:-48px;
   }
   .home-quick-search form {
     grid-template-columns:1fr;
@@ -7955,7 +7982,10 @@ body {
   }
 }
 
-.home-quick-search {
+/* Scoped to the properties page specifically -- see the comment on
+   .home-quick-search's own margin-top for why the home page overlaps and
+   this one doesn't. */
+.properties-quick-search {
   background:linear-gradient(180deg, var(--cream), #fffdf8);
   margin-top:0!important;
   padding-top:22px!important;
@@ -8283,7 +8313,7 @@ body {
   .home-all-properties-link {
     display:none;
   }
-  .home-quick-search {
+  .properties-quick-search {
     margin-top:0!important;
     padding-top:16px!important;
   }
@@ -9224,8 +9254,9 @@ body {
 }
 
 @media (max-width: 760px) {
+  /* 48px overlap (see .home-quick-search) + ~14px of air. */
   .slider-controls {
-    bottom: 12px;
+    bottom: 62px;
     gap: 6px;
   }
 
@@ -9244,11 +9275,6 @@ body {
   }
 }
 
-@media (max-width: 430px) {
-  .slider-controls {
-    bottom: 8px;
-  }
-}
 
 
 
