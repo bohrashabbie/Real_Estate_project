@@ -108,11 +108,21 @@ body {
   position:relative;
 }
 
+/* Sized for the cut-out lockup's own ~1.1:1 shape (icon stacked over the
+   wordmark), not the wide 2:1 crop that briefly sat here -- height is the
+   binding dimension for a near-square mark, so the cap leads and the width
+   is generous enough never to be what clamps it.
+
+   The asset is keyed out of its blue backdrop rather than feathered against
+   it: a feathered rectangle still reads as a rectangle when the photo's
+   bright blue meets this screen's dark navy. No drop-shadow for the same
+   reason -- a shadow filter traces the full alpha silhouette, so it would
+   redraw exactly the box the cutout removes. `.brand-intro-glow` already
+   provides the ambient depth behind it. */
 .brand-intro-content img {
   object-fit:contain;
-  filter:drop-shadow(0 20px 38px #00000047);
-  width:clamp(280px,62vw,480px);
-  max-height:min(40vh,250px);
+  width:min(78vw,330px);
+  max-height:min(42vh,300px);
 }
 
 .brand-intro-lines {
@@ -215,8 +225,8 @@ body {
 
 @media (max-width:520px) {
   .brand-intro-content img {
-    width:min(84vw,340px);
-    max-height:34vh;
+    width:min(66vw,240px);
+    max-height:32vh;
   }
   .brand-intro-lines {
     gap:6px;
@@ -3556,8 +3566,8 @@ footer {
 
 /* ---------------------------------------------------------------------------
    The two bands that close the page: the gold WhatsApp strip, then the
-   search-again cards that straddle into the footer (`.footer-search-*`,
-   further down). ".request-teaser" — a flat navy CTA banner that used to sit
+   search-again cards that close the page above the footer
+   (`.footer-search-*`, further down). ".request-teaser" — a flat navy CTA banner that used to sit
    here — is gone; its slot on the page is FooterSearch now (see page.tsx),
    and a screen full of properties that still didn't have what someone
    wanted is better answered with another search than a second pitch for
@@ -3632,22 +3642,19 @@ footer {
   box-shadow:0 17px 40px #0d1b2a52;
 }
 
-/* The search-again block that closes the home page. Only the two-card row
-   straddles the seam into the footer -- pulled down by half its own
-   rendered height via the negative margin below, the same technique
-   `.home-quick-search` uses to straddle up into the hero (see that rule's
-   comment for why a negative margin rather than absolute positioning). The
-   heading and intro copy above the cards stay entirely on the cream side.
+/* The search-again block that closes the home page: its own band on the
+   cream side, ending cleanly where the footer begins.
 
-   `position:relative` + `z-index` is what makes the cards paint over the
-   footer rather than the reverse: `footer` itself is a plain static
-   element, so any positioned, z-indexed sibling wins the overlap
-   regardless of which one is later in the DOM. */
-.footer-search-straddle {
-  z-index:2;
+   This deliberately does NOT overlap the footer. An earlier version pulled
+   the card row down over the footer's top edge (the same trick
+   `.home-quick-search` uses against the hero), but the footer is a dense
+   four-column block rather than a photograph with room to spare -- the
+   cards landed on its logo and columns, and buying them clearance meant
+   padding the footer out with empty navy. Keeping the two as separate
+   bands is what actually reads cleanly here. */
+.footer-search {
   background:var(--cream);
-  padding-top:64px;
-  margin-bottom:-102px;
+  padding-block:64px 72px;
   position:relative;
 }
 
@@ -3696,9 +3703,8 @@ footer {
 }
 
 @media (max-width:760px) {
-  .footer-search-straddle {
-    padding-top:48px;
-    margin-bottom:-209px;
+  .footer-search {
+    padding-block:48px 56px;
   }
   .footer-search-cards {
     grid-template-columns:1fr;

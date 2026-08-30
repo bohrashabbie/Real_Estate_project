@@ -10,10 +10,8 @@ import type { Locale } from "@/i18n/routing";
 import { AreaField, Menu } from "@/components/home/quick-search";
 
 /**
- * The search-again block that closes the home page, straddling the seam
- * between the page and the footer the same way the top bar straddles the
- * hero (see `.home-quick-search` in globals.css) — half the card reads
- * against the page above it, half against the footer below.
+ * The search-again block that closes the home page — its own band above the
+ * footer, not overlapping it.
  *
  * It replaces what used to be a plain "tell us what you want and we'll call
  * you" banner. Someone who scrolls this far already looked through the
@@ -23,8 +21,7 @@ import { AreaField, Menu } from "@/components/home/quick-search";
  * put in this slot. It reuses the exact fields and submit behaviour of the
  * top bar (`AreaField`, `Menu`, the same `/properties?...` query) rather
  * than inventing a second search, split across two cards instead of one bar
- * because the section beneath it is a footer column's width, not the
- * hero's full-bleed one.
+ * to suit the narrower band it sits in.
  */
 export function FooterSearch({
   areas,
@@ -53,7 +50,7 @@ export function FooterSearch({
   }
 
   return (
-    <section className="footer-search-straddle">
+    <section className="footer-search">
       <div className="container">
         <div className="footer-search-intro">
           <h2>{t("footerSearch.title")}</h2>

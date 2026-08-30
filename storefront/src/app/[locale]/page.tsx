@@ -123,10 +123,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      {/* Order matters here: FooterSearch is placed last so it sits directly
-          against <Footer> in the DOM (see app/[locale]/layout.tsx) -- that
-          adjacency is what lets it visually straddle the seam between them,
-          the same way .home-quick-search straddles the hero above it. */}
+      {/* FooterSearch is last so it lands directly above <Footer> (which
+          layout.tsx renders after the page), closing the page with a search
+          rather than with the WhatsApp band. */}
       <ContactBand settings={settings} />
       <FooterSearch areas={areas} types={types} locale={typedLocale} />
     </>
