@@ -3555,85 +3555,14 @@ footer {
 }
 
 /* ---------------------------------------------------------------------------
-   The two bands that close the page: "we'll find it for you", then "or just
-   message us now". They were a flat navy strip and a flat gold strip with one
-   line of text on each — accurate, and completely inert at exactly the point
-   where the reader has stopped scrolling and is deciding whether to make
-   contact. Same words, given some depth to stand on.
+   The two bands that close the page: the gold WhatsApp strip, then the
+   search-again cards that straddle into the footer (`.footer-search-*`,
+   further down). ".request-teaser" — a flat navy CTA banner that used to sit
+   here — is gone; its slot on the page is FooterSearch now (see page.tsx),
+   and a screen full of properties that still didn't have what someone
+   wanted is better answered with another search than a second pitch for
+   the callback-request form footer nav already links to.
    ------------------------------------------------------------------------ */
-.request-teaser {
-  background:
-    radial-gradient(880px 420px at 78% -15%, #c8a45d2e, transparent 70%),
-    radial-gradient(620px 340px at 6% 125%, #c8a45d1c, transparent 70%),
-    var(--navy);
-  color:#fff;
-  padding:86px 0 80px;
-  border-top:1px solid #c8a45d3d;
-  position:relative;
-  overflow:hidden;
-}
-
-/* The plotted grid from the office's own banner artwork, redrawn in CSS so the
-   band joins that family without shipping an image for it. Masked to fade out
-   before the edges, so it reads as depth rather than as graph paper. */
-.request-teaser:before {
-  content:"";
-  background-image:
-    repeating-linear-gradient(90deg, #c8a45d14 0 1px, transparent 1px 78px),
-    repeating-linear-gradient(#c8a45d14 0 1px, transparent 1px 78px);
-  -webkit-mask-image:radial-gradient(72% 130% at 50% 105%, #000, transparent 72%);
-  mask-image:radial-gradient(72% 130% at 50% 105%, #000, transparent 72%);
-  pointer-events:none;
-  position:absolute;
-  inset:0;
-}
-
-.request-teaser-inner {
-  justify-content:space-between;
-  align-items:center;
-  gap:35px;
-  display:flex;
-  position:relative;
-  z-index:1;
-}
-
-.request-teaser-inner>div {
-  padding-right:82px;
-  position:relative;
-}
-
-/* Direct child only. `.request-teaser-inner svg` also matched the arrow inside
-   the CTA and yanked it out of the button to this same corner, where it landed
-   underneath the sparkle and read as one smudged icon. */
-.request-teaser-inner>div>svg {
-  color:var(--gold);
-  background:#c8a45d1f;
-  border:1px solid #c8a45d5c;
-  border-radius:50%;
-  box-sizing:border-box;
-  width:56px;
-  height:56px;
-  padding:16px;
-  position:absolute;
-  top:0;
-  right:0;
-}
-
-.request-teaser span {
-  color:var(--gold);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-size:12px;
-  font-weight:800;
-}
-
-.request-teaser h2 {
-  letter-spacing:-.03em;
-  max-width:22ch;
-  margin:10px 0 0;
-  font:700 clamp(26px,3.2vw,36px)/1.35 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
-}
-
 .contact-band {
   background:linear-gradient(100deg, #dcbc7d, var(--gold) 46%, #b9924e);
   color:var(--navy);
@@ -3701,6 +3630,79 @@ footer {
 .contact-band a:hover {
   transform:translateY(-2px);
   box-shadow:0 17px 40px #0d1b2a52;
+}
+
+/* The search-again block that closes the home page. Only the two-card row
+   straddles the seam into the footer -- pulled down by half its own
+   rendered height via the negative margin below, the same technique
+   `.home-quick-search` uses to straddle up into the hero (see that rule's
+   comment for why a negative margin rather than absolute positioning). The
+   heading and intro copy above the cards stay entirely on the cream side.
+
+   `position:relative` + `z-index` is what makes the cards paint over the
+   footer rather than the reverse: `footer` itself is a plain static
+   element, so any positioned, z-indexed sibling wins the overlap
+   regardless of which one is later in the DOM. */
+.footer-search-straddle {
+  z-index:2;
+  background:var(--cream);
+  padding-top:64px;
+  margin-bottom:-102px;
+  position:relative;
+}
+
+.footer-search-intro {
+  max-width:640px;
+  margin-bottom:28px;
+}
+
+.footer-search-intro h2 {
+  color:var(--navy);
+  margin:0 0 10px;
+  font:700 clamp(26px,3.2vw,36px)/1.35 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
+}
+
+.footer-search-intro p {
+  color:var(--muted);
+  margin:0;
+  max-width:520px;
+  line-height:1.9;
+}
+
+.footer-search-cards {
+  gap:20px;
+  grid-template-columns:1fr 1fr;
+  display:grid;
+}
+
+.footer-search-card {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  gap:14px;
+  padding:22px;
+  flex-direction:column;
+  display:flex;
+  box-shadow:0 20px 50px #0d1b2a17;
+}
+
+.footer-search-card-action {
+  justify-content:space-between;
+}
+
+.footer-search-card-action .button {
+  min-height:52px;
+  margin-top:auto;
+}
+
+@media (max-width:760px) {
+  .footer-search-straddle {
+    padding-top:48px;
+    margin-bottom:-209px;
+  }
+  .footer-search-cards {
+    grid-template-columns:1fr;
+  }
 }
 
 .footer-social {
@@ -6311,10 +6313,6 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   }
   .featured-four,.path-grid,.contact-grid {
     grid-template-columns:1fr;
-  }
-  .request-teaser-inner {
-    flex-direction:column;
-    align-items:flex-start;
   }
   .filter-panel,.property-contact-card,.request-page-grid>aside {
     position:static;

@@ -125,10 +125,9 @@
     "allBody": "Browse every published property for sale and rent in Kuwait.",
     "allCta": "Open the properties page"
   },
-  "requestTeaser": {
-    "kicker": "Didn't find what you're after?",
-    "title": "Tell us what you want, and we'll call when it comes in.",
-    "cta": "Request a property we don't list"
+  "footerSearch": {
+    "title": "Didn't find what you're after?",
+    "body": "Narrow it down by area, type and purpose — search again right here."
   },
   "contactBand": {
     "title": "Need help right away?",

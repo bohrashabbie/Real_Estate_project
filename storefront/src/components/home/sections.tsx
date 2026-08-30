@@ -1,32 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Building2, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2 } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
 import { siteText, type PropertyType, type SiteSettings } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import type { Locale } from "@/i18n/routing";
-
-/** "Didn't find it? Tell us what you want." */
-export async function RequestTeaser() {
-  const t = await getTranslations("requestTeaser");
-
-  return (
-    <section className="request-teaser">
-      <div className="container request-teaser-inner">
-        <div>
-          <Sparkles size={18} />
-          <span>{t("kicker")}</span>
-          <h2>{t("title")}</h2>
-        </div>
-        <Link className="button button-gold button-large" href="/request">
-          <ArrowLeft size={16} />
-          {t("cta")}
-        </Link>
-      </div>
-    </section>
-  );
-}
 
 /** The gold strip above the footer: one line, one WhatsApp number. */
 export async function ContactBand({ settings }: { settings: SiteSettings }) {

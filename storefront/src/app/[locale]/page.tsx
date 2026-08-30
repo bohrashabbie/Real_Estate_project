@@ -19,9 +19,9 @@ import { QuickSearch } from "@/components/home/quick-search";
 import {
   ContactBand,
   PropertyTypeGrid,
-  RequestTeaser,
   SectionHeading,
 } from "@/components/home/sections";
+import { FooterSearch } from "@/components/home/footer-search";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 /**
@@ -123,8 +123,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      <RequestTeaser />
+      {/* Order matters here: FooterSearch is placed last so it sits directly
+          against <Footer> in the DOM (see app/[locale]/layout.tsx) -- that
+          adjacency is what lets it visually straddle the seam between them,
+          the same way .home-quick-search straddles the hero above it. */}
       <ContactBand settings={settings} />
+      <FooterSearch areas={areas} types={types} locale={typedLocale} />
     </>
   );
 }

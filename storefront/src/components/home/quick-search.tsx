@@ -37,7 +37,7 @@ const QUICK_ICONS = {
  * cannot hold the area type-ahead, and mixing one native control with two
  * custom ones in the same bar looks like a bug.
  */
-function Menu({
+export function Menu({
   label,
   icon,
   value,
@@ -85,6 +85,66 @@ function Menu({
   );
 }
 
+/**
+ * The area picker: a `<details>` menu wrapping `UnifiedAreaPicker`, shared by
+ * the top quick-search bar and the footer's search cards. `idPrefix` keeps
+ * the two instances' generated element ids from colliding when both render
+ * on the same page.
+ */
+export function AreaField({
+  areas,
+  area,
+  onChange,
+  locale,
+  idPrefix,
+}: {
+  areas: Area[];
+  area: string[];
+  onChange: (value: string[]) => void;
+  locale: Locale;
+  idPrefix: string;
+}) {
+  const t = useTranslations();
+  const details = useRef<HTMLDetailsElement>(null);
+  const label =
+    area.length === 0
+      ? t("picker.allAreas")
+      : (areas.find((item) => item.slug === area[0])?.name ?? t("picker.allAreas"));
+
+  return (
+    <div className="home-search-field home-area-picker">
+      <span>
+        <MapPin size={14} />
+        <b>{t("quickSearch.area")}</b>
+      </span>
+      <details ref={details}>
+        <summary>
+          <span>{label}</span>
+          <ChevronDown size={14} />
+        </summary>
+        <div className="home-area-menu">
+          <UnifiedAreaPicker
+            areas={areas}
+            value={area}
+            onChange={onChange}
+            locale={locale}
+            max={1}
+            variant="inline"
+            browser="expanded"
+            idPrefix={idPrefix}
+          />
+          <footer>
+            <small>{t("picker.pickOne")}</small>
+            <button type="button" onClick={() => details.current?.removeAttribute("open")}>
+              {t("picker.done")}
+            </button>
+          </footer>
+        </div>
+      </details>
+    </div>
+  );
+}
+
 export function QuickSearch({
   areas,
   types,
@@ -104,7 +164,6 @@ export function QuickSearch({
   const [area, setArea] = useState<string[]>(initial?.area ? [initial.area] : []);
   const [type, setType] = useState(initial?.type ?? "");
   const [purpose, setPurpose] = useState(initial?.purpose ?? "");
-  const areaDetails = useRef<HTMLDetailsElement>(null);
 
   // Landing on /properties?purpose=rent must show "For rent" in the bar, and
   // the same must happen when a quick-link is followed from this very bar.
@@ -113,11 +172,6 @@ export function QuickSearch({
     setType(initial?.type ?? "");
     setPurpose(initial?.purpose ?? "");
   }, [initial?.area, initial?.type, initial?.purpose]);
-
-  const areaLabel =
-    area.length === 0
-      ? t("picker.allAreas")
-      : (areas.find((item) => item.slug === area[0])?.name ?? t("picker.allAreas"));
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -141,36 +195,13 @@ export function QuickSearch({
             <strong>{t("quickSearch.title")}</strong>
           </div>
 
-          <div className="home-search-field home-area-picker">
-            <span>
-              <MapPin size={14} />
-              <b>{t("quickSearch.area")}</b>
-            </span>
-            <details ref={areaDetails}>
-              <summary>
-                <span>{areaLabel}</span>
-                <ChevronDown size={14} />
-              </summary>
-              <div className="home-area-menu">
-                <UnifiedAreaPicker
-                  areas={areas}
-                  value={area}
-                  onChange={setArea}
-                  locale={locale}
-                  max={1}
-                  variant="inline"
-                  browser="expanded"
-                  idPrefix="quick-areas"
-                />
-                <footer>
-                  <small>{t("picker.pickOne")}</small>
-                  <button type="button" onClick={() => areaDetails.current?.removeAttribute("open")}>
-                    {t("picker.done")}
-                  </button>
-                </footer>
-              </div>
-            </details>
-          </div>
+          <AreaField
+            areas={areas}
+            area={area}
+            onChange={setArea}
+            locale={locale}
+            idPrefix="quick-areas"
+          />
 
           <Menu
             label={t("quickSearch.type")}
