@@ -281,7 +281,7 @@ img {
   backdrop-filter:blur(16px);
   background:#fcfaf5e8;
   border-bottom:1px solid #0d1b2a12;
-  height:82px;
+  height:94px;
   position:sticky;
   top:0;
 }
@@ -296,7 +296,7 @@ img {
 
 /* The lockup is the office's own artwork with its wordmark baked in, so it
    has to carry legible Arabic at header size rather than just read as a
-   mark. 164px puts it at ~68px tall inside the 82px header — about 7px
+   mark. 164px puts it at ~68px tall inside the 94px header — about 13px
    clear above and below. Past ~172px it starts crowding the header edges. */
 .brand img {
   width:164px;
@@ -864,7 +864,7 @@ img {
 
 .properties-section {
   background:var(--ivory);
-  scroll-margin-top:92px;
+  scroll-margin-top:104px;
 }
 
 .home-quick-search+.properties-section,
@@ -882,7 +882,7 @@ img {
      cards' shadow, see its rule) — trimmed here so the two don't stack into
      a much wider gap than this "one short row" beat is meant to have. */
   padding-block:56px 4px;
-  scroll-margin-top:92px;
+  scroll-margin-top:104px;
 }
 
 /* The featured carousel's section had its own bottom padding stacking with
@@ -2550,9 +2550,9 @@ footer {
     padding:72px 0;
   }
   .site-header {
-    height:70px;
+    height:78px;
   }
-  /* Same bump as the desktop rule, against a 70px header rather than 82px. */
+  /* Same bump as the desktop rule, against a 78px header rather than 94px. */
   .brand img {
     width:144px;
   }
@@ -2677,7 +2677,7 @@ footer {
     background:#0d1b2a61;
     display:block;
     position:fixed;
-    inset:70px 0 0;
+    inset:78px 0 0;
   }
   .nav-actions {
     z-index:64;
@@ -3791,7 +3791,7 @@ footer {
   border-radius:10px;
   padding:24px;
   position:sticky;
-  top:98px;
+  top:110px;
 }
 
 .filter-title {
@@ -4553,7 +4553,7 @@ footer {
   align-self:start;
   padding:28px;
   position:sticky;
-  top:100px;
+  top:112px;
 }
 
 .property-contact-card>span {
@@ -4651,7 +4651,7 @@ footer {
 
 .smart-search-page {
   background:var(--ivory);
-  min-height:calc(100vh - 82px);
+  min-height:calc(100vh - 94px);
 }
 
 .smart-wizard-page {
@@ -5154,7 +5154,7 @@ footer {
 
 .request-page-grid>aside {
   position:sticky;
-  top:110px;
+  top:122px;
 }
 
 .request-page-grid h1 {
@@ -6882,7 +6882,7 @@ body {
 }
 
 .explorer-results {
-  scroll-margin-top:100px;
+  scroll-margin-top:112px;
 }
 
 .featured-results-strip {
@@ -7128,7 +7128,7 @@ body {
 
 @media (max-width:760px) {
   .explorer-results {
-    scroll-margin-top:80px;
+    scroll-margin-top:88px;
   }
   .featured-results-strip {
     margin-inline:-2px;

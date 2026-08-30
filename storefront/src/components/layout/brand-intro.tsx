@@ -51,7 +51,13 @@ export function BrandIntro() {
       <div className="brand-intro-glow" aria-hidden />
       <div className="brand-intro-content">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/intro-logo.webp" alt={t("logoAlt")} />
+        <img
+          src="/brand/intro-logo.webp"
+          alt={t("logoAlt")}
+          // The card only shows for 2.6s, so a lazily-fetched mark can miss
+          // most of it -- measured ~500ms of logo-less card on a cold load.
+          fetchPriority="high"
+        />
         <div className="brand-intro-lines">
           <p className="intro-line-primary">{t("primary")}</p>
           <p className="intro-line-trust">{t("trust")}</p>
