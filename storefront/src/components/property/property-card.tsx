@@ -106,10 +106,20 @@ export function PropertyCard({
         </div>
 
         <div className="property-footer">
-          <Link className="metal-button property-link" href={href}>
-            <ArrowLeft size={15} />
-            {t("card.viewDetails")}
-          </Link>
+          {locale === "ar" ? (
+            // The office's own button artwork — Arabic only, since
+            // "عرض التفاصيل" is baked into the image; see header.tsx's
+            // identical split for the full reasoning.
+            <Link className="art-button property-link" href={href} aria-label={t("card.viewDetails")}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/btn-view-details.webp" alt="" aria-hidden />
+            </Link>
+          ) : (
+            <Link className="metal-button property-link" href={href}>
+              <ArrowLeft size={15} />
+              {t("card.viewDetails")}
+            </Link>
+          )}
           <CompareToggle
             property={{
               id: property.id,
