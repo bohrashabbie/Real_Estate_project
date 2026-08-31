@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   ClipboardList,
   House,
@@ -42,6 +42,7 @@ const ICONS: Record<NavIcon, typeof House> = {
  */
 export function Header({ settings }: { settings: SiteSettings }) {
   const t = useTranslations();
+  const locale = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -123,15 +124,33 @@ export function Header({ settings }: { settings: SiteSettings }) {
           </nav>
 
           <div className="nav-actions">
-            <Link
-              className="metal-button header-list-property"
-              href="/list-property"
-              aria-label={t("nav.listProperty")}
-            >
-              <span>{t("nav.listProperty")}</span>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="metal-button-icon" src="/brand/kwt25-towers.webp" alt="" aria-hidden />
-            </Link>
+            {locale === "ar" ? (
+              // The office's own button artwork, cut straight out of their
+              // photo rather than recreated in CSS — Arabic only, because
+              // the label ("اعرض عقارك لدينا") is baked into the pixels and
+              // an English page would otherwise show Arabic text. English
+              // falls back to the CSS-built .metal-button below, which
+              // carries the same gradient and font but a live, translated
+              // label instead of this raster one.
+              <Link
+                className="art-button header-list-property"
+                href="/list-property"
+                aria-label={t("nav.listProperty")}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/brand/btn-list-property.webp" alt="" aria-hidden />
+              </Link>
+            ) : (
+              <Link
+                className="metal-button header-list-property"
+                href="/list-property"
+                aria-label={t("nav.listProperty")}
+              >
+                <span>{t("nav.listProperty")}</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="metal-button-icon" src="/brand/kwt25-towers.webp" alt="" aria-hidden />
+              </Link>
+            )}
 
             {phone ? (
               <a

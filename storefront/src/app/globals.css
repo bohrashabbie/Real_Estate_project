@@ -3055,6 +3055,45 @@ footer {
     0 12px 26px #5e240259;
 }
 
+/* The office's own button artwork, used as-is rather than recreated —
+   Arabic only (see the two places this renders for why). The image
+   already draws the fill, ring, shadow and label, so this is just an
+   inline-flex box sized to the image's own aspect ratio: no padding, no
+   background of its own, both of which would show as a gap since nothing
+   sits behind them here. Each usage sets its own img height below, since
+   the header CTA and the VIP slide are drawn at different sizes. */
+.art-button {
+  align-items:center;
+  display:inline-flex;
+  transition:transform .2s,filter .2s;
+}
+
+.art-button:hover {
+  filter:brightness(1.06);
+  transform:translateY(-2px);
+}
+
+.art-button img {
+  width:auto;
+  display:block;
+}
+
+.header-list-property.art-button {
+  padding:0;
+}
+
+.header-list-property.art-button img {
+  height:42px;
+}
+
+.vip-slide-cta.art-button {
+  padding:0;
+}
+
+.vip-slide-cta.art-button img {
+  height:50px;
+}
+
 .header-list-property {
   min-height:42px;
   white-space:nowrap;
