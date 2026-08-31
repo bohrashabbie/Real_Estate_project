@@ -6291,7 +6291,37 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
      the banner outright. Scoped to artwork mode so the photographic hero
      keeps the values tuned for it. */
   .launch-hero.is-artwork .slider-controls {
-    bottom:9px;
+    bottom:8px;
+    gap:6px;
+  }
+
+  /* 38px discs and a 42px active dot are a lot of furniture to lay over a
+     139px banner whose own CTA is baked into the artwork -- shrunk here so
+     the row hugs the bottom edge rather than sitting across the middle of
+     the picture. Kept rather than hidden: the banner auto-advances, so
+     something has to be able to pause it. */
+  .launch-hero.is-artwork .slider-controls>button {
+    width:28px;
+    height:28px;
+  }
+
+  .launch-hero.is-artwork .slider-controls>button svg {
+    width:13px;
+    height:13px;
+  }
+
+  .launch-hero.is-artwork .slider-controls>div {
+    gap:5px;
+    padding:0 6px;
+  }
+
+  .launch-hero.is-artwork .slider-controls>div button {
+    width:16px;
+    height:3px;
+  }
+
+  .launch-hero.is-artwork .slider-controls>div button.is-active {
+    width:26px;
   }
 
   .launch-hero.is-artwork + .home-quick-search {
