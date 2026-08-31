@@ -6282,6 +6282,21 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   .home-quick-search {
     margin-top:-48px;
   }
+
+  /* Both values above are measured against the *photographic* hero, which
+     is 460-600px tall on a phone. The office's artwork hero is not: it is
+     the banner's own 2.8:1 ratio, so ~139px at 390px wide. Against that,
+     105px of lift puts the controls a third of the way down from the
+     banner's top, over its own copy, and a 48px overlap hides a third of
+     the banner outright. Scoped to artwork mode so the photographic hero
+     keeps the values tuned for it. */
+  .launch-hero.is-artwork .slider-controls {
+    bottom:9px;
+  }
+
+  .launch-hero.is-artwork + .home-quick-search {
+    margin-top:-14px;
+  }
   .home-quick-search form {
     grid-template-columns:1fr;
     padding:12px;
@@ -6402,6 +6417,16 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
   .contact-rail {
     left:10px;
     bottom:calc(72px + env(safe-area-inset-bottom,0px));
+    gap:7px;
+  }
+
+  .contact-floats {
+    gap:7px;
+  }
+
+  .contact-floats a,.contact-floats button {
+    width:40px;
+    height:40px;
   }
   .chat-panel {
     left:10px;
