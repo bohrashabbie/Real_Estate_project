@@ -190,7 +190,7 @@ export function VipCarousel({
                       {formatPrice(property.price, property.purpose, locale)}
                     </strong>
                     <div className="vip-slide-actions">
-                      <Link className="vip-slide-cta" href={href}>
+                      <Link className="metal-button vip-slide-cta" href={href}>
                         <ArrowLeft size={15} />
                         {t("card.viewDetails")}
                       </Link>

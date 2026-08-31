@@ -29,11 +29,12 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
     <footer>
       <div className="container footer-grid">
         <div>
-          {/* The office's own logo artwork, same asset and treatment as the
-              header — see components/layout/header.tsx. Its wordmark is
-              baked in, so no separate live text sits beside it here either. */}
+          {/* The office's logo, supplied as proper artwork rather than the
+              photo-of-a-logo the header still carries — so this one cuts
+              cleanly against navy with no halo. Its wordmark is baked in,
+              so no separate live text sits beside it. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="footer-logo" src="/brand/kwt25-logo-full.png" alt={t("app.name")} />
+          <img className="footer-logo" src="/brand/kwt25-logo-mark.webp" alt={t("app.name")} />
           <p>{siteText(settings, "footer_blurb", locale) ?? t("footer.blurb")}</p>
           <div className="footer-social">
             {instagram ? (

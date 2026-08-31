@@ -106,7 +106,7 @@ export function PropertyCard({
         </div>
 
         <div className="property-footer">
-          <Link className="property-link" href={href}>
+          <Link className="metal-button property-link" href={href}>
             <ArrowLeft size={15} />
             {t("card.viewDetails")}
           </Link>

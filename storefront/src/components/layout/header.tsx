@@ -125,7 +125,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
           <div className="nav-actions">
             <Link
-              className="header-list-property"
+              className="metal-button header-list-property"
               href="/list-property"
               aria-label={t("nav.listProperty")}
             >
