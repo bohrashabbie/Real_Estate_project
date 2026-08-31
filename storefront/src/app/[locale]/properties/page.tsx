@@ -11,6 +11,7 @@ import {
   getPropertyTypes,
   getSettings,
 } from "@/lib/api";
+import { one, type SearchParams } from "@/lib/search-params";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import { FeaturedStrip } from "@/components/properties/featured-strip";
@@ -30,15 +31,7 @@ export async function generateMetadata({
   };
 }
 
-type Search = Record<string, string | string[] | undefined>;
-
-/** `?a=1&a=2` is a user typing in the URL bar, not a case to model — take the
- *  first value and move on. */
-function one(value: string | string[] | undefined): string | undefined {
-  const raw = Array.isArray(value) ? value[0] : value;
-  const trimmed = raw?.trim();
-  return trimmed ? trimmed : undefined;
-}
+type Search = SearchParams;
 
 export default async function PropertiesPage({
   params,

@@ -127,7 +127,8 @@
   },
   "footerSearch": {
     "title": "Didn't find what you're after?",
-    "body": "Narrow it down by area, type and purpose — search again right here."
+    "body": "Narrow it down by area, type and purpose, and let smart search find your closest match.",
+    "submit": "Smart search"
   },
   "contactBand": {
     "title": "Need help right away?",

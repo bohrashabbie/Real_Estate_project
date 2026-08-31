@@ -16,12 +16,15 @@ import { AreaField, Menu } from "@/components/home/quick-search";
  * It replaces what used to be a plain "tell us what you want and we'll call
  * you" banner. Someone who scrolls this far already looked through the
  * catalogue and didn't find it, so a second callback-request pitch repeats
- * the one live nav already offers (`footer.requestProperty`) — a live
- * search they can actually act on right here is the more useful thing to
- * put in this slot. It reuses the exact fields and submit behaviour of the
- * top bar (`AreaField`, `Menu`, the same `/properties?...` query) rather
- * than inventing a second search, split across two cards instead of one bar
- * to suit the narrower band it sits in.
+ * the one live nav already offers (`footer.requestProperty`).
+ *
+ * It hands off to Smart Search rather than to a `/properties` listing:
+ * submitting sends area/type/purpose to `/smart-search`, which (see that
+ * wizard's `initial` prop) skips its own five questions and runs the match
+ * immediately, landing the visitor on relevance-ranked results instead of a
+ * plain filtered grid. The fields themselves (`AreaField`, `Menu`) are
+ * still the top bar's, split across two cards to suit the narrower band
+ * this section sits in.
  */
 export function FooterSearch({
   areas,
@@ -46,7 +49,7 @@ export function FooterSearch({
     if (type) params.set("type", type);
     if (purpose) params.set("purpose", purpose);
     const query = params.toString();
-    router.push(query ? `/properties?${query}` : "/properties");
+    router.push(query ? `/smart-search?${query}` : "/smart-search");
   }
 
   return (
@@ -92,7 +95,7 @@ export function FooterSearch({
             />
             <button className="button button-gold full-button" type="submit">
               <Search size={15} />
-              {t("quickSearch.submit")}
+              {t("footerSearch.submit")}
             </button>
           </div>
         </form>

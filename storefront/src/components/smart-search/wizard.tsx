@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   ArrowLeft,
@@ -52,6 +52,13 @@ const TYPE_ICONS: Record<string, typeof House> = {
  * Only purpose is required to advance. Every other question can be skipped —
  * someone who does not know their budget yet should still reach results, and a
  * wizard that refuses to move is a wizard people abandon.
+ *
+ * `initial` seeds area/type/purpose from the URL — the footer's search cards
+ * (`FooterSearch`) send someone here rather than to `/properties` — and, when
+ * any of them is actually set, skips the five questions and runs the search
+ * immediately: those three answers are exactly what that form asked, so
+ * making the visitor re-answer a subset of what they just told it would be
+ * the wizard ignoring its own input.
  */
 export function SmartSearchWizard({
   areas,
@@ -59,23 +66,25 @@ export function SmartSearchWizard({
   locale,
   whatsapp,
   siteName,
+  initial,
 }: {
   areas: Area[];
   types: PropertyType[];
   locale: Locale;
   whatsapp: string | null;
   siteName: string;
+  initial?: { area?: string; type?: string; purpose?: "rent" | "sale" };
 }) {
   const t = useTranslations();
   const [step, setStep] = useState(1);
   // Rent is pre-selected, as the reference does: it is the commoner search, and
   // a first question with nothing chosen puts a disabled Next button in front
   // of someone who has only just arrived.
-  const [purpose, setPurpose] = useState<"rent" | "sale" | null>("rent");
-  const [area, setArea] = useState<string[]>([]);
+  const [purpose, setPurpose] = useState<"rent" | "sale" | null>(initial?.purpose ?? "rent");
+  const [area, setArea] = useState<string[]>(initial?.area ? [initial.area] : []);
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
-  const [type, setType] = useState<string[]>([]);
+  const [type, setType] = useState<string[]>(initial?.type ? [initial.type] : []);
   const [rooms, setRooms] = useState<number | null>(null);
 
   const [result, setResult] = useState<SmartSearchResult | null>(null);
@@ -109,6 +118,24 @@ export function SmartSearchWizard({
     }
     void run();
   }
+
+  // Runs exactly once, on mount, and only when the footer's search cards
+  // actually sent something -- an empty `initial` (arriving here from the
+  // header link, say) leaves this a no-op and the wizard opens on step 1
+  // as it always has.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current) return;
+    autoRan.current = true;
+    if (initial?.area || initial?.type || initial?.purpose) {
+      // If the fetch is slow enough to paint at all, it paints the last
+      // step's "Searching…" state rather than the first question -- nothing
+      // here was actually left for the visitor to answer.
+      setStep(STEPS);
+      void run();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* ---------------------------------------------------------------- results */
 
