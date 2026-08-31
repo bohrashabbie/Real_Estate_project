@@ -79,7 +79,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             {/* The office's own logo artwork bakes the wordmark in, so this is
                 the whole mark — no separate live text beside it. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/brand/kwt25-logo-full.png" alt="" aria-hidden />
+            <img src="/brand/kwt25-logo-full.webp" alt="" aria-hidden />
           </Link>
 
           {/* The backdrop is a child of the header, not a sibling: `.site-header`
