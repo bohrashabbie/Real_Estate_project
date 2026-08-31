@@ -1335,7 +1335,16 @@ img {
    grid that leaves the pair only ~235px — measured on the real page, not
    guessed: the English label in the shipped font is wide enough that 14px
    with a 19px inset overran the card's own padding. Sized to sit beside the
-   toggle with a visible gap instead of filling the row edge to edge. */
+   toggle with a visible gap instead of filling the row edge to edge.
+
+   No towers icon here, unlike the header CTA and the VIP slide -- tried it
+   (a third flex child plus its own gap), and even after trimming this
+   button's own padding to the bare minimum the measured slack in that same
+   4-up case fell to ~7px: one more character in either label away from
+   overflowing, for an icon scaled down to barely legible. This button is
+   repeated once per card in a dense grid rather than standing alone the
+   way the other two do, and that is a worse trade than just not carrying
+   it here. */
 .property-link {
   gap:5px;
   padding:8px 14px;
@@ -2995,12 +3004,45 @@ footer {
     linear-gradient(180deg,#ffe9a0 0%,#e0ae4d 18%,#9d621c 52%,#c9922f 78%,#ffe17c 100%) border-box;
   border:2px solid #0000;
   border-radius:999px;
-  text-shadow:0 2px 3px #00000073,0 1px 0 #0000004d;
+  /* The artwork's label is a heavy Kufi face with a hard black outline
+     around white letters, not a soft-shadowed sans -- Kufi is already
+     loaded for headings (font-noto-kufi-arabic), so this reuses it rather
+     than adding a font. The outline is `-webkit-text-stroke`, not another
+     text-shadow layer: a blurred shadow reads as a glow at this weight,
+     where the artwork's is a crisp line. */
+  font-family:var(--font-noto-kufi-arabic), 'Noto Kufi Arabic', 'Segoe UI', Tahoma, sans-serif;
+  font-weight:900;
+  /* 1.2px looked right in isolation but is ~9% of this 13-14px text -- at
+     that ratio the stroke overtakes the white fill and the label reads as
+     solid black. Real outline-text treatments run a thinner stroke than
+     intuition suggests; 0.5px reads as a crisp edge instead of a fill. */
+  -webkit-text-stroke:0.5px #000;
+  text-shadow:0 1px 1px #00000080,0 2px 3px #0000004d;
   transition:transform .2s,box-shadow .2s,filter .2s;
   box-shadow:
     inset 0 1px 0 #ffffff45,
     inset 0 -3px 7px #00000040,
     0 8px 20px #5e240240;
+}
+
+/* The office's own towers icon, cut from the same button artwork rather
+   than redrawn, sitting at the pill's trailing end -- last DOM child, so
+   flex placement (and RTL/LTR) is whatever direction already does with
+   "last child" everywhere else on the site, no direction-specific rule
+   needed.
+
+   Sized in `em`, off the button's own font-size, not a height percentage:
+   none of the three buttons this sits in set a `height` (only
+   `min-height`, on the header CTA alone), so a percentage height has
+   nothing definite to resolve against and computes as if unset. `em`
+   also means it scales with each button's already-different font-size
+   (13px on the card, 14px on the VIP slide) rather than needing a size
+   variant per button. */
+.metal-button-icon {
+  height:1.4em;
+  width:auto;
+  object-fit:contain;
+  flex-shrink:0;
 }
 
 .metal-button:hover {

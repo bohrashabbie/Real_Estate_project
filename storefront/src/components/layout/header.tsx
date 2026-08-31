@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  Building2,
   ClipboardList,
   House,
   KeyRound,
@@ -129,8 +128,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
               href="/list-property"
               aria-label={t("nav.listProperty")}
             >
-              <Building2 size={16} />
               <span>{t("nav.listProperty")}</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="metal-button-icon" src="/brand/kwt25-towers.webp" alt="" aria-hidden />
             </Link>
 
             {phone ? (

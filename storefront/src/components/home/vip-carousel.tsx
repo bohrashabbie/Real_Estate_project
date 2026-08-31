@@ -193,6 +193,8 @@ export function VipCarousel({
                       <Link className="metal-button vip-slide-cta" href={href}>
                         <ArrowLeft size={15} />
                         {t("card.viewDetails")}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img className="metal-button-icon" src="/brand/kwt25-towers.webp" alt="" aria-hidden />
                       </Link>
                       <CompareToggle
                         property={{
