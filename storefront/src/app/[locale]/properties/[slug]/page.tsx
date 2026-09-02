@@ -74,7 +74,7 @@ export default async function PropertyDetailPage({
   const property: PropertyDetail | null = await getProperty(typedLocale, slug);
   if (!property) notFound();
 
-  const [settings, related] = await Promise.all([
+  const [settings, related, everythingElse] = await Promise.all([
     getSettings(),
     // Nearby means the same area, and *only* the same area: deliberately not
     // narrowed by `purpose`, so a page reached from "For sale" still shows
@@ -84,6 +84,11 @@ export default async function PropertyDetailPage({
     // not what makes it relevant. 16, not 8, so the carousel below has
     // more than one page to move through.
     getProperties(typedLocale, { area: property.area.slug, limit: 16 }),
+    // The fallback, so this row is never empty: an area with only one
+    // listing in it (which, with the catalogue as it stands, is most of
+    // them) would otherwise end the page on a link out instead of on
+    // something to look at.
+    getProperties(typedLocale, { limit: 16 }),
   ]);
 
   const images = property.images.length > 0 ? property.images : [];
@@ -105,7 +110,15 @@ export default async function PropertyDetailPage({
   const whatsapp = settings.whatsapp?.trim();
   // Not sliced to 4 any more: the row is a carousel now, so everything the
   // area has to offer is reachable rather than only its first four.
-  const others = related.items.filter((item) => item.id !== property.id);
+  const sameArea = related.items.filter((item) => item.id !== property.id);
+  // Whatever the area has comes first; the rest of the catalogue follows
+  // behind it in the same carousel, so the visitor always has somewhere to
+  // go from here without leaving the page.
+  const seen = new Set([property.id, ...sameArea.map((item) => item.id)]);
+  const others = [
+    ...sameArea,
+    ...everythingElse.items.filter((item) => !seen.has(item.id)),
+  ];
 
   return (
     <>
@@ -315,17 +328,31 @@ export default async function PropertyDetailPage({
           alike, and the heading should say which area that is. */}
       {others.length > 0 ? (
         <section className="container related-properties">
+          {/* Titled for whatever leads the row: the area when the office has
+              other listings in it, the catalogue at large when it does not.
+              Claiming "More in Bayan" over a row that is really the rest of
+              Kuwait would be the heading lying about its own contents. */}
           <header className="related-properties-header">
             <div>
-              <span className="section-kicker">{t("detail.nearbyKicker")}</span>
-              <h2>{t("detail.nearbyTitle", { area: property.area.name })}</h2>
+              <span className="section-kicker">
+                {sameArea.length > 0 ? t("detail.nearbyKicker") : t("detail.moreKicker")}
+              </span>
+              <h2>
+                {sameArea.length > 0
+                  ? t("detail.nearbyTitle", { area: property.area.name })
+                  : t("detail.moreTitle")}
+              </h2>
             </div>
             <Link
               className="button button-outline"
-              href={`/properties?area=${property.area.slug}`}
+              href={
+                sameArea.length > 0 ? `/properties?area=${property.area.slug}` : "/properties"
+              }
             >
               <MapPin size={15} />
-              {t("detail.nearbyCta", { area: property.area.name })}
+              {sameArea.length > 0
+                ? t("detail.nearbyCta", { area: property.area.name })
+                : t("detail.moreCta")}
             </Link>
           </header>
 

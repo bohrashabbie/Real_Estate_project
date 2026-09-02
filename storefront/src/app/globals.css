@@ -8389,26 +8389,39 @@ body {
   width:100%;
 }
 
+/* The description was a solid gold slab carrying 27px black text at weight
+   800 -- a paragraph shouted at the size of a headline, on the loudest
+   surface on the page. It is prose: it wants to be read, not announced.
+   Now a quiet cream panel with the gold kept as a rule down its leading
+   edge, text at a real reading size and weight, and the generous line
+   height the Arabic face needs. */
 .property-description>p {
-  background:linear-gradient(135deg,#d9b665,#f1d992 48%,#c8a45d);
-  border:1px solid #b1822c6b;
-  border-radius:18px;
-  max-width:920px;
-  margin:18px 0 38px;
-  padding:24px 28px;
-  font-weight:800;
-  line-height:2.05;
-  box-shadow:0 18px 42px #b1822c2e,inset 0 0 0 1px #ffffff47;
-  color:#000!important;
-  font-size:clamp(21px,1.75vw,27px)!important;
+  background:linear-gradient(180deg,#fffdf7,#faf5e9);
+  border:1px solid #c8a45d3d;
+  border-inline-start:3px solid var(--gold);
+  /* Flat edge on the side the gold rule runs down; RTL is the default here,
+     so the small corners are on the right until `[dir="ltr"]` swaps them. */
+  border-radius:16px 4px 4px 16px;
+  max-width:820px;
+  margin:16px 0 34px;
+  padding:22px 26px;
+  font-weight:500;
+  line-height:2.15;
+  box-shadow:0 12px 30px #0d1b2a0f;
+  color:#2f3841!important;
+  font-size:clamp(15px,1.15vw,17px)!important;
+}
+
+[dir="ltr"] .property-description>p {
+  border-radius:4px 16px 16px 4px;
 }
 
 .property-description>.section-kicker {
   margin-bottom:6px;
-  font-weight:900;
+  font-weight:800;
   line-height:1.7;
   display:inline-flex;
-  font-size:clamp(20px,1.55vw,26px)!important;
+  font-size:clamp(16px,1.15vw,19px)!important;
 }
 
 .property-description h3 {
@@ -8473,13 +8486,12 @@ body {
     font-size:15px;
   }
   .property-description>p {
-    border-radius:14px;
     padding:18px 20px;
-    line-height:1.95;
-    font-size:20px!important;
+    line-height:2.05;
+    font-size:15px!important;
   }
   .property-description>.section-kicker {
-    font-size:19px!important;
+    font-size:16px!important;
   }
   .feature-list span {
     min-height:58px;

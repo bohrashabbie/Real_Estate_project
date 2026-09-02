@@ -208,7 +208,10 @@
     "nearbyKicker": "قريب من هنا",
     "nearbyTitle": "المزيد في {area}",
     "nearbyCta": "كل عقارات {area}",
-    "backToArea": "الرجوع إلى {area}"
+    "backToArea": "الرجوع إلى {area}",
+    "moreKicker": "المزيد للاطلاع",
+    "moreTitle": "عقارات أخرى",
+    "moreCta": "كل العقارات"
   },
   "inquiry": {
     "name": "الاسم",
