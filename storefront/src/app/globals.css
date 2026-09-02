@@ -9460,6 +9460,60 @@ body {
   height:406px;
 }
 
+/* Three to a view puts the slide at ~377px inside the 1180px container --
+   two-thirds of the 578px the two-up body was drawn for. Everything in the
+   foot was fighting for that missing third: a 25px price wrapped onto three
+   lines and pushed "Compare" off the card's edge.
+
+   Only inside this query. `.is-three` stays on the element at every width,
+   but the row actually renders three-up only above 1200px (see the carousel's
+   own MID_QUERY) -- applied unconditionally, these would cramp the two-up
+   and one-up tiers, which have the room the default body wants. */
+@media (min-width:1201px) {
+  .vip-carousel.is-three .vip-slide-body {
+    padding:20px 18px 18px;
+  }
+
+  .vip-carousel.is-three .vip-slide-body h3 {
+    margin:7px 0 6px;
+    font-size:18px;
+  }
+
+  .vip-carousel.is-three .vip-slide-where {
+    font-size:12px;
+  }
+
+  .vip-carousel.is-three .vip-slide-specs {
+    gap:12px;
+    margin-top:11px;
+    padding-top:11px;
+  }
+
+  .vip-carousel.is-three .vip-slide-specs span {
+    gap:5px;
+    font-size:12px;
+  }
+
+  /* Stacked, like the phone tier: the price gets its own line rather than
+     being squeezed against the buttons beside it. */
+  .vip-carousel.is-three .vip-slide-foot {
+    flex-direction:column;
+    align-items:flex-start;
+    gap:11px;
+    margin-top:13px;
+  }
+
+  .vip-carousel.is-three .vip-slide-price {
+    font-size:20px;
+    white-space:nowrap;
+  }
+
+  .vip-carousel.is-three .vip-slide-actions {
+    justify-content:space-between;
+    width:100%;
+  }
+}
+
 @media (max-width:1200px) {
   .vip-carousel.is-three .vip-carousel-item {
     flex:0 0 calc((100% - var(--vip-gap))/2);
