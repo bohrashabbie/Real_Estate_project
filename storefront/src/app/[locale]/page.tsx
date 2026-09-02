@@ -123,11 +123,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      {/* FooterSearch is last so it lands directly above <Footer> (which
-          layout.tsx renders after the page), closing the page with a search
-          rather than with the WhatsApp band. */}
-      <ContactBand settings={settings} />
+      {/* ContactBand is last so it lands directly above <Footer> (which
+          layout.tsx renders after the page): the search-again cards answer
+          the listings above them, and the WhatsApp band is the last word
+          before the footer. */}
       <FooterSearch areas={areas} types={types} locale={typedLocale} />
+      <ContactBand settings={settings} />
     </>
   );
 }
