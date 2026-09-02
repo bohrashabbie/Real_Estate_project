@@ -2,16 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  ArrowLeft,
-  Bath,
-  BedDouble,
-  ChevronLeft,
-  ChevronRight,
-  Crown,
-  MapPin,
-  Maximize2,
-} from "lucide-react";
+import { ArrowLeft, Bath, BedDouble, Crown, MapPin, Maximize2 } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -36,14 +27,15 @@ const NARROW_QUERY = "(max-width: 899px)";
  * The track is a real scroll container with snap points, not a transformed
  * strip. That buys touch swiping, keyboard scrolling and — the part that
  * matters most here — correct behaviour under `dir="rtl"`, because the browser
- * owns the direction rather than us. The buttons and dots drive it with
+ * owns the direction rather than us. The scrub bar drives it with
  * `scrollIntoView` for the same reason; a hand-computed `translateX` would need
  * its sign flipped per direction and would still disagree with a swipe.
  *
- * Chevrons follow `LaunchHero`: left is previous, right is next, physical in
- * both directions. Deliberately not mirrored by the `ArrowLeft` rules in
- * globals.css — a slider control points at the edge it travels toward, and the
- * two sliders on this page should answer to the same gesture.
+ * The scrub bar is a native `<input type="range">`, not a pair of arrow
+ * buttons — on request, in place of the chevron-plus-dots control every other
+ * carousel on the site still uses. A range input gets drag, click-to-jump and
+ * keyboard arrows for free, and it already flips correctly under `dir="rtl"`
+ * the same way the track does, with no direction-specific code of its own.
  */
 export function VipCarousel({
   properties,
@@ -224,38 +216,16 @@ export function VipCarousel({
       </div>
 
       {pages > 1 ? (
-        <div className="carousel-controls">
-          <button
-            type="button"
-            aria-label={t("hero.previous")}
-            onClick={() => goTo(page - 1)}
-            disabled={page === 0}
-          >
-            <ChevronLeft size={17} />
-          </button>
-
-          <div className="carousel-dots">
-            {Array.from({ length: pages }, (_, index) => (
-              <button
-                key={index}
-                type="button"
-                className={index === page ? "is-active" : undefined}
-                aria-label={t("vip.goToPage", { page: index + 1 })}
-                aria-current={index === page || undefined}
-                onClick={() => goTo(index)}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            aria-label={t("hero.next")}
-            onClick={() => goTo(page + 1)}
-            disabled={page === pages - 1}
-          >
-            <ChevronRight size={17} />
-          </button>
-        </div>
+        <input
+          type="range"
+          className="vip-scrub"
+          min={0}
+          max={pages - 1}
+          step={1}
+          value={page}
+          onChange={(event) => goTo(Number(event.target.value))}
+          aria-label={t("vip.scrubAria")}
+        />
       ) : null}
     </div>
   );

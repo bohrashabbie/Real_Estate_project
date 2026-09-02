@@ -1072,9 +1072,17 @@ img {
 /* VIP has no section of its own to inherit a tighter band from, so it was
    sitting on the default `.section` padding (104px) on both edges — stacked
    with Featured's own 68px top, that put roughly three empty screen-widths
-   of ivory between the VIP carousel's arrows and the Featured heading. */
+   of ivory between the VIP carousel's arrows and the Featured heading.
+
+   Tightened further on request, to bring the section's own heading-to-
+   scrub-bar span inside one screen at common laptop heights: measured at
+   778px before this (heading through the scrub bar), which clears a
+   1440x900 or a 1920x1080 viewport under the 94px sticky header but
+   overflows a 1366x768 one by ~104px — a very ordinary laptop size to
+   still be short by that much on. Padding alone can't close that; see
+   `.vip-slide`'s own height for the rest of it. */
 .home-vip-section {
-  padding-bottom:68px;
+  padding-block:36px 40px;
 }
 
 .home-vip-section+.home-featured-section {
@@ -9561,10 +9569,14 @@ body {
 
 /* Height only, per request -- the width already comes out right from
    `.vip-carousel-item`'s own `flex-basis` (two to a view), untouched here. */
+/* 460px, not the 500px this grew to a few rounds ago -- trimmed back down
+   (with .home-vip-section's own padding) so the section's heading-through-
+   scrub-bar span fits inside a 1366x768 laptop screen under the sticky
+   header. Every narrower tier below drops by the same ~40px. */
 .vip-slide {
   border:1px solid #c8a45d47;
   border-radius:16px;
-  height:500px;
+  height:460px;
   position:relative;
   overflow:hidden;
   transition:transform .35s,border-color .35s;
@@ -9757,9 +9769,72 @@ body {
   color:var(--gold);
 }
 
-/* Shared by every arrow-paged rail on the site — the VIP slider and any
-   `PropertyCard` carousel (see `.card-carousel`) draw their prev/next buttons
-   and page dots from here, so a restyle only happens once. */
+/* The VIP row's own scrub bar — a native range input, not the chevron-plus-
+   dots `.carousel-controls` every other carousel on the site still uses (on
+   request). `appearance:none` on the input itself is what lets its own
+   `background` stand in for the track, styled as a plain, evenly-toned gold
+   line rather than a filled progress bar: a value-driven fill gradient would
+   need to flip direction under `dir="rtl"` by hand, since a CSS background
+   has no idea which way the slider's own min/max run, while the thumb's
+   position is flipped correctly by the browser for free either way. */
+.vip-scrub {
+  -webkit-appearance:none;
+  appearance:none;
+  background:linear-gradient(90deg,#c8a45d59,#c8a45d33);
+  border-radius:999px;
+  outline:0;
+  width:min(260px,60%);
+  height:6px;
+  margin:20px auto 0;
+  display:block;
+  cursor:pointer;
+}
+
+.vip-scrub::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  appearance:none;
+  background:var(--navy);
+  border:2px solid var(--gold);
+  border-radius:50%;
+  width:18px;
+  height:18px;
+  box-shadow:0 2px 8px #0d1b2a4d;
+  transition:transform .15s;
+}
+
+.vip-scrub::-moz-range-thumb {
+  background:var(--navy);
+  border:2px solid var(--gold);
+  border-radius:50%;
+  width:14px;
+  height:14px;
+  box-shadow:0 2px 8px #0d1b2a4d;
+  transition:transform .15s;
+}
+
+.vip-scrub::-moz-range-track {
+  background:0 0;
+  border:0;
+}
+
+.vip-scrub:hover::-webkit-slider-thumb,
+.vip-scrub:active::-webkit-slider-thumb {
+  transform:scale(1.12);
+}
+
+.vip-scrub:hover::-moz-range-thumb,
+.vip-scrub:active::-moz-range-thumb {
+  transform:scale(1.12);
+}
+
+.vip-scrub:focus-visible {
+  box-shadow:0 0 0 3px #c8a45d4d;
+}
+
+/* Shared by every arrow-paged rail on the site — any `PropertyCard`
+   carousel (see `.card-carousel`) draws its prev/next buttons and page dots
+   from here, so a restyle only happens once. The VIP row uses its own
+   `.vip-scrub` instead (above). */
 .carousel-controls {
   justify-content:center;
   align-items:center;
@@ -9856,7 +9931,7 @@ body {
 
 @media (max-width:1023px) {
   .vip-slide {
-    height:456px;
+    height:416px;
   }
 
   .vip-slide-body h3 {
@@ -9880,13 +9955,13 @@ body {
   }
 
   .vip-slide {
-    height:436px;
+    height:396px;
   }
 }
 
 @media (max-width:520px) {
   .vip-slide {
-    height:408px;
+    height:368px;
   }
 
   .vip-slide-body {
