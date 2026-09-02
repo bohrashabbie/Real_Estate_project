@@ -1064,9 +1064,11 @@ img {
 
 /* Bottom is tighter than top: the type grid right after it is "one short row
    of links, not a chapter of the page" (see its own comment below) and reads
-   as a continuation of this section more than a new one. */
+   as a continuation of this section more than a new one. Trimmed further on
+   request -- the type grid's own top is already collapsed to 0 below, so
+   this bottom figure is the only thing left standing between the two. */
 .home-featured-section {
-  padding-block:68px 24px;
+  padding-block:68px 8px;
 }
 
 /* VIP has no section of its own to inherit a tighter band from, so it was
@@ -1348,7 +1350,7 @@ img {
   justify-content:space-between;
   align-items:center;
   margin-top:auto;
-  padding-top:15px;
+  padding-top:6px;
   display:flex;
 }
 
