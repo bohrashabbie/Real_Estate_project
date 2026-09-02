@@ -1096,6 +1096,16 @@ img {
   padding-top:0;
 }
 
+/* "All listings" is the last carousel section before the gold contact band,
+   and was the one row still sitting on `.section`'s full 104px bottom
+   padding while VIP and Featured had already been tightened (40px, 24px) --
+   on request, matched down to Featured's own figure so the page doesn't
+   open a much bigger gap under the last row than it does under the other
+   two. */
+.home-all-properties {
+  padding-bottom:24px;
+}
+
 .heading-row h2 {
   font-size:clamp(28px,3.3vw,40px);
 }
