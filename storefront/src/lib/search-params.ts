@@ -12,3 +12,11 @@ export function one(value: string | string[] | undefined): string | undefined {
   const trimmed = raw?.trim();
   return trimmed ? trimmed : undefined;
 }
+
+/** Every value for a key that *is* meant to repeat, like `area` once the
+ *  picker went multi-select (`?area=a&area=b`) — `one()`'s "just the first"
+ *  reading would silently drop every area but one off a shared link. */
+export function all(value: string | string[] | undefined): string[] {
+  const raw = Array.isArray(value) ? value : value ? [value] : [];
+  return raw.map((item) => item.trim()).filter(Boolean);
+}

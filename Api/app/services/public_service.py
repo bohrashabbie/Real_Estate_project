@@ -248,7 +248,7 @@ def _apply_filters(
     *,
     purpose: str | None = None,
     type_key: str | None = None,
-    area_slug: str | None = None,
+    area_slugs: str | list[str] | None = None,
     price_min: Decimal | None = None,
     price_max: Decimal | None = None,
     rooms: int | None = None,
@@ -263,8 +263,12 @@ def _apply_filters(
         stmt = stmt.where(
             Property.property_type_id.in_(select(PropertyType.id).where(PropertyType.key == type_key))
         )
-    if area_slug:
-        stmt = stmt.where(Property.area_id.in_(select(Area.id).where(Area.slug == area_slug)))
+    if area_slugs:
+        # The listing endpoint passes a list (any of several areas, OR'd
+        # together); smart_search still passes its one slug as a bare str.
+        # Normalising here means that caller never has to wrap it itself.
+        slugs = [area_slugs] if isinstance(area_slugs, str) else list(area_slugs)
+        stmt = stmt.where(Property.area_id.in_(select(Area.id).where(Area.slug.in_(slugs))))
     if price_min is not None:
         stmt = stmt.where(Property.price >= price_min)
     if price_max is not None:
@@ -296,7 +300,7 @@ def property_list(
     *,
     purpose: str | None = None,
     type_key: str | None = None,
-    area_slug: str | None = None,
+    area_slugs: list[str] | None = None,
     price_min: Decimal | None = None,
     price_max: Decimal | None = None,
     rooms: int | None = None,
@@ -311,7 +315,7 @@ def property_list(
         _base_stmt(),
         purpose=purpose,
         type_key=type_key,
-        area_slug=area_slug,
+        area_slugs=area_slugs,
         price_min=price_min,
         price_max=price_max,
         rooms=rooms,
@@ -431,7 +435,7 @@ def smart_search(db: Session, data, locale: str) -> dict:
             _base_stmt(),
             purpose=data.purpose,
             type_key=data.type,
-            area_slug=area_slug,
+            area_slugs=area_slug,
             price_max=budget_max,
             rooms=rooms,
             status="available",

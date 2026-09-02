@@ -85,7 +85,7 @@
     "areaHint": "Area in Kuwait",
     "helpMulti": "You can pick more than one area.",
     "helpMax": "Pick at least one area, up to {max}.",
-    "pickOne": "Pick one area",
+    "moreAreas": "+{count}",
     "done": "Done"
   },
   "purpose": {
@@ -267,7 +267,7 @@
     "stepKicker": "One simple step",
     "q1": "Buying or renting?",
     "q2": "Which area suits you?",
-    "q2Hint": "Pick one area to start — you can widen the search later.",
+    "q2Hint": "Pick one or more areas — you can widen the search later.",
     "q3": "What's the budget range?",
     "q4": "What kind of property?",
     "q4Hint": "Choose the type closest to what you're after.",

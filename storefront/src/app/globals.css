@@ -3445,6 +3445,39 @@ footer {
   display:flex;
 }
 
+/* Selected areas in the closed summary, as gold chips rather than a name or
+   a bare count — same gradient as .featured-label/.vip-slide-crown/
+   .unified-area-selected, so "this is selected" reads the same way
+   everywhere on the site. `min-width:0` + `overflow:hidden` on the row is
+   what lets `justify-content:space-between` on the summary still fit the
+   chevron beside it instead of the chips pushing the row wider than the
+   search field. Capped to two chips plus a "+N" overflow chip in the
+   component itself, so this never needs to wrap. */
+.area-field-chips {
+  min-width:0;
+  align-items:center;
+  gap:5px;
+  display:flex;
+  overflow:hidden;
+}
+
+.area-chip {
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  color:#fff;
+  border-radius:999px;
+  align-items:center;
+  padding:3px 9px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+  display:inline-flex;
+  flex:none;
+}
+
+.area-chip-more {
+  background:var(--navy);
+}
+
 .home-area-picker summary::-webkit-details-marker {
   display:none;
 }
@@ -7660,10 +7693,13 @@ body {
   display:flex;
 }
 
+/* Same gold-gradient pill as .featured-label/.vip-slide-crown/.area-chip —
+   one "this is selected/promoted" badge language across the site rather
+   than each picker inventing its own colour for the same idea. */
 .unified-area-selected>button {
   color:#fff;
-  background:#0f5fa8;
-  border:1px solid #0f5fa8;
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  border:1px solid #0000;
   border-radius:999px;
   align-items:center;
   gap:7px;
@@ -7672,12 +7708,11 @@ body {
   font-size:13px;
   font-weight:800;
   display:inline-flex;
-  box-shadow:0 5px 12px #0f5fa833;
+  box-shadow:0 5px 12px #0d1b2a26;
 }
 
 .unified-area-selected>button:hover {
-  background:#0b4f8d;
-  border-color:#0b4f8d;
+  filter:brightness(1.06);
 }
 
 .unified-area-selected>button>span {

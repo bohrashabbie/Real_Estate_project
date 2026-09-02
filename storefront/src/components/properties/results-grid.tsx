@@ -29,7 +29,7 @@ export function ResultsGrid({
   locale,
 }: {
   initial: Paginated<PropertyListItem>;
-  filters: Record<string, string>;
+  filters: Record<string, string | string[]>;
   locale: Locale;
 }) {
   const t = useTranslations("listing");

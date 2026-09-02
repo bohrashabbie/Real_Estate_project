@@ -45,7 +45,10 @@ export function FooterSearch({
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const params = new URLSearchParams();
-    if (area[0]) params.set("area", area[0]);
+    // Every selected area, not just the first -- smart-search now matches
+    // on any of them (see SmartSearchIn.area), the same as the /properties
+    // listing filter.
+    for (const slug of area) params.append("area", slug);
     if (type) params.set("type", type);
     if (purpose) params.set("purpose", purpose);
     const query = params.toString();

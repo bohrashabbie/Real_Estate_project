@@ -11,7 +11,7 @@ import {
   getPropertyTypes,
   getSettings,
 } from "@/lib/api";
-import { one, type SearchParams } from "@/lib/search-params";
+import { all, one, type SearchParams } from "@/lib/search-params";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import { FeaturedStrip } from "@/components/properties/featured-strip";
@@ -46,7 +46,7 @@ export default async function PropertiesPage({
   const query = await searchParams;
   const t = await getTranslations();
 
-  const area = one(query.area);
+  const area = all(query.area);
   const type = one(query.type);
   const purpose = one(query.purpose);
   const rooms = one(query.rooms);
@@ -55,8 +55,8 @@ export default async function PropertiesPage({
   const featuredOnly = one(query.featured) === "1";
   const vipOnly = one(query.vip) === "1";
 
-  const filters: Record<string, string> = {};
-  if (area) filters.area = area;
+  const filters: Record<string, string | string[]> = {};
+  if (area.length > 0) filters.area = area;
   if (type) filters.type = type;
   if (purpose) filters.purpose = purpose;
   if (rooms) filters.rooms = rooms;

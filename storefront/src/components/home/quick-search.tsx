@@ -19,6 +19,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { QUICK_LINKS } from "@/lib/nav";
 import type { Area, PropertyType } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
+import { formatCount } from "@/lib/format";
 import { UnifiedAreaPicker } from "@/components/ui/unified-area-picker";
 
 const QUICK_ICONS = {
@@ -90,6 +91,15 @@ export function Menu({
  * the top quick-search bar and the footer's search cards. `idPrefix` keeps
  * the two instances' generated element ids from colliding when both render
  * on the same page.
+ *
+ * Multi-select (`max={0}`, i.e. unlimited): a search filter narrows results
+ * to whichever areas match, and "Salmiya or Jabriya" is a completely normal
+ * thing to want to search for — there is no reason this has to be single-pick
+ * the way, say, "which locale" is. Selected areas show as gold chips in the
+ * closed summary, the same treatment as the featured/VIP badges elsewhere on
+ * the site, rather than collapsing to a single name or a bare count — capped
+ * at two plus a "+N" overflow chip so the field never grows past one line
+ * inside the quick-search bar's grid row.
  */
 export function AreaField({
   areas,
@@ -106,10 +116,11 @@ export function AreaField({
 }) {
   const t = useTranslations();
   const details = useRef<HTMLDetailsElement>(null);
-  const label =
-    area.length === 0
-      ? t("picker.allAreas")
-      : (areas.find((item) => item.slug === area[0])?.name ?? t("picker.allAreas"));
+  const selectedAreas = area
+    .map((slug) => areas.find((item) => item.slug === slug))
+    .filter((item): item is Area => Boolean(item));
+  const shown = selectedAreas.slice(0, 2);
+  const overflow = selectedAreas.length - shown.length;
 
   return (
     <div className="home-search-field home-area-picker">
@@ -119,7 +130,27 @@ export function AreaField({
       </span>
       <details ref={details}>
         <summary>
-          <span>{label}</span>
+          {selectedAreas.length === 0 ? (
+            <span>{t("picker.allAreas")}</span>
+          ) : (
+            <span className="area-field-chips">
+              {/* span, not b: `.home-search-field b` (this field's own
+                  "Area" caption) sets color:navy at higher specificity than
+                  a single class, which silently overrode this chip's white
+                  text — invisible on the "+N" chip's navy background,
+                  since that made it navy-on-navy. */}
+              {shown.map((item) => (
+                <span key={item.slug} className="area-chip">
+                  {item.name}
+                </span>
+              ))}
+              {overflow > 0 ? (
+                <span className="area-chip area-chip-more">
+                  {t("picker.moreAreas", { count: formatCount(overflow, locale) })}
+                </span>
+              ) : null}
+            </span>
+          )}
           <ChevronDown size={14} />
         </summary>
         <div className="home-area-menu">
@@ -128,13 +159,13 @@ export function AreaField({
             value={area}
             onChange={onChange}
             locale={locale}
-            max={1}
+            max={0}
             variant="inline"
             browser="expanded"
             idPrefix={idPrefix}
           />
           <footer>
-            <small>{t("picker.pickOne")}</small>
+            <small>{t("picker.helpMulti")}</small>
             <button type="button" onClick={() => details.current?.removeAttribute("open")}>
               {t("picker.done")}
             </button>
@@ -155,28 +186,37 @@ export function QuickSearch({
   areas: Area[];
   types: PropertyType[];
   locale: Locale;
-  initial?: { area?: string; type?: string; purpose?: string };
+  initial?: { area?: string[]; type?: string; purpose?: string };
   variant?: "home" | "properties";
 }) {
   const t = useTranslations();
   const router = useRouter();
 
-  const [area, setArea] = useState<string[]>(initial?.area ? [initial.area] : []);
+  const [area, setArea] = useState<string[]>(initial?.area ?? []);
   const [type, setType] = useState(initial?.type ?? "");
   const [purpose, setPurpose] = useState(initial?.purpose ?? "");
 
   // Landing on /properties?purpose=rent must show "For rent" in the bar, and
   // the same must happen when a quick-link is followed from this very bar.
+  // initial.area is a new array on every render (built fresh from
+  // searchParams), so it can't sit in the dependency list itself without
+  // re-running every time — its own values are what's compared instead.
+  const initialAreaKey = initial?.area?.join(",") ?? "";
   useEffect(() => {
-    setArea(initial?.area ? [initial.area] : []);
+    setArea(initial?.area ?? []);
     setType(initial?.type ?? "");
     setPurpose(initial?.purpose ?? "");
-  }, [initial?.area, initial?.type, initial?.purpose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialAreaKey, initial?.type, initial?.purpose]);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const params = new URLSearchParams();
-    if (area[0]) params.set("area", area[0]);
+    // One area used to mean one `area=` param; picking several now means
+    // several, in URL-param order, so a shared link round-trips every one
+    // of them back through `all()` on the properties page rather than only
+    // the first.
+    for (const slug of area) params.append("area", slug);
     if (type) params.set("type", type);
     if (purpose) params.set("purpose", purpose);
     const query = params.toString();

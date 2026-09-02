@@ -267,12 +267,18 @@ export class PublicApiError extends Error {
   }
 }
 
-type Query = Record<string, string | number | boolean | undefined | null>;
+type Query = Record<string, string | number | boolean | string[] | undefined | null>;
 
 function buildUrl(path: string, searchParams?: Query): string {
   const url = new URL(`${API_BASE}${path}`);
   for (const [key, value] of Object.entries(searchParams ?? {})) {
     if (value === undefined || value === null || value === "") continue;
+    if (Array.isArray(value)) {
+      // Repeated params (?area=a&area=b), matching how /public/v1/properties
+      // reads a multi-valued filter -- .set() would keep only the last one.
+      for (const item of value) url.searchParams.append(key, item);
+      continue;
+    }
     url.searchParams.set(key, String(value));
   }
   return url.toString();

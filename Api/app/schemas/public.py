@@ -33,6 +33,6 @@ class SmartSearchIn(BaseModel):
 
     purpose: Purpose | None = None
     type: str | None = None  # property_type key
-    area: str | None = None  # area slug
+    area: list[str] | None = None  # area slugs, matched on any
     budget_max: Decimal | None = Field(None, gt=0)
     rooms: int | None = Field(None, ge=0)

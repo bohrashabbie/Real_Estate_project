@@ -73,7 +73,7 @@ export function SmartSearchWizard({
   locale: Locale;
   whatsapp: string | null;
   siteName: string;
-  initial?: { area?: string; type?: string; purpose?: "rent" | "sale" };
+  initial?: { area?: string[]; type?: string; purpose?: "rent" | "sale" };
 }) {
   const t = useTranslations();
   const [step, setStep] = useState(1);
@@ -81,7 +81,7 @@ export function SmartSearchWizard({
   // a first question with nothing chosen puts a disabled Next button in front
   // of someone who has only just arrived.
   const [purpose, setPurpose] = useState<"rent" | "sale" | null>(initial?.purpose ?? "rent");
-  const [area, setArea] = useState<string[]>(initial?.area ? [initial.area] : []);
+  const [area, setArea] = useState<string[]>(initial?.area ?? []);
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
   const [type, setType] = useState<string[]>(initial?.type ? [initial.type] : []);
@@ -97,7 +97,7 @@ export function SmartSearchWizard({
         "/smart-search",
         {
           purpose,
-          area: area[0] ?? null,
+          area: area.length > 0 ? area : null,
           type: type[0] ?? null,
           budget_max: budgetMax ? Number(budgetMax) : null,
           rooms,
@@ -127,7 +127,7 @@ export function SmartSearchWizard({
   useEffect(() => {
     if (autoRan.current) return;
     autoRan.current = true;
-    if (initial?.area || initial?.type || initial?.purpose) {
+    if ((initial?.area && initial.area.length > 0) || initial?.type || initial?.purpose) {
       // If the fetch is slow enough to paint at all, it paints the last
       // step's "Searching…" state rather than the first question -- nothing
       // here was actually left for the visitor to answer.
@@ -142,7 +142,11 @@ export function SmartSearchWizard({
   if (result) {
     const criteria = [
       purpose ? t(`purpose.${purpose}`) : null,
-      area[0] ? (areas.find((item) => item.slug === area[0])?.name ?? null) : null,
+      // One chip per selected area rather than one combined string — the
+      // summary already renders each criterion as its own `<span>`, so a
+      // second (or third) area just adds another chip instead of needing
+      // its own "Salmiya, Jabriya" join-and-format logic.
+      ...area.map((slug) => areas.find((item) => item.slug === slug)?.name ?? null),
       type[0] ? (types.find((item) => item.key === type[0])?.name ?? null) : null,
       budgetMax ? t("smart.budgetUpTo", { amount: budgetMax }) : null,
       rooms ? t("card.rooms", { count: rooms }) : null,
@@ -284,7 +288,7 @@ export function SmartSearchWizard({
                   value={area}
                   onChange={setArea}
                   locale={locale}
-                  max={1}
+                  max={0}
                   idPrefix="wizard-areas"
                 />
               </div>

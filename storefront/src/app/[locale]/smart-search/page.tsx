@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { localeAlternates, type Locale } from "@/i18n/routing";
 import { getAreas, getPropertyTypes, getSettings } from "@/lib/api";
-import { one, type SearchParams } from "@/lib/search-params";
+import { all, one, type SearchParams } from "@/lib/search-params";
 import { SmartSearchWizard } from "@/components/smart-search/wizard";
 
 export async function generateMetadata({
@@ -48,7 +48,7 @@ export default async function SmartSearchPage({
   const rawPurpose = one(query.purpose);
   const purpose: "sale" | "rent" | undefined =
     rawPurpose === "sale" || rawPurpose === "rent" ? rawPurpose : undefined;
-  const initial = { area: one(query.area), type: one(query.type), purpose };
+  const initial = { area: all(query.area), type: one(query.type), purpose };
 
   return (
     <section className="section smart-search-page">
