@@ -208,10 +208,7 @@
     "nearbyKicker": "Nearby",
     "nearbyTitle": "More in {area}",
     "nearbyCta": "All properties in {area}",
-    "backToArea": "Back to {area}",
-    "moreKicker": "More to see",
-    "moreTitle": "Other properties",
-    "moreCta": "All properties"
+    "backToArea": "Back to {area}"
   },
   "inquiry": {
     "name": "Name",
