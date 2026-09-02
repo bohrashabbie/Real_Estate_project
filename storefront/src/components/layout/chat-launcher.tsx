@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { MessageCircle, Send, X } from "lucide-react";
+import { Headset, Send, X } from "lucide-react";
 
 import { apiPost, type SiteSettings } from "@/lib/api";
 import { formatPhone, waLink } from "@/lib/format";
@@ -66,13 +66,21 @@ export function ChatLauncher({ settings }: { settings: SiteSettings }) {
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        <MessageCircle size={21} />
+        {/* A headset, not a speech bubble: this opens a line to the office's
+            own people, and the office asked for the support-agent mark it
+            uses elsewhere. lucide's own icon rather than a pasted picture --
+            it inherits the button's colour and stays sharp at any density,
+            where a bitmap avatar in a 46px circle would not. */}
+        <Headset size={21} />
         <i />
       </button>
 
       {open ? (
         <aside className="chat-panel" aria-label={t("panelAria")}>
           <header>
+            <span className="chat-avatar" aria-hidden>
+              <Headset size={17} />
+            </span>
             <div>
               <strong>{t("team", { office: officeName })}</strong>
               <span>{t("offline")}</span>

@@ -6011,6 +6011,22 @@ footer {
   display:flex;
 }
 
+/* The agent mark beside the office's name. Selector carries `span` too
+   because `.chat-panel header span` (the status line's own rule, right
+   below) is element+class and would otherwise win on colour and size. */
+.chat-panel header span.chat-avatar {
+  color:var(--navy);
+  background:linear-gradient(140deg,#ffe9a0,var(--gold) 55%,#a7803d);
+  border-radius:50%;
+  flex:none;
+  place-items:center;
+  width:34px;
+  height:34px;
+  font-size:0;
+  display:grid;
+  box-shadow:0 4px 12px #0000003d;
+}
+
 .chat-panel header>div {
   flex-direction:column;
   flex:1;
