@@ -19,9 +19,11 @@ import { mediaUrl, type PropertyListItem } from "@/lib/api";
 import { formatPrice, formatSqm } from "@/lib/format";
 import { CompareToggle } from "@/components/property/compare-toggle";
 
-/** Two to a view on a desktop, one once the pair would be too narrow to read. */
-const WIDE = 2;
+/** Two to a view on a desktop, one once the pair would be too narrow to read.
+ *  The listing pages ask for three (`columns={3}`), which takes a middle tier
+ *  of its own: three full-height slides below ~1200px are too narrow. */
 const NARROW_QUERY = "(max-width: 899px)";
+const MID_QUERY = "(max-width: 1200px)";
 
 /**
  * The VIP row: a slider of two large showcase slides rather than a rail of the
@@ -48,24 +50,37 @@ const NARROW_QUERY = "(max-width: 899px)";
 export function VipCarousel({
   properties,
   locale,
+  columns = 2,
 }: {
   properties: PropertyListItem[];
   locale: Locale;
+  /** Slides to a view at full width. The home page keeps two; the listing
+   *  pages ask for three. The CSS half of this is `.vip-carousel.is-three`,
+   *  and the two must agree — `goTo` pages by `perView`, so a JS count that
+   *  disagreed with the rendered width would scroll to the wrong slide. */
+  columns?: 2 | 3;
 }) {
   const t = useTranslations();
   const trackRef = useRef<HTMLDivElement>(null);
-  const [perView, setPerView] = useState(WIDE);
+  // Widened from `columns`'s own 2|3: the narrow tier sets it to 1.
+  const [perView, setPerView] = useState<number>(columns);
   const [page, setPage] = useState(0);
 
   const pages = Math.max(1, Math.ceil(properties.length / perView));
 
   useEffect(() => {
-    const mq = window.matchMedia(NARROW_QUERY);
-    const apply = () => setPerView(mq.matches ? 1 : WIDE);
+    const narrow = window.matchMedia(NARROW_QUERY);
+    const mid = window.matchMedia(MID_QUERY);
+    const apply = () =>
+      setPerView(narrow.matches ? 1 : columns === 3 && mid.matches ? 2 : columns);
     apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, []);
+    narrow.addEventListener("change", apply);
+    mid.addEventListener("change", apply);
+    return () => {
+      narrow.removeEventListener("change", apply);
+      mid.removeEventListener("change", apply);
+    };
+  }, [columns]);
 
   const goTo = useCallback(
     (target: number) => {
@@ -116,7 +131,7 @@ export function VipCarousel({
   if (properties.length === 0) return null;
 
   return (
-    <div className="vip-carousel">
+    <div className={`vip-carousel${columns === 3 ? " is-three" : ""}`}>
       <div className="vip-carousel-track" ref={trackRef}>
         {properties.map((property) => {
           const href = `/properties/${property.slug}`;

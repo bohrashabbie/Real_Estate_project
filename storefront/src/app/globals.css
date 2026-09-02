@@ -4007,6 +4007,35 @@ footer {
   padding:68px 0;
 }
 
+/* The VIP row on the listing pages. Its top padding comes from the shared
+   `.home-quick-search + .properties-section` rule, the same 42px the home
+   page's VIP row gets; only the bottom is set here, tight, because the
+   results section follows immediately and collapses its own top to match. */
+.inner-vip-section {
+  padding-bottom:34px;
+}
+
+/* Same band as the VIP row above it, and the results section after either
+   of them collapses its own top rather than stacking a second gap. */
+.inner-featured-section {
+  padding-block:0 34px;
+}
+
+.inner-vip-section + .properties-browser,
+.inner-featured-section + .properties-browser {
+  padding-top:0;
+}
+
+/* "there is more after this" beside the page numbers -- the API is cursor-
+   paged, so the count of pages beyond what is loaded is genuinely unknown
+   and inventing a last-page number would be a lie. */
+.pagination-more {
+  color:var(--muted);
+  align-self:center;
+  padding-inline:4px;
+  font-weight:700;
+}
+
 .properties-browser {
   background:var(--ivory);
 }
@@ -4278,28 +4307,6 @@ footer {
 
 .explorer-results {
   min-width:0;
-}
-
-.results-top {
-  justify-content:space-between;
-  align-items:center;
-  min-height:57px;
-  margin-bottom:18px;
-  display:flex;
-}
-
-.results-top>div {
-  flex-direction:column;
-  display:flex;
-}
-
-.results-top span,.results-top small {
-  color:var(--muted);
-  font-size:12px;
-}
-
-.results-top strong {
-  font:700 16px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .two-column {
@@ -7004,10 +7011,6 @@ body {
   font-size:14px;
 }
 
-.results-top strong {
-  font-size:18px;
-}
-
 .active-filters-label,.active-filter-chip,.clear-active-filters {
   font-size:13px;
 }
@@ -7162,182 +7165,6 @@ body {
   scroll-margin-top:112px;
 }
 
-.featured-results-strip {
-  background:#f7f3eaf5;
-  border:1px solid #c8a45d7a;
-  border-radius:13px;
-  margin-bottom:26px;
-  padding:13px;
-  box-shadow:0 12px 32px #0d1b2a21;
-}
-
-.featured-results-strip>header {
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-  margin-bottom:11px;
-  display:flex;
-}
-
-.featured-results-strip>header>div,.featured-results-strip>header span {
-  align-items:center;
-  gap:9px;
-  display:flex;
-}
-
-.featured-results-strip>header span {
-  flex-direction:column;
-  align-items:flex-start;
-  gap:1px;
-}
-
-.featured-results-strip>header svg {
-  color:var(--gold-dark);
-  fill:#c8a45d2e;
-}
-
-.featured-results-strip>header strong {
-  color:var(--navy);
-  font:700 15px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
-}
-
-.featured-results-strip>header small {
-  color:var(--muted);
-  font-size:12px;
-}
-
-.featured-results-link {
-  background:var(--navy);
-  white-space:nowrap;
-  border:1px solid #c8a45d94;
-  border-radius:999px;
-  justify-content:center;
-  align-items:center;
-  min-height:34px;
-  padding:0 13px;
-  font-size:12px;
-  font-weight:900;
-  display:inline-flex;
-  box-shadow:0 8px 18px #0d1b2a1f;
-  color:#fff!important;
-}
-
-.featured-results-link:hover {
-  background:var(--gold);
-  color:#fff!important;
-}
-
-.featured-results-track {
-  scroll-snap-type:x proximity;
-  scrollbar-width:thin;
-  scrollbar-color:#c8a45db3 transparent;
-  gap:11px;
-  padding:1px 1px 7px;
-  display:flex;
-  overflow-x:auto;
-}
-
-.featured-strip-card {
-  border:1px solid var(--line);
-  min-height:116px;
-  color:var(--navy);
-  scroll-snap-align:start;
-  background:#fff;
-  border-radius:9px;
-  flex:0 0 310px;
-  grid-template-columns:118px minmax(0,1fr);
-  transition:transform .2s,border-color .2s,box-shadow .2s;
-  display:grid;
-  position:relative;
-  overflow:hidden;
-}
-
-.featured-strip-card:hover {
-  border-color:var(--gold);
-  transform:translateY(-2px);
-  box-shadow:0 9px 20px #0d1b2a1a;
-}
-
-.featured-strip-card>img {
-  object-fit:cover;
-  width:100%;
-  height:100%;
-  min-height:116px;
-}
-
-.featured-strip-card>span {
-  flex-direction:column;
-  justify-content:center;
-  gap:5px;
-  min-width:0;
-  padding:10px;
-  display:flex;
-}
-
-.featured-strip-card>.featured-label {
-  flex-direction:row;
-  justify-content:center;
-  gap:4px;
-  min-width:0;
-  padding:6px 9px;
-  display:inline-flex;
-}
-
-.featured-strip-card small {
-  color:var(--muted);
-  align-items:center;
-  gap:4px;
-  font-size:12px;
-  display:flex;
-}
-
-.featured-strip-card small svg {
-  width:14px;
-  height:14px;
-  color:var(--gold-dark);
-}
-
-.featured-strip-card strong {
-  color:var(--navy);
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  font:700 13px/1.65 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
-  display:-webkit-box;
-  overflow:hidden;
-}
-
-.featured-strip-card b {
-  color:var(--gold-dark);
-  font-size:13px;
-}
-
-.regular-results-heading {
-  border-bottom:1px solid var(--line);
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  min-height:58px;
-  margin-bottom:17px;
-  padding-bottom:12px;
-  display:flex;
-}
-
-.regular-results-heading>div {
-  flex-direction:column;
-  gap:2px;
-  display:flex;
-}
-
-.regular-results-heading span {
-  color:var(--navy);
-  font:700 17px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
-}
-
-.regular-results-heading strong,.regular-results-heading small {
-  color:var(--muted);
-  font-size:13px;
-}
-
 .property-pagination {
   border-top:1px solid var(--line);
   justify-content:center;
@@ -7406,25 +7233,6 @@ body {
 @media (max-width:760px) {
   .explorer-results {
     scroll-margin-top:88px;
-  }
-  .featured-results-strip {
-    margin-inline:-2px;
-    padding:11px;
-  }
-  .featured-results-strip>header strong {
-    font-size:14px;
-  }
-  .featured-results-strip>header small {
-    font-size:11px;
-  }
-  .featured-strip-card {
-    flex-basis:min(290px,100vw - 72px);
-    grid-template-columns:105px minmax(0,1fr);
-  }
-  .regular-results-heading {
-    flex-direction:column;
-    align-items:flex-start;
-    gap:5px;
   }
   .property-pagination {
     gap:7px;
@@ -9635,6 +9443,27 @@ body {
   flex:0 0 calc((100% - var(--vip-gap))/2);
 }
 
+/* Three to a view on the listing pages, on request. This must stay in step
+   with `VipCarousel`'s own `perView` (see its `columns` prop): it pages by
+   that count, so a width here that disagreed would scroll to the wrong
+   slide. Both drop to two at 1200px and to one at 899px. */
+.vip-carousel.is-three .vip-carousel-item {
+  flex:0 0 calc((100% - 2*var(--vip-gap))/3);
+}
+
+/* Shorter than the home page's 460px: at a third of the width the slide is
+   portrait enough without it, and this row sits above a results grid rather
+   than being the section it belongs to. */
+.vip-carousel.is-three .vip-slide {
+  height:406px;
+}
+
+@media (max-width:1200px) {
+  .vip-carousel.is-three .vip-carousel-item {
+    flex:0 0 calc((100% - var(--vip-gap))/2);
+  }
+}
+
 /* Height only, per request -- the width already comes out right from
    `.vip-carousel-item`'s own `flex-basis` (two to a view), untouched here. */
 /* 460px, not the 500px this grew to a few rounds ago -- trimmed back down
@@ -9956,17 +9785,23 @@ body {
     --vip-gap:16px;
   }
 
-  .vip-carousel-item {
+  /* `.is-three` is repeated on both of these because its own rules above are
+     element+two-classes and would otherwise outrank the bare-class ones here
+     and hold three slides to a view on a phone. */
+  .vip-carousel-item,
+  .vip-carousel.is-three .vip-carousel-item {
     flex:0 0 min(430px,88%);
   }
 
-  .vip-slide {
+  .vip-slide,
+  .vip-carousel.is-three .vip-slide {
     height:396px;
   }
 }
 
 @media (max-width:520px) {
-  .vip-slide {
+  .vip-slide,
+  .vip-carousel.is-three .vip-slide {
     height:368px;
   }
 

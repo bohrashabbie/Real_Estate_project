@@ -178,21 +178,12 @@
   "listing": {
     "metaTitle": "جميع العقارات",
     "metaDescription": "تصفح جميع العقارات المنشورة للبيع والإيجار في جميع مناطق الكويت.",
-    "resultsLabel": "النتائج المطابقة",
-    "count": "{count} عقارات",
-    "countMore": "{count} عقارات أو أكثر",
-    "restLabel": "باقي النتائج",
-    "showing": "{from}–{to} من {total}",
-    "featuredAria": "العقارات المميزة",
-    "featuredTitle": "العقارات المميزة",
-    "featuredSubtitle": "مختارات الإدارة",
-    "featuredLink": "عرض جميع العقارات المميزة",
-    "showMore": "عرض المزيد",
-    "loading": "جارٍ التحميل…",
     "emptyTitle": "لا توجد عقارات مطابقة",
     "emptyBody": "جرّب توسيع نطاق البحث، أو أرسل طلبك ليصل إلى المكتب مباشرة.",
     "clearFilters": "عرض كل العقارات",
-    "showingPartial": "{from}–{to}"
+    "previousPage": "الصفحة السابقة",
+    "nextPage": "الصفحة التالية",
+    "goToPage": "الذهاب إلى الصفحة {page}"
   },
   "detail": {
     "sqmLabel": "متر مربع",

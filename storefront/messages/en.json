@@ -178,21 +178,12 @@
   "listing": {
     "metaTitle": "All properties",
     "metaDescription": "Browse every published property for sale and rent across Kuwait.",
-    "resultsLabel": "Matching results",
-    "count": "{count} properties",
-    "countMore": "{count} properties or more",
-    "restLabel": "The rest of the results",
-    "showing": "{from}–{to} of {total}",
-    "featuredAria": "Featured properties",
-    "featuredTitle": "Featured properties",
-    "featuredSubtitle": "The office's picks",
-    "featuredLink": "See all featured properties",
-    "showMore": "Show more",
-    "loading": "Loading…",
     "emptyTitle": "No properties match",
     "emptyBody": "Try widening the search, or send your request straight to the office.",
     "clearFilters": "Show every property",
-    "showingPartial": "{from}–{to}"
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "goToPage": "Go to page {page}"
   },
   "detail": {
     "sqmLabel": "square metres",
