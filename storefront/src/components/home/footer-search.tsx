@@ -71,12 +71,14 @@ export function FooterSearch({
               onChange={setArea}
               locale={locale}
               idPrefix="footer-search-areas"
+              detailsName="footer-search-fields"
             />
             <Menu
               label={t("quickSearch.type")}
               icon={<House size={14} />}
               value={type}
               onPick={setType}
+              detailsName="footer-search-fields"
               options={[
                 { value: "", label: t("quickSearch.allTypes") },
                 ...types.map((item) => ({ value: item.key, label: item.name })),
@@ -90,6 +92,7 @@ export function FooterSearch({
               icon={<Repeat2 size={14} />}
               value={purpose}
               onPick={setPurpose}
+              detailsName="footer-search-fields"
               options={[
                 { value: "", label: t("quickSearch.allPurposes") },
                 { value: "sale", label: t("purpose.sale") },

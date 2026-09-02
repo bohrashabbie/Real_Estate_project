@@ -44,12 +44,18 @@ export function Menu({
   value,
   options,
   onPick,
+  detailsName,
 }: {
   label: string;
   icon: React.ReactNode;
   value: string;
   options: { value: string; label: string }[];
   onPick: (value: string) => void;
+  /** Shared with the row's other fields so opening one closes any other
+   *  that's already open — native `<details name>` exclusivity, not JS.
+   *  Unsupported browsers just keep the old "more than one open" behaviour
+   *  instead of erroring, so this costs nothing to pass unconditionally. */
+  detailsName?: string;
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
   const current = options.find((option) => option.value === value) ?? options[0];
@@ -60,7 +66,7 @@ export function Menu({
         {icon}
         <b>{label}</b>
       </span>
-      <details ref={ref}>
+      <details ref={ref} name={detailsName}>
         <summary>
           <span>{current?.label}</span>
           <ChevronDown size={14} />
@@ -107,12 +113,18 @@ export function AreaField({
   onChange,
   locale,
   idPrefix,
+  detailsName,
 }: {
   areas: Area[];
   area: string[];
   onChange: (value: string[]) => void;
   locale: Locale;
   idPrefix: string;
+  /** See `Menu`'s own doc on this prop — same shared-group mechanism. Area
+   *  still doesn't close itself on a pick (it's multi-select; that's what
+   *  the "done" button is for) but it does close when a sibling field
+   *  opens, and opening it closes them. */
+  detailsName?: string;
 }) {
   const t = useTranslations();
   const details = useRef<HTMLDetailsElement>(null);
@@ -128,7 +140,7 @@ export function AreaField({
         <MapPin size={14} />
         <b>{t("quickSearch.area")}</b>
       </span>
-      <details ref={details}>
+      <details ref={details} name={detailsName}>
         <summary>
           {selectedAreas.length === 0 ? (
             <span>{t("picker.allAreas")}</span>
@@ -241,6 +253,7 @@ export function QuickSearch({
             onChange={setArea}
             locale={locale}
             idPrefix="quick-areas"
+            detailsName="quick-search-fields"
           />
 
           <Menu
@@ -248,6 +261,7 @@ export function QuickSearch({
             icon={<House size={14} />}
             value={type}
             onPick={setType}
+            detailsName="quick-search-fields"
             options={[
               { value: "", label: t("quickSearch.allTypes") },
               ...types.map((item) => ({ value: item.key, label: item.name })),
@@ -259,6 +273,7 @@ export function QuickSearch({
             icon={<Repeat2 size={14} />}
             value={purpose}
             onPick={setPurpose}
+            detailsName="quick-search-fields"
             options={[
               { value: "", label: t("quickSearch.allPurposes") },
               { value: "sale", label: t("purpose.sale") },
