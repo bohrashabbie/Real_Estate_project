@@ -8,7 +8,6 @@ import {
   ChevronDown,
   House,
   KeyRound,
-  LandPlot,
   MapPin,
   Repeat2,
   Search,
@@ -16,19 +15,10 @@ import {
 } from "lucide-react";
 
 import { Link, useRouter } from "@/i18n/navigation";
-import { QUICK_LINKS } from "@/lib/nav";
 import type { Area, PropertyType } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
 import { formatCount } from "@/lib/format";
 import { UnifiedAreaPicker } from "@/components/ui/unified-area-picker";
-
-const QUICK_ICONS = {
-  tag: Tag,
-  house: House,
-  building: Building2,
-  keyRound: KeyRound,
-  landPlot: LandPlot,
-} as const;
 
 /**
  * The search bar that overlaps the hero: area, type, purpose, go.
@@ -291,16 +281,29 @@ export function QuickSearch({
           </button>
         </form>
 
+        {/* Sale/rent first and last, every property type between them --
+            this used to be a fixed, hand-picked three types (villas,
+            apartments, land), which quietly hid the office's other six.
+            One shared icon for every type link, the same call the actual
+            "browse by property type" grid on the home page makes: the
+            reader is scanning names, and a mismatched pictogram per type
+            (a bed for "chalet", a magnifying glass for "other") reads as
+            more different from its neighbours than it should. */}
         <nav className="home-quick-links" aria-label={t("quickSearch.shortcutsAria")}>
-          {QUICK_LINKS.map((link) => {
-            const Icon = QUICK_ICONS[link.icon];
-            return (
-              <Link key={link.key} href={link.href}>
-                <Icon size={14} />
-                {t(`quickSearch.shortcut.${link.key}`)}
-              </Link>
-            );
-          })}
+          <Link href="/properties?purpose=sale">
+            <Tag size={14} />
+            {t("quickSearch.shortcut.sale")}
+          </Link>
+          {types.map((type) => (
+            <Link key={type.key} href={`/properties?type=${type.key}`}>
+              <Building2 size={14} />
+              {type.name}
+            </Link>
+          ))}
+          <Link href="/properties?purpose=rent">
+            <KeyRound size={14} />
+            {t("quickSearch.shortcut.rent")}
+          </Link>
         </nav>
 
         {/* The office's advert rail. It lives inside this section rather than

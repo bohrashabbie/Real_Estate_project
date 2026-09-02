@@ -62,10 +62,7 @@
     "shortcutsAria": "اختصارات العقارات",
     "shortcut": {
       "sale": "للبيع",
-      "villas": "فلل",
-      "apartments": "شقق",
-      "rent": "للإيجار",
-      "land": "أراضٍ"
+      "rent": "للإيجار"
     }
   },
   "announcement": {

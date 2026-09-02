@@ -36,12 +36,3 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/smart-search", key: "smartSearch", icon: "sparkles", accent: true },
   { href: "/request", key: "request", icon: "clipboardList" },
 ];
-
-/** Shortcut chips under the quick search. */
-export const QUICK_LINKS = [
-  { href: "/properties?purpose=sale", key: "sale", icon: "tag" as const },
-  { href: "/properties?type=villa", key: "villas", icon: "house" as const },
-  { href: "/properties?type=apartment", key: "apartments", icon: "building" as const },
-  { href: "/properties?purpose=rent", key: "rent", icon: "keyRound" as const },
-  { href: "/properties?type=land", key: "land", icon: "landPlot" as const },
-];

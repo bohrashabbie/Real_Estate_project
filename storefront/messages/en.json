@@ -62,10 +62,7 @@
     "shortcutsAria": "Property shortcuts",
     "shortcut": {
       "sale": "For sale",
-      "villas": "Villas",
-      "apartments": "Apartments",
-      "rent": "For rent",
-      "land": "Land"
+      "rent": "For rent"
     }
   },
   "announcement": {
