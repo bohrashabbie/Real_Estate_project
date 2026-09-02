@@ -1,62 +1,42 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Check, Search, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bath,
+  BedDouble,
+  Building2,
+  Check,
+  House,
+  KeyRound,
+  LandPlot,
+  Search,
+  Sparkles,
+  Tag,
+} from "lucide-react";
 
-import { Link, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import type { Area, PropertyType } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
 import { UnifiedAreaPicker } from "@/components/ui/unified-area-picker";
 
-/**
- * One inline slot in the sentence: the picked word itself is the control.
- *
- * A `<details>` menu rather than a `<select>`, per the project rule, but
- * deliberately *not* the `Menu` component the two search bars share — that one
- * draws a captioned, bordered field, which is the shape this section is
- * explicitly meant not to repeat. Here the word sits in running text with a
- * gold underline and opens its options beneath itself.
- */
-function Slot({
-  value,
-  options,
-  onPick,
-  name,
-}: {
-  value: string;
-  options: { value: string; label: string }[];
-  onPick: (value: string) => void;
-  name: string;
-}) {
-  const ref = useRef<HTMLDetailsElement>(null);
-  const current = options.find((option) => option.value === value) ?? options[0];
+const STEPS = 3;
 
-  return (
-    <details className="smart-ask-slot" ref={ref} name={name}>
-      <summary>
-        <span>{current?.label}</span>
-        <ChevronDown size={18} />
-      </summary>
-      <div className="smart-ask-menu">
-        {options.map((option) => (
-          <button
-            key={option.value || "any"}
-            type="button"
-            className={option.value === value ? "is-selected" : undefined}
-            onClick={() => {
-              onPick(option.value);
-              ref.current?.removeAttribute("open");
-            }}
-          >
-            <span>{option.label}</span>
-            {option.value === value ? <Check size={15} /> : null}
-          </button>
-        ))}
-      </div>
-    </details>
-  );
-}
+/** Local copy of the wizard's map rather than an import from it: importing
+ *  would pull the whole five-step module — results grid, PropertyCard,
+ *  apiPost — into the home page's bundle for the sake of eight icons. */
+const TYPE_ICONS: Record<string, typeof House> = {
+  apartment: Building2,
+  villa: House,
+  land: LandPlot,
+  office: Building2,
+  commercial: Tag,
+  floor: Bath,
+  chalet: BedDouble,
+  other: Search,
+};
 
 /**
  * The search-again block that closes the home page, above the WhatsApp band.
@@ -66,20 +46,23 @@ function Slot({
  * catalogue and didn't find it, so a second callback-request pitch repeats
  * the one live nav already offers (`footer.requestProperty`).
  *
- * Written as a sentence to fill in — "Show me / to / in" with the choice
- * itself as the underlined word — rather than as a second row of captioned
- * dropdown fields. On request: the page already carries that exact filter at
- * the top (`QuickSearch`), and repeating its shape here made the last thing
- * on the page look like the first thing on it. The lead-in words are per
- * locale, so Arabic orders and inflects its own line ("أرني / من أجل / في")
- * instead of translating an English frame word for word.
+ * Asked one question at a time, on request, in the shape of the Smart Search
+ * wizard it hands off to — same progress line, same `.section-kicker`, same
+ * `.option-card` grid, same Back/Next footer, drawn from the same rules in
+ * globals.css rather than a second set that would drift from them. Three
+ * questions here, not the wizard's five: purpose, type, area are exactly the
+ * three the wizard can be seeded with, so answering them here means arriving
+ * at results rather than at question one.
  *
- * It hands off to Smart Search rather than to a `/properties` listing:
- * submitting sends area/type/purpose to `/smart-search`, which (see that
+ * Two earlier shapes are gone: two cards of captioned dropdown fields (the
+ * page already opens with that exact filter, so the last thing on the page
+ * looked like the first) and a fill-in-the-blank sentence. This one is the
+ * one that matches where it leads.
+ *
+ * Submitting sends area/type/purpose to `/smart-search`, which (see that
  * wizard's `initial` prop) skips its own five questions and runs the match
  * immediately, landing the visitor on relevance-ranked results instead of a
- * plain filtered grid. The link beside the button is the other door into the
- * same place, for someone who would rather answer the questions.
+ * plain filtered grid.
  */
 export function FooterSearch({
   areas,
@@ -92,18 +75,21 @@ export function FooterSearch({
 }) {
   const t = useTranslations();
   const router = useRouter();
-  const areaDetails = useRef<HTMLDetailsElement>(null);
 
+  const [step, setStep] = useState(1);
   const [area, setArea] = useState<string[]>([]);
   const [type, setType] = useState("");
   const [purpose, setPurpose] = useState("");
 
-  const selectedAreas = area
-    .map((slug) => areas.find((item) => item.slug === slug))
-    .filter((item): item is Area => Boolean(item));
-
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Not the last step yet: Next advances instead of searching. Handled here
+    // rather than by swapping the button's type, so Enter in the area field's
+    // type-ahead does the same thing the visible button does.
+    if (step < STEPS) {
+      setStep(step + 1);
+      return;
+    }
     const params = new URLSearchParams();
     // Every selected area, not just the first -- smart-search now matches
     // on any of them (see SmartSearchIn.area), the same as the /properties
@@ -119,7 +105,7 @@ export function FooterSearch({
     <section className="footer-search">
       <div className="container">
         <div className="footer-search-intro">
-          <span className="smart-ask-kicker">
+          <span className="footer-search-kicker">
             <Sparkles size={14} />
             {t("footerSearch.kicker")}
           </span>
@@ -127,89 +113,102 @@ export function FooterSearch({
           <p>{t("footerSearch.body")}</p>
         </div>
 
-        <form className="smart-ask" onSubmit={submit}>
-          <p className="smart-ask-line">
-            <span className="smart-ask-lead">{t("footerSearch.leadType")}</span>
-            <Slot
-              name="footer-ask"
-              value={type}
-              onPick={setType}
-              options={[
-                { value: "", label: t("footerSearch.anyType") },
-                ...types.map((item) => ({ value: item.key, label: item.name })),
-              ]}
-            />
-          </p>
+        <form className="ask-wizard" onSubmit={submit}>
+          <div className="wizard-page-top">
+            <span>{t("smart.stepOf", { step, total: STEPS })}</span>
+            <div className="progress">
+              <i style={{ width: `${(step / STEPS) * 100}%` }} />
+            </div>
+          </div>
 
-          <p className="smart-ask-line">
-            <span className="smart-ask-lead">{t("footerSearch.leadPurpose")}</span>
-            <Slot
-              name="footer-ask"
-              value={purpose}
-              onPick={setPurpose}
-              options={[
-                { value: "", label: t("footerSearch.anyPurpose") },
-                { value: "sale", label: t("footerSearch.buy") },
-                { value: "rent", label: t("footerSearch.rent") },
-              ]}
-            />
-          </p>
+          <div className="wizard-page-question">
+            <span className="section-kicker">{t("smart.stepKicker")}</span>
 
-          <p className="smart-ask-line">
-            <span className="smart-ask-lead">{t("footerSearch.leadArea")}</span>
-            {/* The area slot is the one that cannot be a plain list: it is
-                multi-select and type-ahead, so it wraps UnifiedAreaPicker
-                the way every other area control on the site does. */}
-            <details className="smart-ask-slot smart-ask-slot-area" ref={areaDetails} name="footer-ask">
-              <summary>
-                {selectedAreas.length === 0 ? (
-                  <span>{t("footerSearch.anyArea")}</span>
-                ) : (
-                  <span className="smart-ask-areas">
-                    {selectedAreas.slice(0, 2).map((item) => (
-                      <span key={item.slug}>{item.name}</span>
-                    ))}
-                    {selectedAreas.length > 2 ? (
-                      <span>
-                        {t("picker.moreAreas", { count: String(selectedAreas.length - 2) })}
-                      </span>
-                    ) : null}
-                  </span>
-                )}
-                <ChevronDown size={18} />
-              </summary>
-              <div className="smart-ask-menu smart-ask-area-menu">
-                <UnifiedAreaPicker
-                  areas={areas}
-                  value={area}
-                  onChange={setArea}
-                  locale={locale}
-                  max={0}
-                  variant="inline"
-                  browser="expanded"
-                  idPrefix="footer-ask-areas"
-                />
-                <footer>
-                  <small>{t("picker.helpMulti")}</small>
-                  <button
-                    type="button"
-                    onClick={() => areaDetails.current?.removeAttribute("open")}
-                  >
-                    {t("picker.done")}
-                  </button>
-                </footer>
-              </div>
-            </details>
-          </p>
+            {step === 1 ? (
+              <>
+                <h1>{t("smart.q1")}</h1>
+                <div className="wizard-question-options">
+                  {(["rent", "sale"] as const).map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`option-card${purpose === value ? " is-selected" : ""}`}
+                      onClick={() => setPurpose(purpose === value ? "" : value)}
+                    >
+                      <span>{value === "rent" ? <KeyRound size={16} /> : <Tag size={16} />}</span>
+                      <strong>{t(`purpose.${value}`)}</strong>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : null}
 
-          <div className="smart-ask-actions">
-            <button className="button button-gold" type="submit">
-              <Search size={15} />
-              {t("footerSearch.submit")}
+            {step === 2 ? (
+              <>
+                <h1>{t("smart.q4")}</h1>
+                <p>{t("smart.q4Hint")}</p>
+                <div
+                  className={`wizard-question-options option-grid options-${Math.min(types.length, 6)}`}
+                >
+                  {types.map((item) => {
+                    const Icon = TYPE_ICONS[item.key] ?? House;
+                    const selected = type === item.key;
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        className={`option-card${selected ? " is-selected" : ""}`}
+                        onClick={() => setType(selected ? "" : item.key)}
+                      >
+                        <span>{selected ? <Check size={16} /> : <Icon size={16} />}</span>
+                        <strong>{item.name}</strong>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
+
+            {step === 3 ? (
+              <>
+                <h1>{t("smart.q2")}</h1>
+                <p>{t("smart.q2Hint")}</p>
+                <div className="wizard-question-options smart-area-picker">
+                  <UnifiedAreaPicker
+                    areas={areas}
+                    value={area}
+                    onChange={setArea}
+                    locale={locale}
+                    max={0}
+                    idPrefix="footer-ask-areas"
+                  />
+                </div>
+              </>
+            ) : null}
+          </div>
+
+          <div className="wizard-page-actions">
+            <button
+              className="button button-ghost"
+              type="button"
+              onClick={() => setStep(step - 1)}
+              disabled={step === 1}
+            >
+              <ArrowLeft size={15} />
+              {t("smart.previous")}
             </button>
-            <Link className="smart-ask-alt" href="/smart-search">
-              {t("footerSearch.wizard")}
-            </Link>
+
+            {step < STEPS ? (
+              <button className="button button-gold" type="submit">
+                <ArrowRight size={15} />
+                {t("smart.next")}
+              </button>
+            ) : (
+              <button className="button button-gold" type="submit">
+                <Search size={15} />
+                {t("footerSearch.submit")}
+              </button>
+            )}
           </div>
         </form>
       </div>

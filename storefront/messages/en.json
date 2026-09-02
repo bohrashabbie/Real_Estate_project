@@ -124,18 +124,9 @@
   },
   "footerSearch": {
     "title": "Didn't find what you're after?",
-    "body": "Fill in the line below and smart search will rank the closest matches for you.",
+    "body": "Answer three quick questions and smart search will rank the closest matches for you.",
     "kicker": "Smart search",
-    "leadType": "Show me",
-    "leadPurpose": "to",
-    "leadArea": "in",
-    "anyType": "any property",
-    "anyPurpose": "buy or rent",
-    "anyArea": "all of Kuwait",
-    "buy": "buy",
-    "rent": "rent",
-    "submit": "Find my match",
-    "wizard": "Or answer five quick questions"
+    "submit": "Find my match"
   },
   "contactBand": {
     "title": "Need help right away?",
