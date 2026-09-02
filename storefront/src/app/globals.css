@@ -9769,72 +9769,10 @@ body {
   color:var(--gold);
 }
 
-/* The VIP row's own scrub bar — a native range input, not the chevron-plus-
-   dots `.carousel-controls` every other carousel on the site still uses (on
-   request). `appearance:none` on the input itself is what lets its own
-   `background` stand in for the track, styled as a plain, evenly-toned gold
-   line rather than a filled progress bar: a value-driven fill gradient would
-   need to flip direction under `dir="rtl"` by hand, since a CSS background
-   has no idea which way the slider's own min/max run, while the thumb's
-   position is flipped correctly by the browser for free either way. */
-.vip-scrub {
-  -webkit-appearance:none;
-  appearance:none;
-  background:linear-gradient(90deg,#c8a45d59,#c8a45d33);
-  border-radius:999px;
-  outline:0;
-  width:min(260px,60%);
-  height:6px;
-  margin:20px auto 0;
-  display:block;
-  cursor:pointer;
-}
-
-.vip-scrub::-webkit-slider-thumb {
-  -webkit-appearance:none;
-  appearance:none;
-  background:var(--navy);
-  border:2px solid var(--gold);
-  border-radius:50%;
-  width:18px;
-  height:18px;
-  box-shadow:0 2px 8px #0d1b2a4d;
-  transition:transform .15s;
-}
-
-.vip-scrub::-moz-range-thumb {
-  background:var(--navy);
-  border:2px solid var(--gold);
-  border-radius:50%;
-  width:14px;
-  height:14px;
-  box-shadow:0 2px 8px #0d1b2a4d;
-  transition:transform .15s;
-}
-
-.vip-scrub::-moz-range-track {
-  background:0 0;
-  border:0;
-}
-
-.vip-scrub:hover::-webkit-slider-thumb,
-.vip-scrub:active::-webkit-slider-thumb {
-  transform:scale(1.12);
-}
-
-.vip-scrub:hover::-moz-range-thumb,
-.vip-scrub:active::-moz-range-thumb {
-  transform:scale(1.12);
-}
-
-.vip-scrub:focus-visible {
-  box-shadow:0 0 0 3px #c8a45d4d;
-}
-
-/* Shared by every arrow-paged rail on the site — any `PropertyCard`
-   carousel (see `.card-carousel`) draws its prev/next buttons and page dots
-   from here, so a restyle only happens once. The VIP row uses its own
-   `.vip-scrub` instead (above). */
+/* Shared by every arrow-paged rail on the site, VIP included — any
+   `PropertyCard` carousel (see `.card-carousel`) and `VipCarousel` draw
+   their prev/next buttons and page dots from here, so a restyle only
+   happens once. */
 .carousel-controls {
   justify-content:center;
   align-items:center;

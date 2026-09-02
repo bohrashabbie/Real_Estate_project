@@ -385,7 +385,7 @@
     "backHome": "Back to the home page"
   },
   "vip": {
-    "scrubAria": "Browse VIP slides"
+    "goToPage": "Go to slide {page}"
   },
   "carousel": {
     "previous": "Previous",

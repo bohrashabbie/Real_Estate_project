@@ -385,7 +385,7 @@
     "backHome": "العودة إلى الرئيسية"
   },
   "vip": {
-    "scrubAria": "التنقل بين شرائح VIP"
+    "goToPage": "الذهاب إلى الشريحة {page}"
   },
   "carousel": {
     "previous": "السابق",
