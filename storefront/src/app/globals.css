@@ -392,6 +392,32 @@ img {
   box-shadow:0 8px 20px #0d1b2a0d;
 }
 
+/* The "See VIP properties" button specifically, matched to the office's own
+   reference: a navy pill in a gold ring, not the plain white-and-navy
+   .button-outline every other section's own CTA uses. Same two-layer
+   background trick as .metal-button (fill on the padding box, ring on the
+   border box) with the fill and ring swapped — gold ring around navy here,
+   rather than navy text on a gold fill. `.button` sets border-radius:6px
+   for every other variant; the reference is a full pill, so that's
+   overridden here rather than changed for buttons in general. */
+.button-vip {
+  color:#fff;
+  background:
+    linear-gradient(135deg,#1a2f4a,#0d1b2a 55%,#081019) padding-box,
+    linear-gradient(135deg,#ffe9a0,#c8a45d 50%,#a7803d) border-box;
+  border:1.5px solid #0000;
+  border-radius:999px;
+  box-shadow:0 10px 26px #0d1b2a4d,0 0 0 1px #c8a45d29;
+}
+
+.button-vip:hover {
+  filter:brightness(1.12);
+}
+
+.button-vip svg {
+  color:var(--gold);
+}
+
 .button-large {
   min-height:56px;
   padding-inline:28px;

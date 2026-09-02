@@ -74,7 +74,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               title={siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle")}
               stackAction
               action={
-                <Link className="button button-outline" href="/properties?vip=1">
+                <Link className="button button-vip" href="/properties?vip=1">
                   <Crown size={15} />
                   {siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
                 </Link>
