@@ -205,10 +205,10 @@
     "openMaps": "Open in Maps",
     "mapAria": "Location map for {title}",
     "mapLoading": "Loading the property location…",
-    "relatedKicker": "Suggested for you",
-    "relatedTitle": "Similar properties",
-    "relatedCta": "See all properties",
-    "backToPurpose": "Back to {purpose}"
+    "nearbyKicker": "Nearby",
+    "nearbyTitle": "More in {area}",
+    "nearbyCta": "All properties in {area}",
+    "backToArea": "Back to {area}"
   },
   "inquiry": {
     "name": "Name",

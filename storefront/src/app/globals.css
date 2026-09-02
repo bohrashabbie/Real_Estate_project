@@ -8578,19 +8578,9 @@ body {
   font:700 28px Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
 }
 
-.related-properties-track {
-  scroll-snap-type:x mandatory;
-  scrollbar-color:var(--gold) transparent;
-  gap:18px;
-  padding:4px 2px 16px;
-  display:flex;
-  overflow-x:auto;
-}
-
-.related-property-item {
-  scroll-snap-align:start;
-  flex:0 0 min(330px,82vw);
-}
+/* The hand-rolled `.related-properties-track`/`.related-property-item` rail
+   is gone: this row is a `PropertyCarousel` now, which pages four-up with
+   the same arrows and dots as every other rail on the site. */
 
 @media (max-width:760px) {
   .related-properties-header {

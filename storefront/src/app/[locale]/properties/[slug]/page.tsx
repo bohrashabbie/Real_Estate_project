@@ -29,7 +29,7 @@ import { formatPrice, formatSqm, telLink, waLink } from "@/lib/format";
 import { kuwaitFinderUrl } from "@/lib/kuwait-finder";
 import { InquiryForm } from "@/components/property/inquiry-form";
 import { PropertyMap } from "@/components/property/property-map";
-import { PropertyCard } from "@/components/property/property-card";
+import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 export async function generateMetadata({
   params,
@@ -76,9 +76,14 @@ export default async function PropertyDetailPage({
 
   const [settings, related] = await Promise.all([
     getSettings(),
-    // "More like this" means the same area first; the area is the single
-    // strongest signal a Kuwaiti buyer filters on.
-    getProperties(typedLocale, { area: property.area.slug, limit: 8 }),
+    // Nearby means the same area, and *only* the same area: deliberately not
+    // narrowed by `purpose`, so a page reached from "For sale" still shows
+    // what else the office has in that area to rent, and the other way
+    // round. The area is the single strongest signal a Kuwaiti buyer
+    // filters on; whether the neighbour happens to be a sale or a let is
+    // not what makes it relevant. 16, not 8, so the carousel below has
+    // more than one page to move through.
+    getProperties(typedLocale, { area: property.area.slug, limit: 16 }),
   ]);
 
   const images = property.images.length > 0 ? property.images : [];
@@ -98,7 +103,9 @@ export default async function PropertyDetailPage({
 
   const phone = settings.phone?.trim();
   const whatsapp = settings.whatsapp?.trim();
-  const others = related.items.filter((item) => item.id !== property.id).slice(0, 4);
+  // Not sliced to 4 any more: the row is a carousel now, so everything the
+  // area has to offer is reachable rather than only its first four.
+  const others = related.items.filter((item) => item.id !== property.id);
 
   return (
     <>
@@ -303,32 +310,36 @@ export default async function PropertyDetailPage({
         </section>
       ) : null}
 
+      {/* Named for the area rather than called "similar": these are the
+          office's other listings in the same area, for sale and to rent
+          alike, and the heading should say which area that is. */}
       {others.length > 0 ? (
         <section className="container related-properties">
           <header className="related-properties-header">
             <div>
-              <span className="section-kicker">{t("detail.relatedKicker")}</span>
-              <h2>{t("detail.relatedTitle")}</h2>
+              <span className="section-kicker">{t("detail.nearbyKicker")}</span>
+              <h2>{t("detail.nearbyTitle", { area: property.area.name })}</h2>
             </div>
-            <Link className="button button-outline" href="/properties">
-              {t("detail.relatedCta")}
+            <Link
+              className="button button-outline"
+              href={`/properties?area=${property.area.slug}`}
+            >
+              <MapPin size={15} />
+              {t("detail.nearbyCta", { area: property.area.name })}
             </Link>
           </header>
 
-          <div className="related-properties-track">
-            {others.map((item) => (
-              <div className="related-property-item" key={item.id}>
-                <PropertyCard property={item} locale={typedLocale} />
-              </div>
-            ))}
-          </div>
+          <PropertyCarousel properties={others} locale={typedLocale} />
         </section>
       ) : null}
 
+      {/* Back to the area, not back to "For sale": the visitor's next move
+          from here is the neighbourhood they were just looking at, and the
+          purpose they happened to arrive through is the narrower answer. */}
       <div className="container back-row">
-        <Link href={`/properties?purpose=${property.purpose}`}>
+        <Link href={`/properties?area=${property.area.slug}`}>
           <ArrowLeft size={15} />
-          {t("detail.backToPurpose", { purpose: t(`purpose.${property.purpose}`) })}
+          {t("detail.backToArea", { area: property.area.name })}
         </Link>
       </div>
     </>

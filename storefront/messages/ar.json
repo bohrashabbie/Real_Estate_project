@@ -205,10 +205,10 @@
     "openMaps": "فتح في الخرائط",
     "mapAria": "خريطة موقع {title}",
     "mapLoading": "جارٍ تحميل موقع العقار…",
-    "relatedKicker": "اقتراحات لك",
-    "relatedTitle": "عقارات مشابهة",
-    "relatedCta": "عرض كل العقارات",
-    "backToPurpose": "الرجوع إلى قسم {purpose}"
+    "nearbyKicker": "قريب من هنا",
+    "nearbyTitle": "المزيد في {area}",
+    "nearbyCta": "كل عقارات {area}",
+    "backToArea": "الرجوع إلى {area}"
   },
   "inquiry": {
     "name": "الاسم",
