@@ -1254,9 +1254,21 @@ img {
   color:#a44b49;
 }
 
+/* Bare white text over a photograph is only legible over a dark part of one --
+   on a sunlit villa or a pale sky it disappears. Wears the same translucent
+   dark pill `.vip-slide-status` already uses for this exact badge (see its
+   rule) rather than a second treatment: same border, same blur, same shadow,
+   so the card and the VIP slide read as one design. */
 .property-status {
   z-index:2;
   color:#fff;
+  background:#04101fa8;
+  border:1px solid #ffffff2e;
+  border-radius:999px;
+  padding:6px 12px;
+  -webkit-backdrop-filter:blur(6px);
+  backdrop-filter:blur(6px);
+  box-shadow:0 6px 18px #0d1b2a4d;
   align-items:center;
   gap:7px;
   font-size:13px;
