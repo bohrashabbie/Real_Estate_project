@@ -3899,10 +3899,14 @@ footer {
    The lead-in words ("Show me", "to", "in") are per locale rather than one
    translated frame, so Arabic writes its own line -- see `footerSearch.lead*`
    in messages/. */
+/* Held to a measure rather than run to the container's full width: the
+   sentence is three short lines, and across the whole 1180px container the
+   panel read as a mostly empty box with the words parked in one corner. */
 .smart-ask {
   background:#fff;
   border:1px solid var(--line);
   border-radius:22px;
+  max-width:840px;
   padding:34px 34px 30px;
   box-shadow:0 24px 60px #0d1b2a1a;
 }
@@ -3956,6 +3960,14 @@ footer {
 
 .smart-ask-slot > summary::-webkit-details-marker {
   display:none;
+}
+
+/* The default focus ring is a hard black box drawn around a word mid-
+   sentence. Gold, offset, and rounded reads as part of the same control. */
+.smart-ask-slot > summary:focus-visible {
+  outline:2px solid var(--gold);
+  outline-offset:4px;
+  border-radius:6px;
 }
 
 .smart-ask-slot > summary:hover,
