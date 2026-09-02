@@ -68,7 +68,11 @@ export function Menu({
       </span>
       <details ref={ref} name={detailsName}>
         <summary>
-          <span>{current?.label}</span>
+          {/* Gold chip once something other than "all" is picked, same
+              treatment as the area field's chips — "this is selected"
+              means the same gold pill everywhere in this search bar, not
+              plain text for two fields and a chip for the third. */}
+          <span className={value ? "area-chip" : undefined}>{current?.label}</span>
           <ChevronDown size={14} />
         </summary>
         <div className="quick-filter-menu">
