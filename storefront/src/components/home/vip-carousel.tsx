@@ -15,6 +15,7 @@ import type { Locale } from "@/i18n/routing";
 import { mediaUrl, type PropertyListItem } from "@/lib/api";
 import { formatPrice, formatSqm } from "@/lib/format";
 import { CompareToggle } from "@/components/property/compare-toggle";
+import { ScrollRail } from "@/components/ui/scroll-rail";
 
 /**
  * The VIP row: a slider of two large showcase slides rather than a rail of the
@@ -31,11 +32,8 @@ import { CompareToggle } from "@/components/property/compare-toggle";
  * matters most here — correct behaviour under `dir="rtl"`, because the browser
  * owns the direction rather than us.
  *
- * It is moved by the slim gold scrollbar beneath it — the one the property-
- * type row wore before it became a marquee — rather than by the chevrons and
- * dots this used to carry. The browser's own bar is a position readout and a
- * way to move in one, correct in both directions, and taking it left nothing
- * here to hydrate but the compare toggles.
+ * It is moved by the short bar centred beneath it (`ScrollRail`) rather than
+ * by the chevrons and dots this used to carry.
  */
 export function VipCarousel({
   properties,
@@ -53,8 +51,11 @@ export function VipCarousel({
   if (properties.length === 0) return null;
 
   return (
-    <div className={`vip-carousel${columns === 3 ? " is-three" : ""}`}>
-      <div className="vip-carousel-track">
+    <ScrollRail
+      className={`vip-carousel${columns === 3 ? " is-three" : ""}`}
+      trackClassName="vip-carousel-track"
+      ariaLabel={t("carousel.scrollAria")}
+    >
         {properties.map((property) => {
           const href = `/properties/${property.slug}`;
           const image = mediaUrl(property.main_image);
@@ -158,8 +159,6 @@ export function VipCarousel({
             </article>
           );
         })}
-      </div>
-
-    </div>
+    </ScrollRail>
   );
 }
