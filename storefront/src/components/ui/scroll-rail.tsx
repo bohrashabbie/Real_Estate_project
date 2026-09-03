@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
+/** Never thinner than a grabbable sliver, however long the row is. */
+function thumbPercent(ratio: number) {
+  return Math.max(ratio * 100, 12);
+}
+
 /**
  * A horizontal scroll rail with a short bar centred beneath it.
  *
@@ -66,17 +71,62 @@ export function ScrollRail({
     };
   }, [measure]);
 
-  const seek = useCallback((clientX: number) => {
+  /** Where the pointer took hold of the thumb, so a drag moves the thumb by
+   *  the pointer's delta instead of teleporting its edge to the cursor —
+   *  which is how a real scrollbar behaves, and the behaviour asked for. */
+  const grab = useRef(0);
+
+  /** Reads the geometry both handlers need. Measured per event rather than
+   *  cached: the thumb's width changes with the viewport. */
+  const geometry = useCallback(() => {
     const track = trackRef.current;
     const bar = barRef.current;
-    if (!track || !bar) return;
+    if (!track || !bar) return null;
     const rect = bar.getBoundingClientRect();
-    const rtl = getComputedStyle(track).direction === "rtl";
-    const travelled = rtl ? rect.right - clientX : clientX - rect.left;
-    const fraction = Math.max(0, Math.min(1, travelled / rect.width));
-    const max = track.scrollWidth - track.clientWidth;
-    track.scrollTo({ left: (rtl ? -1 : 1) * fraction * max, behavior: "auto" });
-  }, []);
+    // Same figure the thumb is rendered at, so the hit test and the paint
+    // cannot drift apart.
+    const thumb = (rect.width * thumbPercent(ratio)) / 100;
+    return {
+      track,
+      rect,
+      thumb,
+      travel: Math.max(1, rect.width - thumb),
+      max: Math.max(0, track.scrollWidth - track.clientWidth),
+      rtl: getComputedStyle(track).direction === "rtl",
+    };
+  }, [ratio]);
+
+  const moveTo = useCallback(
+    (clientX: number) => {
+      const g = geometry();
+      if (!g) return;
+      // Distance along the bar from the edge the reader starts at.
+      const along = g.rtl ? g.rect.right - clientX : clientX - g.rect.left;
+      const start = Math.max(0, Math.min(g.travel, along - grab.current));
+      // Direct assignment, not scrollTo({behavior}): the thumb has to keep
+      // up with the pointer, and a smooth scroll would lag behind it.
+      g.track.scrollLeft = (g.rtl ? -1 : 1) * (start / g.travel) * g.max;
+    },
+    [geometry],
+  );
+
+  const start = useCallback(
+    (clientX: number) => {
+      const g = geometry();
+      if (!g) return;
+      const along = g.rtl ? g.rect.right - clientX : clientX - g.rect.left;
+      const thumbStart = progress * g.travel;
+      // On the thumb: keep the offset it was grabbed by. Anywhere else on the
+      // bar: jump, centring the thumb under the pointer, as clicking a
+      // scrollbar's track does.
+      grab.current =
+        along >= thumbStart && along <= thumbStart + g.thumb
+          ? along - thumbStart
+          : g.thumb / 2;
+      moveTo(clientX);
+    },
+    [geometry, moveTo, progress],
+  );
 
   if (ratio >= 1) {
     // Nothing to scroll: a bar that cannot move is furniture.
@@ -89,7 +139,7 @@ export function ScrollRail({
     );
   }
 
-  const thumbWidth = Math.max(ratio * 100, 12);
+  const thumbWidth = thumbPercent(ratio);
 
   return (
     <div className={className}>
@@ -108,11 +158,20 @@ export function ScrollRail({
         aria-valuemax={100}
         aria-valuenow={Math.round(progress * 100)}
         onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          seek(event.clientX);
+          // Scroll first, capture second, and never let a refused capture
+          // take the scroll with it: `setPointerCapture` throws on an
+          // unexpected pointer id, and doing it first meant a click that
+          // hit that case did nothing at all.
+          start(event.clientX);
+          try {
+            event.currentTarget.setPointerCapture(event.pointerId);
+          } catch {
+            // Dragging outside the bar just won't track; the click still took.
+          }
         }}
         onPointerMove={(event) => {
-          if (event.currentTarget.hasPointerCapture(event.pointerId)) seek(event.clientX);
+          if (event.buttons === 0) return;
+          moveTo(event.clientX);
         }}
       >
         <i
