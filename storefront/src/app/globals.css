@@ -3901,22 +3901,103 @@ footer {
 .ask-wizard {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:22px;
-  max-width:840px;
-  padding:28px 34px 26px;
+  border-radius:16px;
+  max-width:620px;
+  padding:20px 22px 18px;
   flex-direction:column;
   display:flex;
-  box-shadow:0 24px 60px #0d1b2a1a;
+  box-shadow:0 14px 36px #0d1b2a14;
 }
 
-/* Smaller than the standalone wizard's 32px: that one is the whole page,
-   this one closes a page that already has a 36px h2 directly above it. */
+/* Everything below trims the shared wizard rules down for this one card. The
+   standalone wizard at /smart-search is a whole page and keeps its own
+   scale; this is a closing panel under a 36px heading, and at the page's
+   full width it read as a form to fill in rather than a small invitation.
+   Scoped to `.ask-wizard` throughout so the page version is untouched. */
+.ask-wizard .wizard-page-question {
+  margin-top:18px;
+}
+
 .ask-wizard .wizard-page-question h1 {
-  font-size:clamp(23px,2.4vw,28px);
+  margin-bottom:2px;
+  font-size:clamp(18px,1.6vw,21px);
+}
+
+.ask-wizard .wizard-page-question>p {
+  font-size:12px;
+}
+
+/* "One simple step" over "Question 1 of 3" says the same thing twice. */
+.ask-wizard .wizard-page-question>.section-kicker {
+  display:none;
+}
+
+/* Auto width, not the shared 50%: two purpose cards half a panel wide each
+   is a lot of white for two words. They now sit as inline pills, and the
+   type grid keeps its columns but on a tighter gap. */
+.ask-wizard .wizard-question-options {
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+  display:flex;
+}
+
+.ask-wizard .wizard-question-options>.option-card {
+  width:auto;
+  min-height:0;
+  margin:0;
+  border-radius:999px;
+  gap:8px;
+  /* Logical, not `8px 14px 8px 9px`: the icon leads the label, so the
+     tighter side has to follow the writing direction. */
+  padding-block:8px;
+  padding-inline:9px 14px;
+}
+
+.ask-wizard .option-grid.wizard-question-options {
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  display:grid;
+}
+
+.ask-wizard .option-grid.wizard-question-options>.option-card {
+  border-radius:10px;
+  width:100%;
+}
+
+.ask-wizard .option-card>span {
+  width:26px;
+  height:26px;
+}
+
+.ask-wizard .option-card>span svg {
+  width:14px;
+  height:14px;
+}
+
+.ask-wizard .option-card strong {
+  font-size:13px;
 }
 
 .ask-wizard .wizard-page-actions {
-  margin-top:26px;
+  margin-top:18px;
+  padding-top:14px;
+}
+
+.ask-wizard .wizard-page-actions .button {
+  min-height:40px;
+  padding-inline:18px;
+  font-size:13px;
+}
+
+/* The way back is not the point of the card; Next is. */
+.ask-wizard .wizard-page-actions .button-ghost {
+  border-color:#0d1b2a1f;
+  color:var(--muted);
+}
+
+.ask-wizard .wizard-page-top {
+  font-size:11px;
 }
 
 .footer-search-kicker {
@@ -3936,8 +4017,11 @@ footer {
     padding-block:48px 56px;
   }
   .ask-wizard {
-    border-radius:18px;
-    padding:22px 18px 20px;
+    border-radius:14px;
+    padding:18px 16px 16px;
+  }
+  .ask-wizard .option-grid.wizard-question-options {
+    grid-template-columns:repeat(2,1fr);
   }
   .ask-wizard .wizard-page-actions .button {
     flex:1;
