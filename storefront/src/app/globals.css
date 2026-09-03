@@ -3871,9 +3871,44 @@ footer {
   position:relative;
 }
 
+/* Two columns: the invitation on one side, the card that answers it on the
+   other. Stacked, the card sat under a 36px heading with the whole right
+   half of the band empty beside it. Grid, not floats or `direction` tricks,
+   so RTL mirrors it for free -- the intro takes the inline start (the right
+   in Arabic, the left in English) and the card the inline end. */
+.footer-search>.container {
+  grid-template-columns:minmax(0,1fr) minmax(0,620px);
+  align-items:center;
+  gap:52px;
+  display:grid;
+}
+
 .footer-search-intro {
-  max-width:640px;
-  margin-bottom:28px;
+  max-width:460px;
+  margin-bottom:0;
+}
+
+/* The column is the width now; the panel fills it. */
+.footer-search .ask-wizard {
+  max-width:none;
+  width:100%;
+}
+
+/* One column again before the two would be too narrow to read side by
+   side -- the card alone wants ~520px of the pair's 1180. */
+@media (max-width:1040px) {
+  .footer-search>.container {
+    grid-template-columns:minmax(0,1fr);
+    gap:26px;
+  }
+
+  .footer-search-intro {
+    max-width:640px;
+  }
+
+  .footer-search .ask-wizard {
+    max-width:620px;
+  }
 }
 
 .footer-search-intro h2 {
