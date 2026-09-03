@@ -1369,7 +1369,7 @@ img {
   justify-content:space-between;
   align-items:center;
   margin-top:auto;
-  padding-top:6px;
+  padding-top:3px;
   display:flex;
 }
 
@@ -9545,18 +9545,34 @@ body {
   --vip-gap:24px;
 }
 
+/* Same bar as `.card-carousel-track` -- see its rule for why. */
 .vip-carousel-track {
   scroll-snap-type:x mandatory;
-  scrollbar-width:none;
+  scrollbar-width:thin;
+  scrollbar-color:#c8a45db3 transparent;
   gap:var(--vip-gap);
-  padding:4px 2px 8px;
+  padding:4px 2px 14px;
   display:flex;
   overflow-x:auto;
   overscroll-behavior-x:contain;
 }
 
 .vip-carousel-track::-webkit-scrollbar {
-  display:none;
+  height:4px;
+}
+
+.vip-carousel-track::-webkit-scrollbar-track {
+  background:#0d1b2a0f;
+  border-radius:999px;
+}
+
+.vip-carousel-track::-webkit-scrollbar-thumb {
+  background:#c8a45db3;
+  border-radius:999px;
+}
+
+.vip-carousel-track::-webkit-scrollbar-thumb:hover {
+  background:var(--gold);
 }
 
 .vip-carousel-item {
@@ -9841,84 +9857,41 @@ body {
   color:var(--gold);
 }
 
-/* Shared by every arrow-paged rail on the site, VIP included — any
-   `PropertyCard` carousel (see `.card-carousel`) and `VipCarousel` draw
-   their prev/next buttons and page dots from here, so a restyle only
-   happens once. */
-.carousel-controls {
-  justify-content:center;
-  align-items:center;
-  gap:16px;
-  margin-top:18px;
-  display:flex;
-}
-
-.carousel-controls > button {
-  color:var(--navy);
-  cursor:pointer;
-  background:var(--white);
-  border:1px solid var(--line);
-  border-radius:50%;
-  justify-content:center;
-  align-items:center;
-  width:40px;
-  height:40px;
-  transition:background .2s,color .2s,border-color .2s,opacity .2s;
-  display:inline-flex;
-}
-
-.carousel-controls > button:hover:not(:disabled) {
-  background:var(--navy);
-  border-color:var(--navy);
-  color:var(--gold);
-}
-
-.carousel-controls > button:disabled {
-  cursor:default;
-  opacity:.34;
-}
-
-.carousel-dots {
-  align-items:center;
-  gap:8px;
-  display:flex;
-}
-
-.carousel-dots button {
-  cursor:pointer;
-  background:#0d1b2a2e;
-  border:0;
-  border-radius:999px;
-  width:9px;
-  height:9px;
-  padding:0;
-  transition:width .3s,background .3s;
-}
-
-/* Navy, not gold -- the theme's own dark blue, matching what the rest
-   of the chrome (nav, headings, the property-card price) already uses,
-   rather than a second accent colour competing with the gold buttons
-   beside it. */
-.carousel-dots button.is-active {
-  background:var(--navy);
-  width:26px;
-}
-
 /* The featured-results and other PropertyCard rails page 4-up like the home
    grids, dropping to 2 and then 1 at the same breakpoints as `.featured-four`
    so a carousel and a wrapped grid never disagree about how much fits. */
+/* The slim gold scrollbar is the control now -- the one the property-type
+   row wore before it became a marquee (`scrollbar-width:thin` on a gold
+   thumb over nothing) -- in place of the chevrons and dots this rail used
+   to carry underneath it. The browser's own bar says where you are and
+   moves you in one object, and it is right under `dir="rtl"` for free. */
 .card-carousel-track {
   scroll-snap-type:x mandatory;
-  scrollbar-width:none;
+  scrollbar-width:thin;
+  scrollbar-color:#c8a45db3 transparent;
   gap:22px;
-  padding:4px 2px 8px;
+  padding:4px 2px 14px;
   display:flex;
   overflow-x:auto;
   overscroll-behavior-x:contain;
 }
 
 .card-carousel-track::-webkit-scrollbar {
-  display:none;
+  height:4px;
+}
+
+.card-carousel-track::-webkit-scrollbar-track {
+  background:#0d1b2a0f;
+  border-radius:999px;
+}
+
+.card-carousel-track::-webkit-scrollbar-thumb {
+  background:#c8a45db3;
+  border-radius:999px;
+}
+
+.card-carousel-track::-webkit-scrollbar-thumb:hover {
+  background:var(--gold);
 }
 
 .card-carousel-item {

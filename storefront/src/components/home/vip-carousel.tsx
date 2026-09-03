@@ -1,13 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   ArrowLeft,
   Bath,
   BedDouble,
-  ChevronLeft,
-  ChevronRight,
   Crown,
   MapPin,
   Maximize2,
@@ -18,12 +15,6 @@ import type { Locale } from "@/i18n/routing";
 import { mediaUrl, type PropertyListItem } from "@/lib/api";
 import { formatPrice, formatSqm } from "@/lib/format";
 import { CompareToggle } from "@/components/property/compare-toggle";
-
-/** Two to a view on a desktop, one once the pair would be too narrow to read.
- *  The listing pages ask for three (`columns={3}`), which takes a middle tier
- *  of its own: three full-height slides below ~1200px are too narrow. */
-const NARROW_QUERY = "(max-width: 899px)";
-const MID_QUERY = "(max-width: 1200px)";
 
 /**
  * The VIP row: a slider of two large showcase slides rather than a rail of the
@@ -38,14 +29,13 @@ const MID_QUERY = "(max-width: 1200px)";
  * The track is a real scroll container with snap points, not a transformed
  * strip. That buys touch swiping, keyboard scrolling and — the part that
  * matters most here — correct behaviour under `dir="rtl"`, because the browser
- * owns the direction rather than us. The buttons and dots drive it with
- * `scrollIntoView` for the same reason; a hand-computed `translateX` would need
- * its sign flipped per direction and would still disagree with a swipe.
+ * owns the direction rather than us.
  *
- * Chevrons follow `LaunchHero`: left is previous, right is next, physical in
- * both directions. Deliberately not mirrored by the `ArrowLeft` rules in
- * globals.css — a slider control points at the edge it travels toward, and the
- * two sliders on this page should answer to the same gesture.
+ * It is moved by the slim gold scrollbar beneath it — the one the property-
+ * type row wore before it became a marquee — rather than by the chevrons and
+ * dots this used to carry. The browser's own bar is a position readout and a
+ * way to move in one, correct in both directions, and taking it left nothing
+ * here to hydrate but the compare toggles.
  */
 export function VipCarousel({
   properties,
@@ -54,85 +44,17 @@ export function VipCarousel({
 }: {
   properties: PropertyListItem[];
   locale: Locale;
-  /** Slides to a view at full width. The home page keeps two; the listing
-   *  pages ask for three. The CSS half of this is `.vip-carousel.is-three`,
-   *  and the two must agree — `goTo` pages by `perView`, so a JS count that
-   *  disagreed with the rendered width would scroll to the wrong slide. */
+  /** Slides to a view at full width: the home page keeps two, the listing
+   *  pages ask for three. Purely a class now — `.vip-carousel.is-three` owns
+   *  the widths and the tiers below them (two up to 1200px, one to 899). */
   columns?: 2 | 3;
 }) {
   const t = useTranslations();
-  const trackRef = useRef<HTMLDivElement>(null);
-  // Widened from `columns`'s own 2|3: the narrow tier sets it to 1.
-  const [perView, setPerView] = useState<number>(columns);
-  const [page, setPage] = useState(0);
-
-  const pages = Math.max(1, Math.ceil(properties.length / perView));
-
-  useEffect(() => {
-    const narrow = window.matchMedia(NARROW_QUERY);
-    const mid = window.matchMedia(MID_QUERY);
-    const apply = () =>
-      setPerView(narrow.matches ? 1 : columns === 3 && mid.matches ? 2 : columns);
-    apply();
-    narrow.addEventListener("change", apply);
-    mid.addEventListener("change", apply);
-    return () => {
-      narrow.removeEventListener("change", apply);
-      mid.removeEventListener("change", apply);
-    };
-  }, [columns]);
-
-  const goTo = useCallback(
-    (target: number) => {
-      const track = trackRef.current;
-      if (!track) return;
-      const next = Math.max(0, Math.min(pages - 1, target));
-      const item = track.children[next * perView] as HTMLElement | undefined;
-      // `block: "nearest"` so bringing a slide into view never scrolls the page.
-      item?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
-      setPage(next);
-    },
-    [pages, perView],
-  );
-
-  // A swipe moves the track without going through goTo, so the dots read their
-  // state back off the scroll position rather than assuming it.
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    let frame = 0;
-    const sync = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const items = Array.from(track.children) as HTMLElement[];
-        if (items.length === 0) return;
-        const rtl = getComputedStyle(track).direction === "rtl";
-        const box = track.getBoundingClientRect();
-        let nearest = 0;
-        let shortest = Infinity;
-        items.forEach((item, index) => {
-          const rect = item.getBoundingClientRect();
-          const gap = Math.abs(rtl ? box.right - rect.right : rect.left - box.left);
-          if (gap < shortest) {
-            shortest = gap;
-            nearest = index;
-          }
-        });
-        setPage(Math.floor(nearest / perView));
-      });
-    };
-    track.addEventListener("scroll", sync, { passive: true });
-    return () => {
-      track.removeEventListener("scroll", sync);
-      cancelAnimationFrame(frame);
-    };
-  }, [perView]);
-
   if (properties.length === 0) return null;
 
   return (
     <div className={`vip-carousel${columns === 3 ? " is-three" : ""}`}>
-      <div className="vip-carousel-track" ref={trackRef}>
+      <div className="vip-carousel-track">
         {properties.map((property) => {
           const href = `/properties/${property.slug}`;
           const image = mediaUrl(property.main_image);
@@ -238,40 +160,6 @@ export function VipCarousel({
         })}
       </div>
 
-      {pages > 1 ? (
-        <div className="carousel-controls">
-          <button
-            type="button"
-            aria-label={t("hero.previous")}
-            onClick={() => goTo(page - 1)}
-            disabled={page === 0}
-          >
-            <ChevronLeft size={17} />
-          </button>
-
-          <div className="carousel-dots">
-            {Array.from({ length: pages }, (_, index) => (
-              <button
-                key={index}
-                type="button"
-                className={index === page ? "is-active" : undefined}
-                aria-label={t("vip.goToPage", { page: index + 1 })}
-                aria-current={index === page || undefined}
-                onClick={() => goTo(index)}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            aria-label={t("hero.next")}
-            onClick={() => goTo(page + 1)}
-            disabled={page === pages - 1}
-          >
-            <ChevronRight size={17} />
-          </button>
-        </div>
-      ) : null}
     </div>
   );
 }

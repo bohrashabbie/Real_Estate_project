@@ -375,13 +375,5 @@
     "body": "The property may have been moved or removed. Browse the available properties instead.",
     "cta": "Browse properties",
     "backHome": "Back to the home page"
-  },
-  "vip": {
-    "goToPage": "Go to slide {page}"
-  },
-  "carousel": {
-    "previous": "Previous",
-    "next": "Next",
-    "goToPage": "Go to page {page}"
   }
 }
