@@ -188,19 +188,24 @@ export function FooterSearch({
           </div>
 
           <div className="wizard-page-actions">
+            {/* ArrowRight is *back* and ArrowLeft is *forward* in this build:
+                every arrow is drawn for Arabic, and globals.css mirrors the
+                pair under `dir="ltr"`. Matches the standalone wizard, which
+                had these the right way round while this card had them
+                inverted -- "Back →" and "← Next" in English. */}
             <button
               className="button button-ghost"
               type="button"
               onClick={() => setStep(step - 1)}
               disabled={step === 1}
             >
-              <ArrowLeft size={15} />
+              <ArrowRight size={15} />
               {t("smart.previous")}
             </button>
 
             {step < STEPS ? (
               <button className="button button-gold" type="submit">
-                <ArrowRight size={15} />
+                <ArrowLeft size={15} />
                 {t("smart.next")}
               </button>
             ) : (
