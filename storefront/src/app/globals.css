@@ -3604,12 +3604,44 @@ footer {
    chevron beside it instead of the chips pushing the row wider than the
    search field. Capped to two chips plus a "+N" overflow chip in the
    component itself, so this never needs to wrap. */
+/* Scrolls sideways rather than hiding the overflow now that every pick is
+   shown: eight areas must not be able to grow the search bar, but they
+   must all be reachable. The bar itself is hidden -- the row is short and
+   dragging a 4px scrollbar inside a 30px field would be a worse control
+   than simply flicking the chips. */
 .area-field-chips {
   min-width:0;
   align-items:center;
   gap:5px;
   display:flex;
-  overflow:hidden;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.area-field-chips::-webkit-scrollbar {
+  display:none;
+}
+
+/* The chip's own X. `pointer-events` stays on so it can be pressed inside
+   the <summary> (the press handler stops the toggle); the hit area is the
+   whole disc rather than the glyph. */
+.area-chip > button {
+  color:inherit;
+  cursor:pointer;
+  background:#ffffff2e;
+  border:0;
+  border-radius:50%;
+  place-items:center;
+  width:14px;
+  height:14px;
+  margin-inline-start:5px;
+  padding:0;
+  display:grid;
+  transition:background .15s;
+}
+
+.area-chip > button:hover {
+  background:#ffffff5c;
 }
 
 .area-chip {
@@ -3625,9 +3657,6 @@ footer {
   flex:none;
 }
 
-.area-chip-more {
-  background:var(--navy);
-}
 
 .home-area-picker summary::-webkit-details-marker {
   display:none;
@@ -4757,7 +4786,7 @@ footer {
 }
 
 .area-suggestions>button:hover,.area-suggestions>button.is-active {
-  background:#edf6fd;
+  background:#fdf8ee;
 }
 
 .area-suggestions .filter-area-empty {
@@ -4770,9 +4799,9 @@ footer {
 
 .filter-area-selected button {
   color:#fff;
-  background:#0f5fa8;
-  border-color:#0f5fa8;
-  box-shadow:0 5px 12px #0f5fa833;
+  background:#a7803d;
+  border-color:#a7803d;
+  box-shadow:0 5px 12px #a7803d33;
 }
 
 .filter-area-selected button svg {
@@ -4843,8 +4872,8 @@ footer {
 
 .active-filter-chip.is-area {
   color:#fff;
-  background:#0f5fa8;
-  border-color:#0f5fa8;
+  background:#a7803d;
+  border-color:#a7803d;
 }
 
 .active-filter-chip.is-area svg {
@@ -5900,8 +5929,8 @@ footer {
 
 .request-area-selected button {
   color:#fff;
-  background:#0f5fa8;
-  border:1px solid #0f5fa8;
+  background:#a7803d;
+  border:1px solid #a7803d;
   border-radius:999px;
   align-items:center;
   gap:6px;
@@ -5910,7 +5939,7 @@ footer {
   font-size:12px;
   font-weight:800;
   display:inline-flex;
-  box-shadow:0 5px 12px #0f5fa833;
+  box-shadow:0 5px 12px #a7803d33;
 }
 
 .request-area-selected button:hover {
@@ -5992,9 +6021,9 @@ footer {
 }
 
 .request-area-options input:checked+span {
-  color:#0f5fa8;
-  background:#edf6fd;
-  border-color:#0f5fa8;
+  color:#a7803d;
+  background:#fdf8ee;
+  border-color:#a7803d;
 }
 
 .request-area-options input:disabled+span {
@@ -7725,12 +7754,12 @@ body {
 }
 
 .unified-area-search:focus-within {
-  box-shadow:0 0 0 3px #0f5fa81f;
-  border-color:#0f5fa8!important;
+  box-shadow:0 0 0 3px #a7803d1f;
+  border-color:#a7803d!important;
 }
 
 .unified-area-search>svg {
-  color:#0f5fa8;
+  color:#a7803d;
   width:18px;
   height:18px;
 }
@@ -7805,7 +7834,7 @@ body {
 }
 
 .unified-area-suggestions>button>svg {
-  color:#0f5fa8;
+  color:#a7803d;
   width:18px;
   height:18px;
 }
@@ -7832,7 +7861,7 @@ body {
 }
 
 .unified-area-suggestions>button:hover,.unified-area-suggestions>button.is-active {
-  background:#edf6fd;
+  background:#fdf8ee;
 }
 
 .unified-area-suggestions>p {
@@ -7928,7 +7957,7 @@ body {
 }
 
 .unified-area-browser>summary svg,.unified-area-browser-title svg {
-  color:#0f5fa8;
+  color:#a7803d;
   width:17px;
   height:17px;
 }
@@ -7942,7 +7971,7 @@ body {
 
 .unified-area-browser[open]>summary {
   background:#f2f8fd;
-  border-color:#0f5fa873;
+  border-color:#a7803d73;
 }
 
 .unified-area-expanded {
@@ -7951,7 +7980,7 @@ body {
 
 .unified-area-options {
   scrollbar-width:thin;
-  scrollbar-color:#0f5fa88c transparent;
+  scrollbar-color:#a7803d8c transparent;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:8px;
   max-height:360px;
@@ -7978,7 +8007,7 @@ body {
 }
 
 .unified-area-option>svg {
-  color:#0f5fa8;
+  color:#a7803d;
   width:17px;
   height:17px;
 }
@@ -8013,19 +8042,19 @@ body {
 }
 
 .unified-area-option:hover:not(:disabled) {
-  border-color:#0f5fa894;
+  border-color:#a7803d94;
   transform:translateY(-1px);
 }
 
 .unified-area-option.is-selected {
-  color:#0f5fa8;
-  background:#edf6fd;
-  border-color:#0f5fa8;
+  color:#a7803d;
+  background:#fdf8ee;
+  border-color:#a7803d;
 }
 
 .unified-area-option.is-selected>i {
   color:#fff;
-  background:#0f5fa8;
+  background:#a7803d;
 }
 
 .unified-area-option:disabled {
@@ -8592,9 +8621,9 @@ body {
 
 .filter-pill-group button.is-active,.featured-toggle.is-active {
   color:#fff;
-  background:#0f5fa8;
-  border-color:#0f5fa8;
-  box-shadow:0 8px 18px #0f5fa82e;
+  background:#a7803d;
+  border-color:#a7803d;
+  box-shadow:0 8px 18px #a7803d2e;
 }
 
 .rooms-filter-pills button {

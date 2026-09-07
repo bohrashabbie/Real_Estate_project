@@ -12,13 +12,38 @@ import {
   Repeat2,
   Search,
   Tag,
+  X,
 } from "lucide-react";
 
 import { Link, useRouter } from "@/i18n/navigation";
 import type { Area, PropertyType } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
-import { formatCount } from "@/lib/format";
 import { UnifiedAreaPicker } from "@/components/ui/unified-area-picker";
+
+/**
+ * Closes an open `<details>` when the pointer goes down anywhere outside it.
+ *
+ * `<details name>` already makes the fields exclusive of each other, but
+ * nothing in the platform closes the last open one when you simply walk away
+ * from it — the menu sat open over the page until you clicked its own summary
+ * again. On request: clicking away now closes it.
+ *
+ * `pointerdown`, not `click`, so the menu is gone by the time the press
+ * lands on whatever is underneath it, and capture so it still fires when the
+ * thing underneath stops the event on its way up.
+ */
+function useCloseOnOutside(ref: React.RefObject<HTMLDetailsElement | null>) {
+  useEffect(() => {
+    const away = (event: PointerEvent) => {
+      const details = ref.current;
+      if (!details?.open) return;
+      if (event.target instanceof Node && details.contains(event.target)) return;
+      details.removeAttribute("open");
+    };
+    document.addEventListener("pointerdown", away, true);
+    return () => document.removeEventListener("pointerdown", away, true);
+  }, [ref]);
+}
 
 /**
  * The search bar that overlaps the hero: area, type, purpose, go.
@@ -49,6 +74,7 @@ export function Menu({
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
   const current = options.find((option) => option.value === value) ?? options[0];
+  useCloseOnOutside(ref);
 
   return (
     <div className="home-search-field quick-filter-select">
@@ -122,11 +148,10 @@ export function AreaField({
 }) {
   const t = useTranslations();
   const details = useRef<HTMLDetailsElement>(null);
+  useCloseOnOutside(details);
   const selectedAreas = area
     .map((slug) => areas.find((item) => item.slug === slug))
     .filter((item): item is Area => Boolean(item));
-  const shown = selectedAreas.slice(0, 2);
-  const overflow = selectedAreas.length - shown.length;
 
   return (
     <div className="home-search-field home-area-picker">
@@ -139,22 +164,31 @@ export function AreaField({
           {selectedAreas.length === 0 ? (
             <span>{t("picker.allAreas")}</span>
           ) : (
+            /* Every pick, side by side, each with its own X -- on request,
+               in place of the old two-chips-plus-"+3", which showed a count
+               where the reader wanted the names and gave them no way to drop
+               one without opening the menu. The row scrolls sideways rather
+               than wrapping, so eight areas cannot grow the search bar. */
             <span className="area-field-chips">
-              {/* span, not b: `.home-search-field b` (this field's own
-                  "Area" caption) sets color:navy at higher specificity than
-                  a single class, which silently overrode this chip's white
-                  text — invisible on the "+N" chip's navy background,
-                  since that made it navy-on-navy. */}
-              {shown.map((item) => (
+              {selectedAreas.map((item) => (
                 <span key={item.slug} className="area-chip">
                   {item.name}
+                  <button
+                    type="button"
+                    aria-label={t("picker.removeArea", { area: item.name })}
+                    onPointerDown={(event) => {
+                      // The chip lives inside <summary>: without this the
+                      // press toggles the menu open or shut on its way past.
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onChange(area.filter((slug) => slug !== item.slug));
+                    }}
+                    onClick={(event) => event.preventDefault()}
+                  >
+                    <X size={11} />
+                  </button>
                 </span>
               ))}
-              {overflow > 0 ? (
-                <span className="area-chip area-chip-more">
-                  {t("picker.moreAreas", { count: formatCount(overflow, locale) })}
-                </span>
-              ) : null}
             </span>
           )}
           <ChevronDown size={14} />

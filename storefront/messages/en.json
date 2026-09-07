@@ -83,7 +83,8 @@
     "helpMulti": "You can pick more than one area.",
     "helpMax": "Pick at least one area, up to {max}.",
     "moreAreas": "+{count}",
-    "done": "Done"
+    "done": "Done",
+    "removeArea": "Remove {area}"
   },
   "purpose": {
     "rent": "For rent",

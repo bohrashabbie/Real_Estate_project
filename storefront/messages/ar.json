@@ -83,7 +83,8 @@
     "helpMulti": "يمكنك اختيار أكثر من منطقة.",
     "helpMax": "اختر منطقة واحدة على الأقل، وبحد أقصى {max} مناطق.",
     "moreAreas": "+{count}",
-    "done": "تم"
+    "done": "تم",
+    "removeArea": "إزالة {area}"
   },
   "purpose": {
     "rent": "للإيجار",
