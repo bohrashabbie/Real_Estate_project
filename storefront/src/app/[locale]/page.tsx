@@ -15,7 +15,6 @@ import {
   siteText,
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
-import { VipCarousel } from "@/components/home/vip-carousel";
 import { QuickSearch } from "@/components/home/quick-search";
 import {
   ContactBand,
@@ -106,7 +105,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </Link>
               }
             />
-            <VipCarousel properties={vip} locale={typedLocale} />
+            <PropertyCarousel properties={vip} locale={typedLocale} />
           </div>
         </section>
       ) : null}

@@ -9,15 +9,17 @@ import { apiGet, type Paginated, type PropertyListItem } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
 import { PropertyCard } from "@/components/property/property-card";
 
-/** Two rows of the four-column grid. */
-const PAGE_SIZE = 8;
+/** Three rows of the three-column grid. */
+const PAGE_SIZE = 9;
 /** Fetched a page at a time behind the visitor: three of theirs per round
  *  trip, so paging forward usually costs nothing. */
 const FETCH_SIZE = 24;
 
 /**
- * The results grid, paged eight at a time — four columns, two rows, on every
- * listing view (for sale, for rent, Featured, all).
+ * The results grid, paged nine at a time — three columns, three rows, on
+ * every listing view (for sale, for rent, Featured, all). Three across is
+ * the site-wide row width now; nine keeps every page a whole number of
+ * rows, where the old eight left the last row two-and-a-gap.
  *
  * The page numbers are real, but the API underneath them is not offset-paged:
  * the project's rule is cursor pagination on `(created_at, id)`, so there is

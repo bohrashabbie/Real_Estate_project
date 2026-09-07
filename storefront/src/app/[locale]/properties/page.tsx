@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import type { Locale } from "@/i18n/routing";
 import { localeAlternates } from "@/i18n/routing";
-import { Crown, Star } from "lucide-react";
+import { Crown, KeyRound, Star, Tag } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import {
@@ -20,7 +20,6 @@ import { all, one, type SearchParams } from "@/lib/search-params";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import { SectionHeading } from "@/components/home/sections";
-import { VipCarousel } from "@/components/home/vip-carousel";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 import { ResultsGrid } from "@/components/properties/results-grid";
 
@@ -86,6 +85,21 @@ export default async function PropertiesPage({
     getVipProperties(typedLocale),
   ]);
 
+  // Named views only — see the badge's own comment below.
+  const viewBadge =
+    vipOnly
+      ? { Icon: Crown, label: siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle") }
+      : featuredOnly
+        ? {
+            Icon: Star,
+            label: siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle"),
+          }
+        : purpose === "sale"
+          ? { Icon: Tag, label: t("purpose.sale") }
+          : purpose === "rent"
+            ? { Icon: KeyRound, label: t("purpose.rent") }
+            : null;
+
   return (
     <>
       <LaunchHero banners={banners} settings={settings} locale={typedLocale} />
@@ -97,6 +111,21 @@ export default async function PropertiesPage({
         variant="properties"
         initial={{ area, type, purpose }}
       />
+
+      {/* Which view you are on, said plainly: "For sale" / "For rent" in a
+          gold badge under the search bar, on request. Only for the views
+          that are a named place in the nav -- a page filtered to three
+          areas and a price range has no one word for what it is, and a
+          badge reading "For sale" there would be describing a third of the
+          filter and hiding the rest. */}
+      {viewBadge ? (
+        <div className="container listing-view-badge-row">
+          <span className="listing-view-badge">
+            <viewBadge.Icon size={16} />
+            {viewBadge.label}
+          </span>
+        </div>
+      ) : null}
 
       {/* The VIP row rides above the results on every listing view -- for
           sale, for rent, featured, and the unfiltered list -- three to a
@@ -116,7 +145,7 @@ export default async function PropertiesPage({
                 </Link>
               }
             />
-            <VipCarousel properties={vip} locale={typedLocale} columns={3} />
+            <PropertyCarousel properties={vip} locale={typedLocale} />
           </div>
         </section>
       )}
