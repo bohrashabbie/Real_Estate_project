@@ -32,7 +32,7 @@ class SmartSearchIn(BaseModel):
     filters are relaxed progressively server-side."""
 
     purpose: Purpose | None = None
-    type: str | None = None  # property_type key
+    type: str | list[str] | None = None  # property_type key
     area: list[str] | None = None  # area slugs, matched on any
     budget_max: Decimal | None = Field(None, gt=0)
     rooms: int | None = Field(None, ge=0)

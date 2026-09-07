@@ -53,7 +53,7 @@ export default async function PropertiesPage({
   const t = await getTranslations();
 
   const area = all(query.area);
-  const type = one(query.type);
+  const type = all(query.type);
   const purpose = one(query.purpose);
   const rooms = one(query.rooms);
   const priceMin = one(query.price_min);
@@ -63,7 +63,7 @@ export default async function PropertiesPage({
 
   const filters: Record<string, string | string[]> = {};
   if (area.length > 0) filters.area = area;
-  if (type) filters.type = type;
+  if (type.length > 0) filters.type = type;
   if (purpose) filters.purpose = purpose;
   if (rooms) filters.rooms = rooms;
   if (priceMin) filters.price_min = priceMin;

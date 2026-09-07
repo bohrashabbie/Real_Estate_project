@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ArrowLeft, Crown, Star } from "lucide-react";
+import { Crown, KeyRound, Star, Tag } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -133,17 +133,25 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {latest.length > 0 ? (
         <section className="section properties-section home-all-properties" id="all-properties">
           <div className="container">
-            {/* Same shape as VIP and Featured above it, on request: title,
-                stacked showcase button, no body sentence -- the three
-                curated rows now read as one family. */}
+            {/* Two doors rather than one, on request: the single "open the
+                properties page" button said where it went but not what was
+                behind it, and sale and rent are the two questions a visitor
+                actually arrives with. They sit at the end of the heading
+                row rather than stacked under the title -- a pair reads as a
+                choice, which is the point. */}
             <SectionHeading
               title={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
-              stackAction
               action={
-                <Link className="button button-showcase" href="/properties">
-                  <ArrowLeft size={15} />
-                  {siteText(settings, "all_cta", typedLocale) ?? t("home.allCta")}
-                </Link>
+                <div className="section-action-pair">
+                  <Link className="button button-showcase" href="/properties?purpose=sale">
+                    <Tag size={15} />
+                    {t("home.saleCta")}
+                  </Link>
+                  <Link className="button button-showcase" href="/properties?purpose=rent">
+                    <KeyRound size={15} />
+                    {t("home.rentCta")}
+                  </Link>
+                </div>
               }
             />
             <PropertyCarousel properties={latest} locale={typedLocale} />

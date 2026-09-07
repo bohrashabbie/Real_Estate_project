@@ -51,7 +51,7 @@ def banners(locale: str = "ar", db: Session = Depends(get_db)) -> list[dict]:
 @router.get("/properties")
 def properties(
     purpose: str | None = Query(None, pattern="^(rent|sale)$"),
-    type: str | None = None,  # property_type key
+    type: list[str] = Query([]),  # property_type keys — repeated, any match
     area: list[str] = Query([]),  # area slugs — repeated (?area=a&area=b), any match
     price_min: Decimal | None = Query(None, ge=0),
     price_max: Decimal | None = Query(None, ge=0),
@@ -69,7 +69,7 @@ def properties(
         db,
         public_service.normalize_locale(locale),
         purpose=purpose,
-        type_key=type,
+        type_key=type or None,
         area_slugs=area or None,
         price_min=price_min,
         price_max=price_max,

@@ -247,7 +247,7 @@ def _apply_filters(
     stmt: Select,
     *,
     purpose: str | None = None,
-    type_key: str | None = None,
+    type_key: str | list[str] | None = None,
     area_slugs: str | list[str] | None = None,
     price_min: Decimal | None = None,
     price_max: Decimal | None = None,
@@ -260,8 +260,13 @@ def _apply_filters(
     if purpose:
         stmt = stmt.where(Property.purpose == purpose)
     if type_key:
+        # A list (any of several types, OR'd together) from the listing
+        # endpoint; smart_search still passes its one key as a bare str, so
+        # it is normalised here rather than at every call site -- the same
+        # shape `area_slugs` below has carried since areas went multi-pick.
+        keys = [type_key] if isinstance(type_key, str) else list(type_key)
         stmt = stmt.where(
-            Property.property_type_id.in_(select(PropertyType.id).where(PropertyType.key == type_key))
+            Property.property_type_id.in_(select(PropertyType.id).where(PropertyType.key.in_(keys)))
         )
     if area_slugs:
         # The listing endpoint passes a list (any of several areas, OR'd
@@ -299,7 +304,7 @@ def property_list(
     locale: str,
     *,
     purpose: str | None = None,
-    type_key: str | None = None,
+    type_key: str | list[str] | None = None,
     area_slugs: list[str] | None = None,
     price_min: Decimal | None = None,
     price_max: Decimal | None = None,

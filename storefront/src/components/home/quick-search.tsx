@@ -57,15 +57,25 @@ export function Menu({
   label,
   icon,
   value,
+  values,
   options,
   onPick,
+  onToggle,
   detailsName,
 }: {
   label: string;
   icon: React.ReactNode;
-  value: string;
+  /** Single-pick mode: the chosen value, "" meaning "all". */
+  value?: string;
+  /** Multi-pick mode: every chosen value. Passing this switches the field
+   *  over — the menu stays open as you tick, each pick shows as its own
+   *  removable chip, and "all" clears the set rather than being a member of
+   *  it. Property type asked for this; purpose stays single because buying
+   *  and renting at once is the same as not choosing. */
+  values?: string[];
   options: { value: string; label: string }[];
-  onPick: (value: string) => void;
+  onPick?: (value: string) => void;
+  onToggle?: (value: string) => void;
   /** Shared with the row's other fields so opening one closes any other
    *  that's already open — native `<details name>` exclusivity, not JS.
    *  Unsupported browsers just keep the old "more than one open" behaviour
@@ -73,8 +83,13 @@ export function Menu({
   detailsName?: string;
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
+  const multi = values !== undefined;
+  const chosen = values ?? [];
   const current = options.find((option) => option.value === value) ?? options[0];
+  const picked = options.filter((option) => option.value && chosen.includes(option.value));
   useCloseOnOutside(ref);
+
+  const isOn = (option: string) => (multi ? chosen.includes(option) : option === value);
 
   return (
     <div className="home-search-field quick-filter-select">
@@ -88,7 +103,35 @@ export function Menu({
               treatment as the area field's chips — "this is selected"
               means the same gold pill everywhere in this search bar, not
               plain text for two fields and a chip for the third. */}
-          <span className={value ? "area-chip" : undefined}>{current?.label}</span>
+          {multi ? (
+            picked.length === 0 ? (
+              <span>{options[0]?.label}</span>
+            ) : (
+              <span className="area-field-chips">
+                {picked.map((option) => (
+                  <span key={option.value} className="area-chip">
+                    {option.label}
+                    <button
+                      type="button"
+                      aria-label={option.label}
+                      onPointerDown={(event) => {
+                        // Inside <summary>: without this the press toggles
+                        // the menu on its way past. Same as the area chips.
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onToggle?.(option.value);
+                      }}
+                      onClick={(event) => event.preventDefault()}
+                    >
+                      <X size={11} />
+                    </button>
+                  </span>
+                ))}
+              </span>
+            )
+          ) : (
+            <span className={value ? "area-chip" : undefined}>{current?.label}</span>
+          )}
           <ChevronDown size={14} />
         </summary>
         <div className="quick-filter-menu">
@@ -96,14 +139,31 @@ export function Menu({
             <button
               key={option.value || "all"}
               type="button"
-              className={option.value === value ? "is-selected" : undefined}
+              className={
+                (multi && !option.value ? chosen.length === 0 : isOn(option.value))
+                  ? "is-selected"
+                  : undefined
+              }
               onClick={() => {
-                onPick(option.value);
+                if (multi) {
+                  // "All" is a reset, not a member: ticking it empties the
+                  // set and closes, the way picking a single value does.
+                  if (!option.value) {
+                    chosen.forEach((slug) => onToggle?.(slug));
+                    ref.current?.removeAttribute("open");
+                    return;
+                  }
+                  onToggle?.(option.value);
+                  return;
+                }
+                onPick?.(option.value);
                 ref.current?.removeAttribute("open");
               }}
             >
               <span>{option.label}</span>
-              {option.value === value ? <Check size={14} /> : null}
+              {(multi && !option.value ? chosen.length === 0 : isOn(option.value)) ? (
+                <Check size={14} />
+              ) : null}
             </button>
           ))}
         </div>
@@ -226,14 +286,14 @@ export function QuickSearch({
   areas: Area[];
   types: PropertyType[];
   locale: Locale;
-  initial?: { area?: string[]; type?: string; purpose?: string };
+  initial?: { area?: string[]; type?: string[]; purpose?: string };
   variant?: "home" | "properties";
 }) {
   const t = useTranslations();
   const router = useRouter();
 
   const [area, setArea] = useState<string[]>(initial?.area ?? []);
-  const [type, setType] = useState(initial?.type ?? "");
+  const [type, setType] = useState<string[]>(initial?.type ?? []);
   const [purpose, setPurpose] = useState(initial?.purpose ?? "");
 
   // Landing on /properties?purpose=rent must show "For rent" in the bar, and
@@ -242,12 +302,13 @@ export function QuickSearch({
   // searchParams), so it can't sit in the dependency list itself without
   // re-running every time — its own values are what's compared instead.
   const initialAreaKey = initial?.area?.join(",") ?? "";
+  const initialTypeKey = initial?.type?.join(",") ?? "";
   useEffect(() => {
     setArea(initial?.area ?? []);
-    setType(initial?.type ?? "");
+    setType(initial?.type ?? []);
     setPurpose(initial?.purpose ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialAreaKey, initial?.type, initial?.purpose]);
+  }, [initialAreaKey, initialTypeKey, initial?.purpose]);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -257,7 +318,9 @@ export function QuickSearch({
     // of them back through `all()` on the properties page rather than only
     // the first.
     for (const slug of area) params.append("area", slug);
-    if (type) params.set("type", type);
+    // Every picked type, in URL-param order, so a shared link round-trips
+    // all of them back through `all()` -- the same shape areas use.
+    for (const key of type) params.append("type", key);
     if (purpose) params.set("purpose", purpose);
     const query = params.toString();
     router.push(query ? `/properties?${query}` : "/properties");
@@ -287,8 +350,12 @@ export function QuickSearch({
           <Menu
             label={t("quickSearch.type")}
             icon={<House size={14} />}
-            value={type}
-            onPick={setType}
+            values={type}
+            onToggle={(key) =>
+              setType((current) =>
+                current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
+              )
+            }
             detailsName="quick-search-fields"
             options={[
               { value: "", label: t("quickSearch.allTypes") },

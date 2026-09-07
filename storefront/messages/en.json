@@ -121,7 +121,9 @@
     "allKicker": "Site listings",
     "allTitle": "All listings",
     "allBody": "Browse every published property for sale and rent in Kuwait.",
-    "allCta": "Browse all properties for sale or rent"
+    "allCta": "Browse all properties for sale or rent",
+    "saleCta": "View properties for sale",
+    "rentCta": "View properties for rent"
   },
   "footerSearch": {
     "title": "Didn't find what you're after?",

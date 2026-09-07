@@ -946,19 +946,23 @@ img {
   line-height:1.25;
 }
 
-.type-section .heading-row h2::after {
-  content:"";
-  background:linear-gradient(90deg,var(--gold),#c8a45d00);
-  border-radius:999px;
-  width:96px;
-  height:3px;
-  margin-top:14px;
-  display:block;
+/* Centred on request: this section is a masthead over a row that runs the
+   full width, so a left-aligned title sat off to one side of what it
+   names. The rule under it centres with it, and fades out both ways rather
+   than trailing off in one direction. */
+.type-section .heading-row {
+  justify-content:center;
+  text-align:center;
 }
 
-[dir="rtl"] .type-section .heading-row h2::after {
-  background:linear-gradient(270deg,var(--gold),#c8a45d00);
-  margin-inline-start:0;
+.type-section .heading-row h2::after {
+  content:"";
+  background:linear-gradient(90deg,#c8a45d00,var(--gold),#c8a45d00);
+  border-radius:999px;
+  width:120px;
+  height:3px;
+  margin:14px auto 0;
+  display:block;
 }
 
 /* The villa-and-tower pair over the type row: two photographs from the
@@ -1150,6 +1154,28 @@ img {
   gap:20px;
   margin-bottom:16px;
   display:flex;
+}
+
+/* Two section CTAs side by side -- "for sale" and "for rent" at the end of
+   the All listings heading, in place of the one button that only said
+   "open the properties page". Wraps to a column on a narrow screen so the
+   pair never squeezes the title. */
+.section-action-pair {
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  display:flex;
+}
+
+@media (max-width:760px) {
+  .section-action-pair {
+    width:100%;
+  }
+
+  .section-action-pair > .button {
+    flex:1;
+    justify-content:center;
+  }
 }
 
 /* The office's picks carry no sentence under the title — the title already
@@ -1505,10 +1531,18 @@ img {
    repeated once per card in a dense grid rather than standing alone the
    way the other two do, and that is a worse trade than just not carrying
    it here. */
+/* 9px, not 5: at 5 the arrow sat against the "V" of the label with the
+   text-stroke closing what little space was left, so the two read as one
+   glyph. The extra padding-inline-start keeps the arrow off the pill's own
+   edge now that it has moved. */
 .property-link {
-  gap:5px;
-  padding:8px 14px;
+  gap:9px;
+  padding:8px 16px 8px 14px;
   font-size:13px;
+}
+
+.property-link > svg {
+  flex:none;
 }
 
 /* Black, not the previous muted grey -- scoped to this light-card
@@ -3596,30 +3630,33 @@ footer {
   display:flex;
 }
 
+/* The chip row takes the slack and the chevron keeps its place at the end;
+   without these the row could not wrap without shoving the chevron out of
+   the field. */
+.home-area-picker summary > .area-field-chips {
+  flex:1;
+  min-width:0;
+}
+
+.home-area-picker summary > svg {
+  flex:none;
+}
+
 /* Selected areas in the closed summary, as gold chips rather than a name or
-   a bare count — same gradient as .featured-label/
-   .unified-area-selected, so "this is selected" reads the same way
-   everywhere on the site. `min-width:0` + `overflow:hidden` on the row is
-   what lets `justify-content:space-between` on the summary still fit the
-   chevron beside it instead of the chips pushing the row wider than the
-   search field. Capped to two chips plus a "+N" overflow chip in the
-   component itself, so this never needs to wrap. */
-/* Scrolls sideways rather than hiding the overflow now that every pick is
-   shown: eight areas must not be able to grow the search bar, but they
-   must all be reachable. The bar itself is hidden -- the row is short and
-   dragging a 4px scrollbar inside a 30px field would be a worse control
-   than simply flicking the chips. */
+   a bare count — same gradient as .featured-label/.unified-area-selected,
+   so "this is selected" reads the same way everywhere on the site. */
+/* Wraps rather than scrolling. Scrolling hid the third pick behind the
+   chevron with nothing to say it was there -- the reported bug -- and a
+   row you have to discover you can flick is not a control. The field
+   grows down the extra line instead, which the search bar's `stretch`
+   rows absorb. */
 .area-field-chips {
   min-width:0;
   align-items:center;
   gap:5px;
   display:flex;
-  overflow-x:auto;
-  scrollbar-width:none;
-}
-
-.area-field-chips::-webkit-scrollbar {
-  display:none;
+  flex-wrap:wrap;
+  padding-block:2px;
 }
 
 /* The chip's own X. `pointer-events` stays on so it can be pressed inside
