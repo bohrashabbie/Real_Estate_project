@@ -11,6 +11,7 @@ import {
   getPropertyTypes,
   getSettings,
   getVipProperties,
+  mediaUrl,
   siteText,
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
@@ -61,6 +62,31 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const promotedIds = new Set([...vip, ...featured].map((property) => property.id));
   const latest = all.items.filter((property) => !promotedIds.has(property.id));
 
+  // The pair of photographs standing over the type row: a villa and
+  // something tall. Taken from the catalogue rather than shipped as
+  // artwork, so the office never advertises a building it doesn't have.
+  // Searched across everything fetched, not just `latest` -- a villa that
+  // happens to be this week's VIP pick is still the best villa to show.
+  const shotFor = (keys: string[]) => {
+    for (const key of keys) {
+      const match = all.items.find(
+        (property) => property.type.key === key && property.main_image,
+      );
+      if (match) {
+        return {
+          href: `/properties?type=${match.type.key}`,
+          image: mediaUrl(match.main_image)!,
+          label: match.type.name,
+        };
+      }
+    }
+    return null;
+  };
+  const typeShots = [
+    shotFor(["villa", "chalet"]),
+    shotFor(["apartment", "building", "floor", "office"]),
+  ].filter((shot): shot is NonNullable<typeof shot> => shot !== null);
+
   return (
     <>
       <LaunchHero banners={banners} settings={settings} locale={typedLocale} />
@@ -103,16 +129,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      <PropertyTypeGrid types={types} settings={settings} locale={typedLocale} />
+      <PropertyTypeGrid types={types} settings={settings} locale={typedLocale} shots={typeShots} />
 
       {latest.length > 0 ? (
         <section className="section properties-section home-all-properties" id="all-properties">
           <div className="container">
+            {/* Same shape as VIP and Featured above it, on request: title,
+                stacked showcase button, no body sentence -- the three
+                curated rows now read as one family. */}
             <SectionHeading
               title={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
-              body={siteText(settings, "all_body", typedLocale) ?? t("home.allBody")}
+              stackAction
               action={
-                <Link className="button button-outline home-all-properties-link" href="/properties">
+                <Link className="button button-showcase" href="/properties">
                   <ArrowLeft size={15} />
                   {siteText(settings, "all_cta", typedLocale) ?? t("home.allCta")}
                 </Link>

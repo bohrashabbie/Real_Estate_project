@@ -933,6 +933,97 @@ img {
   margin-bottom:26px;
 }
 
+/* "Kuwait Real Estate" is the one heading on the page that is a name rather
+   than a sentence, and it is set in English under both locales. Given its
+   own treatment on request: larger, with the tracking opened up and a short
+   gold rule under it, so it reads as the section's masthead instead of as
+   another h2 in the stack. The rule is `::after` on the heading itself, not
+   a border on the row, so it sits under the words and not across the
+   column. */
+.type-section .heading-row h2 {
+  font-size:clamp(32px,3.6vw,46px);
+  letter-spacing:.01em;
+  line-height:1.25;
+}
+
+.type-section .heading-row h2::after {
+  content:"";
+  background:linear-gradient(90deg,var(--gold),#c8a45d00);
+  border-radius:999px;
+  width:96px;
+  height:3px;
+  margin-top:14px;
+  display:block;
+}
+
+[dir="rtl"] .type-section .heading-row h2::after {
+  background:linear-gradient(270deg,var(--gold),#c8a45d00);
+  margin-inline-start:0;
+}
+
+/* The villa-and-tower pair over the type row: two photographs from the
+   catalogue itself standing for the range of what the office lists. Real
+   listings rather than shipped artwork, so this can never advertise a
+   building the office does not have -- see `shotFor` in the home page. */
+.type-shots {
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+  margin-bottom:22px;
+  display:grid;
+}
+
+.type-shot {
+  border:1px solid #c8a45d3d;
+  border-radius:18px;
+  aspect-ratio:16/7;
+  display:block;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 16px 40px #0d1b2a1f;
+}
+
+.type-shot img {
+  object-fit:cover;
+  width:100%;
+  height:100%;
+  transition:transform .45s;
+}
+
+.type-shot:hover img {
+  transform:scale(1.05);
+}
+
+/* The scrim is on the link, over the photo, so the label stays readable on
+   a bright daytime shot as well as a dusk one. */
+.type-shot::after {
+  content:"";
+  background:linear-gradient(0deg,#0d1b2ae0,#0d1b2a2e 46%,#0d1b2a00);
+  position:absolute;
+  inset:0;
+}
+
+.type-shot > span {
+  z-index:1;
+  color:#fff;
+  font:800 clamp(16px,1.5vw,20px) Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
+  text-shadow:0 2px 14px #04101f80;
+  position:absolute;
+  inset-inline-start:20px;
+  bottom:16px;
+}
+
+@media (max-width:639px) {
+  .type-shots {
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-bottom:18px;
+  }
+
+  .type-shot {
+    aspect-ratio:16/8;
+  }
+}
+
 /* A marquee, not a scroller: the row drifts on its own like an ad strip so
    the office's full type list is seen without anyone dragging anything.
    There is deliberately no scrollbar and no snap — an earlier version was a

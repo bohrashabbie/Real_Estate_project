@@ -61,10 +61,18 @@ export async function PropertyTypeGrid({
   types,
   settings,
   locale,
+  shots = [],
 }: {
   types: PropertyType[];
   settings: SiteSettings;
   locale: Locale;
+  /** A villa and an apartment/building, drawn from the catalogue itself
+   *  rather than shipped as artwork: the office asked for the two together
+   *  here to stand for the range of property types, and real listings mean
+   *  the pair is never stock photography of a building the office doesn't
+   *  have. Empty when neither type is published yet, and the band drops out
+   *  rather than rendering holes. */
+  shots?: { href: string; image: string; label: string }[];
 }) {
   const t = await getTranslations("home");
   // The reference showed six because it only ever had six; the marquee now
@@ -90,10 +98,24 @@ export async function PropertyTypeGrid({
   return (
     <section className="section type-section" id="property-types">
       <div className="container">
-        <SectionHeading
-          title={siteText(settings, "types_title", locale) ?? t("typesTitle")}
-          body={siteText(settings, "types_body", locale) ?? t("typesBody")}
-        />
+        {/* No `body` any more, on request -- "start the content directly
+            from the property listings". The heading carries the section on
+            its own and the tiles follow it immediately. `types_body` is
+            still in Settings but nothing reads it now. */}
+        <SectionHeading title={siteText(settings, "types_title", locale) ?? t("typesTitle")} />
+
+        {shots.length > 0 ? (
+          <div className="type-shots">
+            {shots.map((shot) => (
+              <Link className="type-shot" key={shot.href} href={shot.href}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={shot.image} alt="" aria-hidden loading="lazy" />
+                <span>{shot.label}</span>
+              </Link>
+            ))}
+          </div>
+        ) : null}
+
         <div className="type-marquee">
           {/* The loop is timed per card (5s each), not per lap: a nine-type
               office drifts at the same speed as a six-type one instead of
