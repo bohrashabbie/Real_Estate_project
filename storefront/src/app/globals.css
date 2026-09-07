@@ -3383,8 +3383,15 @@ footer {
    banner is a defensible pattern in the abstract, but it also meant the
    card covered part of whatever the office had published there, which
    read as the wrong trade-off in practice. */
+/* padding-top on request: the card sat flush against the hero's bottom
+   edge with 0px between them (see the commit removing the old overlap,
+   which flattened the two straight to touching rather than leaving a gap).
+   28px matches what `.properties-quick-search` already carries above the
+   same bar on the listing pages -- the two versions of this search now
+   open the same way. */
 .home-quick-search {
   z-index:6;
+  padding-top:28px;
   padding-bottom:24px;
   position:relative;
 }
