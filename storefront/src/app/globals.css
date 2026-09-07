@@ -1379,7 +1379,7 @@ img {
 .property-body {
   flex-direction:column;
   flex:1;
-  padding:20px 20px 17px;
+  padding:20px 20px 13px;
   display:flex;
 }
 
@@ -1432,14 +1432,18 @@ img {
    card the third item ran out of room and each label wrapped under its own
    number. `nowrap` keeps a spec on one line and `space-between` gives the row
    whatever slack is left rather than insisting on a gap it cannot afford. */
+/* Tightened on request -- this band was 56px tall around a 19px row of
+   text, so the space between the area name and the View details button was
+   mostly padding. 8/9/38 rather than 14/16/54 pulls the card's lower half
+   up by about 24px without crowding the rules above and below it. */
 .property-specs {
   border-top:1px solid var(--line);
   border-bottom:1px solid var(--line);
   justify-content:space-between;
   align-items:center;
   gap:8px;
-  margin-top:14px;
-  padding:16px 0;
+  margin-top:8px;
+  padding:9px 0;
   display:flex;
 }
 
@@ -1459,7 +1463,7 @@ img {
 /* Reserves the row even on a listing with no rooms, baths or area, so a land
    plot's footer still lines up with the flats either side of it. */
 .property-specs {
-  min-height:54px;
+  min-height:38px;
 }
 
 .property-footer {
