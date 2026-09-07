@@ -4213,21 +4213,33 @@ footer {
 
 /* The VIP row on the listing pages. Its top padding comes from the shared
    `.home-quick-search + .properties-section` rule, the same 42px the home
-   page's VIP row gets; only the bottom is set here, tight, because the
-   results section follows immediately and collapses its own top to match. */
+   page's VIP row gets; the bottom is set here. */
 .inner-vip-section {
-  padding-bottom:34px;
+  padding-bottom:44px;
 }
 
-/* Same band as the VIP row above it, and the results section after either
-   of them collapses its own top rather than stacking a second gap. */
+/* A band of its own above the results. It used to sit flush under VIP (0px
+   between the two rows) and hand the results grid a 34px gap -- three
+   different things stacked with nothing telling them apart, which on
+   request now get real air between them. */
 .inner-featured-section {
-  padding-block:0 34px;
+  padding-block:10px 48px;
 }
 
+/* The seam between "what the office is promoting" and "everything we have".
+   Both are ivory bands of property cards, so space alone was not enough to
+   say a new section had started -- the rule does. It sits on the container
+   rather than the section so it aligns with the grid under it instead of
+   running the full width of the viewport. */
 .inner-vip-section + .properties-browser,
 .inner-featured-section + .properties-browser {
   padding-top:0;
+}
+
+.inner-vip-section + .properties-browser > .container,
+.inner-featured-section + .properties-browser > .container {
+  border-top:1px solid #c8a45d40;
+  padding-top:44px;
 }
 
 /* "there is more after this" beside the page numbers -- the API is cursor-
