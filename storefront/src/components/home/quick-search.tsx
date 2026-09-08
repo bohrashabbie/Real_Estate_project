@@ -46,6 +46,48 @@ function useCloseOnOutside(ref: React.RefObject<HTMLDetailsElement | null>) {
 }
 
 /**
+ * Opens a `<details>` on hover and closes it when the pointer leaves.
+ *
+ * Only where hovering is a real gesture: `(hover: hover) and (pointer:
+ * fine)` keeps it off touch screens, where "hover" fires on the tap that was
+ * meant to open the menu and then never fires again to close it — the menu
+ * would open and stick.
+ *
+ * Closing is delayed a beat. The panel is positioned below the summary with
+ * a gap between them, so a pointer travelling from one to the other leaves
+ * the element for a frame or two; closing immediately made the menu flicker
+ * shut under the cursor on its way in. Opening is immediate — a delay there
+ * is felt as lag.
+ *
+ * Click still works exactly as before: this only adds a second way in.
+ */
+function useHoverToggle(ref: React.RefObject<HTMLDetailsElement | null>) {
+  useEffect(() => {
+    const details = ref.current;
+    if (!details) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    let closing: ReturnType<typeof setTimeout> | undefined;
+    const enter = () => {
+      clearTimeout(closing);
+      details.setAttribute("open", "");
+    };
+    const leave = () => {
+      clearTimeout(closing);
+      closing = setTimeout(() => details.removeAttribute("open"), 160);
+    };
+
+    details.addEventListener("pointerenter", enter);
+    details.addEventListener("pointerleave", leave);
+    return () => {
+      clearTimeout(closing);
+      details.removeEventListener("pointerenter", enter);
+      details.removeEventListener("pointerleave", leave);
+    };
+  }, [ref]);
+}
+
+/**
  * The search bar that overlaps the hero: area, type, purpose, go.
  *
  * All three fields are `<details>` menus rather than `<select>`s. That is the
@@ -88,6 +130,7 @@ export function Menu({
   const current = options.find((option) => option.value === value) ?? options[0];
   const picked = options.filter((option) => option.value && chosen.includes(option.value));
   useCloseOnOutside(ref);
+  useHoverToggle(ref);
 
   const isOn = (option: string) => (multi ? chosen.includes(option) : option === value);
 
@@ -209,6 +252,7 @@ export function AreaField({
   const t = useTranslations();
   const details = useRef<HTMLDetailsElement>(null);
   useCloseOnOutside(details);
+  useHoverToggle(details);
   const selectedAreas = area
     .map((slug) => areas.find((item) => item.slug === slug))
     .filter((item): item is Area => Boolean(item));
