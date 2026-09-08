@@ -932,8 +932,13 @@ img {
   scroll-margin-top:104px;
 }
 
+/* The badge row counts as "nothing between them": it is one pill on its own
+   line, not a band. Without the third selector here, adding it broke the
+   adjacency and the section behind it fell back to `.section`'s 104px --
+   which is the "so much padding" under the For rent badge. */
 .home-quick-search+.properties-section,
-.home-quick-search+.demo-notice+.properties-section {
+.home-quick-search+.demo-notice+.properties-section,
+.listing-view-badge-row+.properties-section {
   padding-top:42px;
 }
 
@@ -4383,25 +4388,29 @@ footer {
    The same gold-gradient pill the card badges wear, so arriving on the
    For sale page shows the very badge those cards carry. */
 .listing-view-badge-row {
-  padding-top:22px;
+  padding-top:20px;
 }
 
+/* Tightened: it was a wide, softly glowing lozenge that read as a button
+   someone forgot to make clickable. Smaller, flatter, with a gold ring
+   instead of a gold cloud -- a label saying which list this is. */
 .listing-view-badge {
   color:var(--navy);
-  background:linear-gradient(135deg,#f0dcae,var(--gold) 52%,#b1873c);
+  background:linear-gradient(135deg,#f6e7c4,#efdcb0 52%,#e6cf9c);
   border-radius:999px;
   align-items:center;
-  gap:8px;
-  min-height:38px;
-  padding-inline:18px;
-  font-size:14px;
+  gap:7px;
+  min-height:32px;
+  padding-inline:15px;
+  font-size:13px;
   font-weight:800;
+  letter-spacing:.01em;
   display:inline-flex;
-  box-shadow:0 10px 24px #c8a45d3d,inset 0 0 0 1px #ffffff5c;
+  box-shadow:inset 0 0 0 1px #b1873c4d;
 }
 
 .listing-view-badge svg {
-  color:var(--navy);
+  color:var(--gold-dark);
   flex:none;
 }
 
