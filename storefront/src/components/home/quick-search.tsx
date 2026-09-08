@@ -350,9 +350,14 @@ function PriceField({
   useCloseOnOutside(ref);
   useHoverToggle(ref);
 
+  // Shown in the order it will actually be searched in, not the order it
+  // was typed: submit swaps a backwards range, so a chip reading
+  // "900 - 400" would be describing something the search never does.
+  const low = min && max && Number(min) > Number(max) ? max : min;
+  const high = min && max && Number(min) > Number(max) ? min : max;
   const summary =
     min && max
-      ? t("quickSearch.priceBetween", { min, max })
+      ? t("quickSearch.priceBetween", { min: low, max: high })
       : min
         ? t("quickSearch.priceFrom", { min })
         : max
