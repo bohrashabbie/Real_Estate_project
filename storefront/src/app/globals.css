@@ -424,6 +424,39 @@ img {
   color:var(--gold);
 }
 
+/* The same pill with the words taken out: a disc carrying one mark. On
+   request -- the crown says VIP under a heading that already says it, and
+   the star says Featured. The label the button used to show survives as its
+   `aria-label` and `title`, so a screen reader and a hovering cursor both
+   still get the sentence; only the pixels lose it.
+
+   Square by construction (equal width/height, `padding:0`) rather than by
+   luck: `.button`'s own padding-inline would otherwise make an oval, which
+   is exactly the bug the header's phone and locale buttons had. */
+.button-icon {
+  place-items:center;
+  width:46px;
+  min-width:46px;
+  height:46px;
+  min-height:46px;
+  padding:0;
+  display:grid;
+}
+
+.button-icon > svg {
+  color:var(--gold);
+  flex:none;
+}
+
+@media (max-width:760px) {
+  .button-icon {
+    width:42px;
+    min-width:42px;
+    height:42px;
+    min-height:42px;
+  }
+}
+
 .button-large {
   min-height:56px;
   padding-inline:28px;
@@ -3515,7 +3548,10 @@ footer {
   background:#fffffff7;
   border:1px solid #c8a45d4d;
   border-radius:14px;
-  grid-template-columns:1.05fr repeat(3,1fr) auto;
+  /* Four fields now (area, type, purpose, price) plus the button. The
+     title column is narrower than it was -- with a fourth filter beside it
+     the caption is the part that can afford to give up room. */
+  grid-template-columns:0.85fr repeat(4,1fr) auto;
   align-items:stretch;
   gap:9px;
   padding:15px;
@@ -6807,7 +6843,7 @@ body:has(.mobile-preview-page) .whatsapp-nudge {
 
 @media (max-width:1100px) {
   .home-quick-search form {
-    grid-template-columns:repeat(3,1fr) auto;
+    grid-template-columns:repeat(2,1fr);
   }
   .home-search-title {
     grid-column:1/-1;
@@ -8533,6 +8569,68 @@ body {
 
 .quick-filter-menu button svg {
   color:var(--gold-dark);
+}
+
+/* The price menu is the one panel that holds inputs rather than a list of
+   options, so it lays its two out side by side and stops there -- a range
+   is one thought, and stacking "from" over "to" made it read as two. */
+.price-menu {
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  min-width:250px;
+  padding:12px;
+  display:grid;
+}
+
+.price-menu label {
+  flex-direction:column;
+  gap:5px;
+  display:flex;
+}
+
+.price-menu small {
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.price-menu input {
+  color:var(--navy);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:9px;
+  width:100%;
+  min-height:38px;
+  padding-inline:11px;
+  font-size:14px;
+  font-weight:700;
+  transition:border-color .15s,box-shadow .15s;
+}
+
+.price-menu input:focus {
+  border-color:var(--gold);
+  outline:0;
+  box-shadow:0 0 0 3px #c8a45d2e;
+}
+
+.price-clear {
+  color:var(--muted);
+  cursor:pointer;
+  background:0 0;
+  border:0;
+  grid-column:1/-1;
+  min-height:0!important;
+  padding:2px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  text-align:center;
+}
+
+.price-clear:hover {
+  color:var(--gold-dark);
+  background:0 0!important;
 }
 
 /* 30, not 80: the fixed rails start at 38 (.contact-floats) and everything

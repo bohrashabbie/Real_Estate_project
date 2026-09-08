@@ -63,7 +63,15 @@
     "shortcut": {
       "sale": "للبيع",
       "rent": "للإيجار"
-    }
+    },
+    "price": "السعر (د.ك)",
+    "anyPrice": "أي سعر",
+    "priceMin": "من",
+    "priceMax": "إلى",
+    "priceFrom": "من {min} د.ك",
+    "priceTo": "حتى {max} د.ك",
+    "priceBetween": "{min} – {max} د.ك",
+    "clearPrice": "مسح السعر"
   },
   "announcement": {
     "aria": "بنر إعلاني",

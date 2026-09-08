@@ -12,6 +12,7 @@ import {
   Repeat2,
   Search,
   Tag,
+  Wallet,
   X,
 } from "lucide-react";
 
@@ -320,6 +321,94 @@ export function AreaField({
   );
 }
 
+/**
+ * Price, as a from/to pair inside the same `<details>` the other fields
+ * use — so the bar reads as four of one thing rather than three menus and
+ * an odd pair of boxes.
+ *
+ * Numbers only, and the pair is normalised on the way out rather than
+ * policed on the way in: someone who types 900 into "from" and 400 into
+ * "to" means the range between them, and swapping is friendlier than
+ * refusing. `inputMode="numeric"` brings up the number pad on a phone
+ * without `type="number"`'s spinner, which is noise at this size.
+ */
+function PriceField({
+  min,
+  max,
+  onMin,
+  onMax,
+  detailsName,
+}: {
+  min: string;
+  max: string;
+  onMin: (value: string) => void;
+  onMax: (value: string) => void;
+  detailsName?: string;
+}) {
+  const t = useTranslations();
+  const ref = useRef<HTMLDetailsElement>(null);
+  useCloseOnOutside(ref);
+  useHoverToggle(ref);
+
+  const summary =
+    min && max
+      ? t("quickSearch.priceBetween", { min, max })
+      : min
+        ? t("quickSearch.priceFrom", { min })
+        : max
+          ? t("quickSearch.priceTo", { max })
+          : t("quickSearch.anyPrice");
+
+  return (
+    <div className="home-search-field quick-filter-select">
+      <span>
+        <Wallet size={14} />
+        <b>{t("quickSearch.price")}</b>
+      </span>
+      <details ref={ref} name={detailsName}>
+        <summary>
+          <span className={min || max ? "area-chip" : undefined}>{summary}</span>
+          <ChevronDown size={14} />
+        </summary>
+        <div className="quick-filter-menu price-menu">
+          <label>
+            <small>{t("quickSearch.priceMin")}</small>
+            <input
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={min}
+              placeholder="0"
+              onChange={(event) => onMin(event.target.value.replace(/[^0-9]/g, ""))}
+            />
+          </label>
+          <label>
+            <small>{t("quickSearch.priceMax")}</small>
+            <input
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={max}
+              placeholder={t("quickSearch.anyPrice")}
+              onChange={(event) => onMax(event.target.value.replace(/[^0-9]/g, ""))}
+            />
+          </label>
+          {min || max ? (
+            <button
+              type="button"
+              className="price-clear"
+              onClick={() => {
+                onMin("");
+                onMax("");
+              }}
+            >
+              {t("quickSearch.clearPrice")}
+            </button>
+          ) : null}
+        </div>
+      </details>
+    </div>
+  );
+}
+
 export function QuickSearch({
   areas,
   types,
@@ -330,7 +419,13 @@ export function QuickSearch({
   areas: Area[];
   types: PropertyType[];
   locale: Locale;
-  initial?: { area?: string[]; type?: string[]; purpose?: string };
+  initial?: {
+    area?: string[];
+    type?: string[];
+    purpose?: string;
+    priceMin?: string;
+    priceMax?: string;
+  };
   variant?: "home" | "properties";
 }) {
   const t = useTranslations();
@@ -339,6 +434,8 @@ export function QuickSearch({
   const [area, setArea] = useState<string[]>(initial?.area ?? []);
   const [type, setType] = useState<string[]>(initial?.type ?? []);
   const [purpose, setPurpose] = useState(initial?.purpose ?? "");
+  const [priceMin, setPriceMin] = useState(initial?.priceMin ?? "");
+  const [priceMax, setPriceMax] = useState(initial?.priceMax ?? "");
 
   // Landing on /properties?purpose=rent must show "For rent" in the bar, and
   // the same must happen when a quick-link is followed from this very bar.
@@ -351,8 +448,10 @@ export function QuickSearch({
     setArea(initial?.area ?? []);
     setType(initial?.type ?? []);
     setPurpose(initial?.purpose ?? "");
+    setPriceMin(initial?.priceMin ?? "");
+    setPriceMax(initial?.priceMax ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialAreaKey, initialTypeKey, initial?.purpose]);
+  }, [initialAreaKey, initialTypeKey, initial?.purpose, initial?.priceMin, initial?.priceMax]);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -366,6 +465,12 @@ export function QuickSearch({
     // all of them back through `all()` -- the same shape areas use.
     for (const key of type) params.append("type", key);
     if (purpose) params.set("purpose", purpose);
+    // Swapped rather than rejected when they arrive the wrong way round --
+    // 900-to-400 means the range between them.
+    const low = priceMin && priceMax && Number(priceMin) > Number(priceMax) ? priceMax : priceMin;
+    const high = priceMin && priceMax && Number(priceMin) > Number(priceMax) ? priceMin : priceMax;
+    if (low) params.set("price_min", low);
+    if (high) params.set("price_max", high);
     const query = params.toString();
     router.push(query ? `/properties?${query}` : "/properties");
   }
@@ -418,6 +523,14 @@ export function QuickSearch({
               { value: "sale", label: t("purpose.sale") },
               { value: "rent", label: t("purpose.rent") },
             ]}
+          />
+
+          <PriceField
+            min={priceMin}
+            max={priceMax}
+            onMin={setPriceMin}
+            onMax={setPriceMax}
+            detailsName="quick-search-fields"
           />
 
           <button className="button button-dark" type="submit">

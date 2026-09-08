@@ -63,7 +63,15 @@
     "shortcut": {
       "sale": "For sale",
       "rent": "For rent"
-    }
+    },
+    "price": "Price (KD)",
+    "anyPrice": "Any price",
+    "priceMin": "From",
+    "priceMax": "To",
+    "priceFrom": "From {min} KD",
+    "priceTo": "Up to {max} KD",
+    "priceBetween": "{min} – {max} KD",
+    "clearPrice": "Clear price"
   },
   "announcement": {
     "aria": "Advertising banner",

@@ -99,9 +99,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               title={siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle")}
               stackAction
               action={
-                <Link className="button button-showcase" href="/properties?vip=1">
-                  <Crown size={15} />
-                  {siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
+                /* Icon alone, on request -- the crown says VIP under a
+                   heading that already says it in words. The label it used
+                   to show is still the accessible name and the tooltip, so
+                   nothing is lost to a screen reader or a hesitating
+                   cursor, and the office still edits it in Settings. */
+                <Link
+                  className="button button-showcase button-icon"
+                  href="/properties?vip=1"
+                  aria-label={siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
+                  title={siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
+                >
+                  <Crown size={19} />
                 </Link>
               }
             />
@@ -117,9 +126,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               title={siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle")}
               stackAction
               action={
-                <Link className="button button-showcase" href="/properties?featured=1">
-                  <Star size={15} />
-                  {siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
+                <Link
+                  className="button button-showcase button-icon"
+                  href="/properties?featured=1"
+                  aria-label={
+                    siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")
+                  }
+                  title={siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
+                >
+                  <Star size={19} />
                 </Link>
               }
             />
