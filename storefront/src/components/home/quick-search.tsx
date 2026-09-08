@@ -205,9 +205,16 @@ export function Menu({
               }}
             >
               <span>{option.label}</span>
-              {(multi && !option.value ? chosen.length === 0 : isOn(option.value)) ? (
-                <Check size={14} />
-              ) : null}
+              {/* A round indicator on every row, filled when that row is the
+                  one in force -- on request, so "For sale is selected" is
+                  visible at a glance rather than inferred from a tick that
+                  is only there when it is there. Same object the area
+                  picker's options already carry, so the two menus agree. */}
+              <i>
+                {(multi && !option.value ? chosen.length === 0 : isOn(option.value)) ? (
+                  <Check size={13} />
+                ) : null}
+              </i>
             </button>
           ))}
         </div>

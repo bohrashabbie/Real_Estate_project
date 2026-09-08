@@ -3973,13 +3973,11 @@ footer {
   grid-template-columns:repeat(3,1fr);
 }
 
-/* The VIP row scrolls instead of wrapping — see `PropertyCarousel`. A fixed
-   card width keeps a row of three and a row of nine looking like the same
-   component, and the block-end padding leaves the cards' shadows room inside
-   `overflow`, which would otherwise slice them off. */
-.featured-four .property-image {
-  height:200px;
-}
+/* No image-height override here any more. This one cut the grid's photos to
+   200px while every rail above it kept `.property-image`'s own 238px, so the
+   same card looked smaller further down the page -- the reported bug. One
+   height for every property card on the site now; `.featured-four` is a
+   column count, not a size. */
 
 .heading-row .section-heading {
   margin:0;
@@ -8568,7 +8566,27 @@ body {
 }
 
 .quick-filter-menu button svg {
-  color:var(--gold-dark);
+  color:#fff;
+}
+
+/* The round indicator each row carries: an empty ring until that row is the
+   one in force, then a gold disc with a tick in it. Matches
+   `.unified-area-option > i` so the area menu and these two read the same. */
+.quick-filter-menu button > i {
+  border:1.5px solid #0d1b2a24;
+  background:#fff;
+  border-radius:50%;
+  place-items:center;
+  flex:none;
+  width:19px;
+  height:19px;
+  transition:background .15s,border-color .15s;
+  display:grid;
+}
+
+.quick-filter-menu button.is-selected > i {
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  border-color:#0000;
 }
 
 /* The price menu is the one panel that holds inputs rather than a list of
