@@ -1219,6 +1219,16 @@ img {
   align-items:flex-start;
 }
 
+/* And the child has to be a column. With an <h2> in it the button fell to
+   the next line on its own -- a block element did that for free. The badge
+   that replaced it is `inline-flex`, so without this the button flows up
+   beside the mark instead of under it. */
+.heading-badge-only.heading-stacked > div {
+  flex-direction:column;
+  align-items:flex-start;
+  display:flex;
+}
+
 .heading-badge-only > div {
   gap:0;
 }
