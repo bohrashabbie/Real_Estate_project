@@ -140,6 +140,7 @@ export default async function PropertiesPage({
                 that opens the full list back beside it. The badge names the
                 section; the button is what you press. */}
             <SectionHeading
+              stackAction
               badge={
                 <span className="section-badge">
                   <b>{t("card.vip")}</b>
@@ -168,9 +169,13 @@ export default async function PropertiesPage({
           <div className="container">
             {/* Same shape as VIP above: the word, the mark, then the door. */}
             <SectionHeading
+              stackAction
               badge={
+                /* The star alone -- the word is gone from both locales on
+                   request. VIP keeps its "VIP" because the acronym is the
+                   name of the tier; "Featured" was only labelling its own
+                   icon. The section's wording lives on in the button below. */
                 <span className="section-badge">
-                  <b>{t("card.featured")}</b>
                   <i>
                     <Star size={19} />
                   </i>

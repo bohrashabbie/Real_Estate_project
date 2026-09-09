@@ -1213,6 +1213,12 @@ img {
   align-items:center;
 }
 
+/* Stacked, the row has one child and centring it would pull the badge off
+   the margin its section's cards line up with. */
+.heading-badge-only.heading-stacked {
+  align-items:flex-start;
+}
+
 .heading-badge-only > div {
   gap:0;
 }
