@@ -20,6 +20,7 @@ import { all, one, type SearchParams } from "@/lib/search-params";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import { SectionHeading } from "@/components/home/sections";
+import { VipCarousel } from "@/components/home/vip-carousel";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 import { ResultsGrid } from "@/components/properties/results-grid";
 
@@ -154,7 +155,7 @@ export default async function PropertiesPage({
                 </Link>
               }
             />
-            <PropertyCarousel properties={vip} locale={typedLocale} />
+            <VipCarousel properties={vip} locale={typedLocale} columns={3} />
           </div>
         </section>
       )}
