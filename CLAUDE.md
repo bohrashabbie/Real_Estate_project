@@ -73,9 +73,11 @@ site's conversions are phone call, WhatsApp, inquiry form, and the
 - Icons are `lucide-react`, which is what the reference uses — match its icon
   for a given role rather than picking a new one (Instagram is `Camera` there,
   because lucide dropped its brand icons).
-- Digits split by role, per the reference: prices and the area tally render in
-  Arabic-Indic under `ar` (`٤٢٠ د.ك`, `١٥٨ منطقة`), while result counts and
-  specs stay Latin (`8 عقارات`, `145 م²`). `lib/format.ts` owns this.
+- Digits are Latin in both locales (`450,000 د.ك`, `158 منطقة`, `145 م²`).
+  The reference split them by role — prices and tallies Arabic-Indic under
+  `ar` — and we followed it until the office asked for Latin numerals
+  throughout. Only the numerals changed: `ar` still picks the currency word,
+  grouping and ordering, via `ar-EG-u-nu-latn`. `lib/format.ts` owns this.
 - Every area picker on the storefront is `UnifiedAreaPicker`
   (`components/ui/unified-area-picker.tsx`); every other option list is a
   `<details>` menu (`.quick-filter-menu`) or an `.option-card` grid — never a

@@ -2,14 +2,18 @@ import type { Locale } from "@/i18n/routing";
 import type { Purpose } from "@/lib/api";
 
 /**
- * The reference splits its digits by role, and this file keeps that split:
+ * Digits are Latin everywhere, in both locales.
  *
- *   prices and counts of things  →  Arabic-Indic in Arabic (٤٢٠ د.ك، ١٥٨ منطقة)
- *   measurements and specs       →  Latin in both locales (3 غرف، 145 م²)
+ * The reference split them by role — prices and tallies in Arabic-Indic
+ * under `ar` (٤٢٠ د.ك، ١٥٨ منطقة), measurements in Latin — and this file
+ * followed it until the office asked for prices in Latin instead. A price
+ * is the number a reader compares against every other price they have seen
+ * today, most of which are written 450,000 wherever they saw them, and the
+ * office would rather match that than the reference.
  *
- * It reads as inconsistent written down and completely natural on the page:
- * a Kuwaiti price is spoken and written in Arabic-Indic, while a room count
- * next to a pictogram is read as a quantity, not as prose.
+ * Only the numerals change: the currency word, the separators and the
+ * ordering are still per locale, so `ar` reads "450,000 د.ك" and not the
+ * English string.
  */
 
 /** "650" / "85000.000" → "650" / "85,000" — KWD, three-decimal NUMERIC,
@@ -18,7 +22,9 @@ export function formatAmount(value: string | number, locale: Locale = "en"): str
   const numeric = typeof value === "number" ? value : Number.parseFloat(value);
   if (!Number.isFinite(numeric)) return String(value);
   const hasFils = Math.round(numeric * 1000) % 1000 !== 0;
-  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-US", {
+  // `ar-EG-u-nu-latn`, not `en-US`: the locale still decides grouping and
+  // decimal marks, the `nu-latn` extension only forces the numerals.
+  return new Intl.NumberFormat(locale === "ar" ? "ar-EG-u-nu-latn" : "en-US", {
     minimumFractionDigits: hasFils ? 3 : 0,
     maximumFractionDigits: hasFils ? 3 : 0,
   }).format(numeric);
@@ -42,7 +48,7 @@ export function formatBareAmount(price: string | number, locale: Locale): string
 
 /** Counts that read as quantities of a thing: "١٥٨ منطقة", "158 areas". */
 export function formatCount(value: number, locale: Locale): string {
-  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-US").format(value);
+  return new Intl.NumberFormat(locale === "ar" ? "ar-EG-u-nu-latn" : "en-US").format(value);
 }
 
 export function formatSqm(value: string | number | null | undefined): string | null {

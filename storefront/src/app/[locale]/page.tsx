@@ -96,24 +96,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {vip.length > 0 ? (
         <section className="section properties-section home-vip-section" id="vip-properties">
           <div className="container">
-            {/* No title: the crown stands for the section on its own, on
-                request. It keeps the wording as its accessible name and
-                tooltip, so the office's Settings text still does a job. */}
+            {/* "VIP" in Latin before the crown, on request, with the button
+                that opens the full list back beside it. The badge names the
+                section; the button is what you press. */}
             <SectionHeading
-              stackAction
+              badge={
+                <span className="section-badge">
+                  <b>{t("card.vip")}</b>
+                  <i>
+                    <Crown size={19} />
+                  </i>
+                </span>
+              }
               action={
-                /* Icon alone, on request -- the crown says VIP under a
-                   heading that already says it in words. The label it used
-                   to show is still the accessible name and the tooltip, so
-                   nothing is lost to a screen reader or a hesitating
-                   cursor, and the office still edits it in Settings. */
-                <Link
-                  className="button button-showcase button-icon"
-                  href="/properties?vip=1"
-                  aria-label={siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
-                  title={siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
-                >
-                  <Crown size={19} />
+                <Link className="button button-showcase" href="/properties?vip=1">
+                  {siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
                 </Link>
               }
             />
@@ -125,19 +122,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {featured.length > 0 ? (
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
-            {/* Same as VIP above: the star is the heading. */}
+            {/* Same shape as VIP above: the word, the mark, then the door. */}
             <SectionHeading
-              stackAction
+              badge={
+                <span className="section-badge">
+                  <b>{t("card.featured")}</b>
+                  <i>
+                    <Star size={19} />
+                  </i>
+                </span>
+              }
               action={
-                <Link
-                  className="button button-showcase button-icon"
-                  href="/properties?featured=1"
-                  aria-label={
-                    siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")
-                  }
-                  title={siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
-                >
-                  <Star size={19} />
+                <Link className="button button-showcase" href="/properties?featured=1">
+                  {siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
                 </Link>
               }
             />
