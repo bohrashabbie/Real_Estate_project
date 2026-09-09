@@ -167,7 +167,7 @@ export function SectionHeading({
   action?: React.ReactNode;
   stackAction?: boolean;
 }) {
-  const titled = Boolean(title) || Boolean(badge);
+  const titled = Boolean(title);
   return (
     <div
       className={`section-heading heading-row${stackAction ? " heading-stacked" : ""}${
