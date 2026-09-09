@@ -1,4 +1,5 @@
 import logging
+import mimetypes
 import os
 from contextlib import asynccontextmanager
 
@@ -57,6 +58,11 @@ app = FastAPI(
 register_exception_handlers(app)
 
 os.makedirs(settings.upload_dir, exist_ok=True)
+# Slim Docker images ship a minimal /etc/mime.types that omits .webp (and
+# sometimes .avif).  Without this, StaticFiles falls back to text/plain and
+# browsers refuse to render the images.
+mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("image/avif", ".avif")
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 
 app.add_middleware(
