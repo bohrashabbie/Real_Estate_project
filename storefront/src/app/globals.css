@@ -1205,6 +1205,46 @@ img {
   display:flex;
 }
 
+/* A section whose heading is its badge rather than its name -- VIP's crown,
+   Featured's star, the office's logo on All listings. The badge sits where
+   the h2 sat, so the row keeps its own rhythm and the sections still line
+   up with each other down the page. */
+.heading-badge-only {
+  align-items:center;
+}
+
+.heading-badge-only > div {
+  gap:0;
+}
+
+.heading-badge-only .button-icon {
+  margin:0;
+}
+
+/* The logo badge: sized by its height so a re-drawn mark of any width drops
+   in without touching this rule. */
+.section-logo-badge {
+  align-items:center;
+  display:inline-flex;
+}
+
+.section-logo-badge img {
+  width:auto;
+  height:64px;
+  object-fit:contain;
+  transition:transform .25s;
+}
+
+.section-logo-badge:hover img {
+  transform:scale(1.04);
+}
+
+@media (max-width:760px) {
+  .section-logo-badge img {
+    height:52px;
+  }
+}
+
 @media (max-width:760px) {
   .section-action-pair {
     width:100%;

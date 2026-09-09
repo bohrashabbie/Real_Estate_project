@@ -148,21 +148,36 @@ export async function PropertyTypeGrid({
 export function SectionHeading({
   kicker,
   title,
+  badge,
   body,
   action,
   stackAction = false,
 }: {
   kicker?: string;
-  title: string;
+  /** Optional: VIP and Featured drop it and let their badge stand for the
+   *  section on its own, on request -- the crown says VIP and the star says
+   *  Featured, and the words under them were saying it twice. The badge
+   *  keeps the title as its accessible name, so nothing is lost to a
+   *  screen reader (see those call sites' `aria-label`). */
+  title?: string;
+  /** Stands where the title would: the office's logo on All listings. A
+   *  section has one or the other, never both. */
+  badge?: React.ReactNode;
   body?: string;
   action?: React.ReactNode;
   stackAction?: boolean;
 }) {
+  const titled = Boolean(title) || Boolean(badge);
   return (
-    <div className={`section-heading heading-row${stackAction ? " heading-stacked" : ""}`}>
+    <div
+      className={`section-heading heading-row${stackAction ? " heading-stacked" : ""}${
+        titled ? "" : " heading-badge-only"
+      }`}
+    >
       <div>
         {kicker ? <span className="section-kicker">{kicker}</span> : null}
-        <h2>{title}</h2>
+        {title ? <h2>{title}</h2> : null}
+        {badge}
         {body ? <p>{body}</p> : null}
         {stackAction ? action : null}
       </div>

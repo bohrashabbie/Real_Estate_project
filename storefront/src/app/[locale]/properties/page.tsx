@@ -137,7 +137,6 @@ export default async function PropertiesPage({
         <section className="section properties-section inner-vip-section" id="vip-properties">
           <div className="container">
             <SectionHeading
-              title={siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle")}
               stackAction
               action={
                 /* Icon alone, on request -- the crown says VIP under a
@@ -168,7 +167,6 @@ export default async function PropertiesPage({
         <section className="section properties-section inner-featured-section">
           <div className="container">
             <SectionHeading
-              title={siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle")}
               stackAction
               action={
                 <Link

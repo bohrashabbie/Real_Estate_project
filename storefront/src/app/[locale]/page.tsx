@@ -96,8 +96,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {vip.length > 0 ? (
         <section className="section properties-section home-vip-section" id="vip-properties">
           <div className="container">
+            {/* No title: the crown stands for the section on its own, on
+                request. It keeps the wording as its accessible name and
+                tooltip, so the office's Settings text still does a job. */}
             <SectionHeading
-              title={siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle")}
               stackAction
               action={
                 /* Icon alone, on request -- the crown says VIP under a
@@ -123,8 +125,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {featured.length > 0 ? (
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
+            {/* Same as VIP above: the star is the heading. */}
             <SectionHeading
-              title={siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle")}
               stackAction
               action={
                 <Link
@@ -156,7 +158,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 row rather than stacked under the title -- a pair reads as a
                 choice, which is the point. */}
             <SectionHeading
-              title={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
+              badge={
+                /* The office's own mark rather than words, on request.
+                   Swapping `/brand/section-logo.webp` swaps it everywhere
+                   -- no code change to re-brand this row. */
+                <Link
+                  className="section-logo-badge"
+                  href="/properties"
+                  aria-label={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/section-logo.webp" alt="" aria-hidden />
+                </Link>
+              }
               action={
                 <div className="section-action-pair">
                   <Link className="button button-showcase" href="/properties?purpose=sale">
