@@ -86,3 +86,33 @@ git checkout main && git pull origin main
 docker compose -f compose.yml -f compose.edge.yml --env-file .env.vps \
   up -d --build storefront
 ```
+
+## The storefront's origins are baked in at build time
+
+`NEXT_PUBLIC_API_URL` is a build ARG, and `mediaUrl()` derives the origin the
+browser loads `/uploads/*` from out of it (see `storefront/src/lib/api.ts`).
+It is therefore inlined into the JS bundle, and **a stale image keeps a stale
+origin** — `up -d --build` alone can reuse the cached build layer and ship it
+again.
+
+This bit once, live: the stack had been brought up with `compose.ip.yml`
+merged in, whose arg is `http://187.127.146.84:8080/public/v1`. Deploys with
+`-f compose.yml` kept serving that origin, so every uploaded image on
+`https://kwt25.com` was an `http://…:8080` URL — which the browser blocks as
+mixed content. The files served fine over both origins; only the browser
+refused the insecure one, so `curl` looked healthy while the page showed no
+photographs.
+
+When the domain or the compose file in use changes, force it:
+
+```sh
+docker compose --env-file .env.vps -f compose.yml build --no-cache storefront
+docker compose --env-file .env.vps -f compose.yml up -d --force-recreate storefront
+```
+
+Check what actually shipped rather than trusting the build log:
+
+```sh
+docker exec kwt25-realestate-storefront-1 \
+  sh -c "grep -rlo '187.127.146.84' /app/.next/static | head"   # want: no output
+```
