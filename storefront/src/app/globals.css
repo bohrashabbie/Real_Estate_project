@@ -10078,9 +10078,17 @@ body {
   }
 }
 
-@media (max-width:430px) {
+/* Phones: one card and a sliver of the next, the way the VIP row already
+   does (`min(430px,88%)`), on request. At a full 100% the Featured and All
+   listings rails showed exactly one card with nothing beside it, and read
+   as a plain stack rather than something to swipe. Tablets and desktop keep
+   their two- and three-up rows untouched. */
+@media (max-width:760px) {
+  .card-carousel-track {
+    gap:16px;
+  }
   .card-carousel-item {
-    flex:0 0 100%;
+    flex:0 0 min(430px,88%);
   }
 }
 
@@ -10416,4 +10424,30 @@ body {
       align-items:flex-start;
       gap:12px;
     }
+}
+
+/* Phones: the listing page's results grid swipes sideways too, on request,
+   so every property row on a phone moves the way VIP does -- one card and a
+   sliver of the next, with the rail's gold bar under it. The page numbers
+   stay beneath it and still load the next nine. Above 760px nothing here
+   applies: the track is the three-column grid it always was, which never
+   overflows, so `ScrollRail` draws no bar. */
+@media (max-width:760px) {
+  .results-rail-track {
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
+    gap:16px;
+    padding:4px 2px 10px;
+    display:flex;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+  }
+  .results-rail-track::-webkit-scrollbar {
+    display:none;
+  }
+  .results-rail-track > * {
+    scroll-snap-align:start;
+    flex:0 0 min(430px,88%);
+    min-width:0;
+  }
 }

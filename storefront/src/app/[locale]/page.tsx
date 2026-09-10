@@ -162,16 +162,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 choice, which is the point. */}
             <SectionHeading
               badge={
-                /* The office's own mark rather than words, on request.
-                   Swapping `/brand/section-logo.webp` swaps it everywhere
-                   -- no code change to re-brand this row. */
+                /* The office's round "عقار الكويت kwt25" badge rather than
+                   words, on request -- it replaced the brand logo that stood
+                   here. The white around it was made transparent so it sits
+                   on the ivory band without a box. A new filename rather
+                   than overwriting the old one, so no cached copy of the
+                   previous logo lingers. */
                 <Link
                   className="section-logo-badge"
                   href="/properties"
                   aria-label={siteText(settings, "all_title", typedLocale) ?? t("home.allTitle")}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/brand/section-logo.webp" alt="" aria-hidden />
+                  <img src="/brand/all-listings-logo.webp" alt="" aria-hidden />
                 </Link>
               }
               action={

@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { apiGet, type Paginated, type PropertyListItem } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
 import { PropertyCard } from "@/components/property/property-card";
+import { ScrollRail } from "@/components/ui/scroll-rail";
 
 /** Three rows of the three-column grid. */
 const PAGE_SIZE = 9;
@@ -20,6 +21,12 @@ const FETCH_SIZE = 24;
  * every listing view (for sale, for rent, Featured, all). Three across is
  * the site-wide row width now; nine keeps every page a whole number of
  * rows, where the old eight left the last row two-and-a-gap.
+ *
+ * On a phone the same nine cards swipe sideways instead of stacking, on
+ * request, so every property row on a phone moves the way VIP does. That is
+ * CSS alone (`.results-rail-track` at 760px and under); the `ScrollRail`
+ * around it only draws its bar when the row actually overflows, so on
+ * desktop the grid renders exactly as before, with no bar.
  *
  * The page numbers are real, but the API underneath them is not offset-paged:
  * the project's rule is cursor pagination on `(created_at, id)`, so there is
@@ -44,6 +51,7 @@ export function ResultsGrid({
   locale: Locale;
 }) {
   const t = useTranslations("listing");
+  const tCarousel = useTranslations("carousel");
   const key = JSON.stringify(filters);
   const gridRef = useRef<HTMLDivElement>(null);
   // Skips the scroll on first paint: only a page *change* should move the
@@ -63,6 +71,9 @@ export function ResultsGrid({
   }, [key, initial.items, initial.next_cursor]);
 
   useEffect(() => {
+    // A phone's row keeps its sideways position across renders; a new page
+    // has to start back at its first card, not wherever the last one ended.
+    gridRef.current?.querySelector(".results-rail-track")?.scrollTo({ left: 0 });
     if (!paged.current) return;
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [page]);
@@ -122,10 +133,16 @@ export function ResultsGrid({
 
   return (
     <>
-      <div className="property-grid featured-four" ref={gridRef}>
-        {visible.map((property) => (
-          <PropertyCard key={property.id} property={property} locale={locale} />
-        ))}
+      <div ref={gridRef}>
+        <ScrollRail
+          className="results-rail"
+          trackClassName="property-grid featured-four results-rail-track"
+          ariaLabel={tCarousel("scrollAria")}
+        >
+          {visible.map((property) => (
+            <PropertyCard key={property.id} property={property} locale={locale} />
+          ))}
+        </ScrollRail>
       </div>
 
       {loadedPages > 1 || hasMore ? (
