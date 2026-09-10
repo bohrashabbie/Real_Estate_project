@@ -87,13 +87,13 @@ export default async function PropertiesPage({
     getVipProperties(typedLocale),
   ]);
 
-  // On For sale / For rent the two promoted rows follow the view too.
-  // Unfiltered, the first cards under "For sale" were rentals, and the link
-  // looked as if it hadn't filtered anything.
-  const vipRow = purpose ? vip.filter((property) => property.purpose === purpose) : vip;
-  const featuredRow = purpose
-    ? featured.filter((property) => property.purpose === purpose)
-    : featured;
+  // The VIP and Featured rows are the same on every listing view -- For
+  // sale, For rent, Featured -- on request. They were briefly narrowed to
+  // the view's purpose, which left "For sale" with two VIP slides in a
+  // three-slide row: left-aligned, nothing to scroll, and unlike the other
+  // pages. The results grid below is what the view filters.
+  const vipRow = vip;
+  const featuredRow = featured;
 
   // Named views only — see the badge's own comment below.
   const viewBadge =
