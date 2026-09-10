@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
@@ -9,11 +11,27 @@ import type { Locale } from "@/i18n/routing";
  * The one control the reference has no slot for, because the reference is
  * Arabic-only and this site is not.
  *
- * It re-renders the current path in the other locale rather than sending
+ * It re-renders the current page in the other locale rather than sending
  * everyone home: someone reading a listing in Arabic wants that listing in
- * English, not the front page.
+ * English, not the front page. That includes the query string -- without it,
+ * switching language on "For sale" landed on the unfiltered list.
+ *
+ * `useSearchParams` sits behind a Suspense boundary so statically rendered
+ * pages still build; until it resolves, the link keeps the path alone.
  */
 export function LocaleToggle() {
+  return (
+    <Suspense fallback={<ToggleLink search="" />}>
+      <ToggleWithSearch />
+    </Suspense>
+  );
+}
+
+function ToggleWithSearch() {
+  return <ToggleLink search={useSearchParams().toString()} />;
+}
+
+function ToggleLink({ search }: { search: string }) {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const t = useTranslations("nav");
@@ -23,7 +41,7 @@ export function LocaleToggle() {
   return (
     <Link
       className="locale-toggle"
-      href={pathname}
+      href={search ? `${pathname}?${search}` : pathname}
       locale={next}
       aria-label={next === "en" ? t("switchToEnglish") : t("switchToArabic")}
       hrefLang={next}

@@ -155,8 +155,8 @@ export function SectionHeading({
 }: {
   kicker?: string;
   /** Optional: VIP and Featured drop it and let their badge stand for the
-   *  section on its own, on request -- the crown says VIP and the star says
-   *  Featured, and the words under them were saying it twice. The badge
+   *  section on its own, on request -- the gold "VIP" and the star say it,
+   *  and a title under them was saying it twice. The badge
    *  keeps the title as its accessible name, so nothing is lost to a
    *  screen reader (see those call sites' `aria-label`). */
   title?: string;

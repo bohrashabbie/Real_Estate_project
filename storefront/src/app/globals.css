@@ -1205,8 +1205,8 @@ img {
   display:flex;
 }
 
-/* A section whose heading is its badge rather than its name -- VIP's crown,
-   Featured's star, the office's logo on All listings. The badge sits where
+/* A section whose heading is its badge rather than its name -- VIP's gold
+   word, Featured's star, the office's logo on All listings. The badge sits where
    the h2 sat, so the row keeps its own rhythm and the sections still line
    up with each other down the page. */
 .heading-badge-only {
@@ -1237,11 +1237,11 @@ img {
   margin:0;
 }
 
-/* The word, then the mark: "VIP" and its crown, "مميز" and its star. The
-   text leads in both directions -- it is written first in the source, so
-   RTL puts it on the right and LTR on the left, which is "before the
-   crown" either way. The disc repeats the section button's navy-in-gold so
-   the pair reads as one family. */
+/* A section's badge: a word, a mark, or both. VIP is the word alone now (its
+   crown moved onto the button), Featured the star alone. When both appear
+   the text leads in both directions -- it is written first in the source,
+   so RTL puts it on the right and LTR on the left. The disc repeats the
+   section button's navy-in-gold so the pair reads as one family. */
 .section-badge {
   align-items:center;
   gap:12px;
@@ -1252,6 +1252,18 @@ img {
   color:var(--navy);
   font:800 clamp(23px,2.5vw,31px)/1.25 Noto Kufi Arabic, 'Segoe UI', Tahoma, sans-serif;
   letter-spacing:-.01em;
+}
+
+/* VIP's word in gold, on request, now that its crown has moved onto the
+   button. The same gold ramp as the pill's border, ending darker than
+   `--gold` so the word still holds up on the ivory ground; `color` is the
+   fallback wherever background-clip text is unsupported. */
+.section-badge-gold > b {
+  color:var(--gold-dark);
+  background:linear-gradient(135deg,#e0c078,#c8a45d 45%,#9a7535);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
 .section-badge > i {

@@ -254,6 +254,7 @@ def _apply_filters(
     rooms: int | None = None,
     status: str | None = None,
     premium_only: bool = False,
+    featured_only: bool = False,
     vip_only: bool = False,
     q: str | None = None,
 ) -> Select:
@@ -284,6 +285,8 @@ def _apply_filters(
         stmt = stmt.where(Property.status == status)
     if premium_only:
         stmt = stmt.where(Property.is_premium.is_(True))
+    if featured_only:
+        stmt = stmt.where(Property.is_featured.is_(True))
     if vip_only:
         stmt = stmt.where(Property.is_vip.is_(True))
     if q:
@@ -311,6 +314,7 @@ def property_list(
     rooms: int | None = None,
     status: str | None = None,
     premium_only: bool = False,
+    featured_only: bool = False,
     vip_only: bool = False,
     q: str | None = None,
     cursor: str | None = None,
@@ -326,6 +330,7 @@ def property_list(
         rooms=rooms,
         status=status,
         premium_only=premium_only,
+        featured_only=featured_only,
         vip_only=vip_only,
         q=q,
     )

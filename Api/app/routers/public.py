@@ -58,6 +58,7 @@ def properties(
     rooms: int | None = Query(None, ge=0),  # meaning >=
     status_: str | None = Query(None, alias="status", pattern="^(available|rented|sold|reserved)$"),
     premium_only: bool = False,
+    featured_only: bool = False,  # the same flag /properties/featured picks by
     vip_only: bool = False,
     q: str | None = None,
     cursor: str | None = None,
@@ -76,6 +77,7 @@ def properties(
         rooms=rooms,
         status=status_,
         premium_only=premium_only,
+        featured_only=featured_only,
         vip_only=vip_only,
         q=q,
         cursor=cursor,

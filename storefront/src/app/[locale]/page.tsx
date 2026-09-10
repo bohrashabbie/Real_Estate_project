@@ -96,21 +96,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {vip.length > 0 ? (
         <section className="section properties-section home-vip-section" id="vip-properties">
           <div className="container">
-            {/* "VIP" in Latin before the crown, on request, with the button
-                that opens the full list back beside it. The badge names the
-                section; the button is what you press. */}
+            {/* "VIP" in gold on its own, and the crown moved onto the front
+                of the button that opens the list, on request. The word
+                names the section; the button carries the mark and is what
+                you press. */}
             <SectionHeading
               stackAction
               badge={
-                <span className="section-badge">
+                <span className="section-badge section-badge-gold">
                   <b>{t("card.vip")}</b>
-                  <i>
-                    <Crown size={19} />
-                  </i>
                 </span>
               }
               action={
                 <Link className="button button-showcase" href="/properties?vip=1">
+                  <Crown size={15} />
                   {siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
                 </Link>
               }
@@ -123,12 +122,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {featured.length > 0 ? (
         <section className="section properties-section home-featured-section" id="featured-properties">
           <div className="container">
-            {/* Same shape as VIP above: the word, the mark, then the door. */}
             <SectionHeading
               stackAction
               badge={
-                /* The star alone -- the word is gone from both locales on
-                   request. VIP keeps its "VIP" because the acronym is the
+                /* The star badge stays -- the word is gone from both locales
+                   on request. VIP keeps its "VIP" because the acronym is the
                    name of the tier; "Featured" was only labelling its own
                    icon. The section's wording lives on in the button below. */
                 <span className="section-badge">
@@ -138,7 +136,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </span>
               }
               action={
+                /* The star also leads the button, the same way the crown
+                   leads VIP's. */
                 <Link className="button button-showcase" href="/properties?featured=1">
+                  <Star size={15} />
                   {siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
                 </Link>
               }

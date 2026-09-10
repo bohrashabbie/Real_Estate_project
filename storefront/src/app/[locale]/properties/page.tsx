@@ -69,9 +69,10 @@ export default async function PropertiesPage({
   if (rooms) filters.rooms = rooms;
   if (priceMin) filters.price_min = priceMin;
   if (priceMax) filters.price_max = priceMax;
-  // `featured=1` is the admin's own shortlist, which the API exposes as
-  // `premium_only` rather than a boolean column on the list endpoint.
-  if (featuredOnly) filters.premium_only = "true";
+  // `featured=1` is the list the Featured row shows (`is_featured`). It used
+  // to send `premium_only`, which filters a different flag -- so "See the
+  // featured properties" opened a different set from the row it sat under.
+  if (featuredOnly) filters.featured_only = "true";
   if (vipOnly) filters.vip_only = "true";
 
   const [settings, banners, areas, types, results, featured, vip] = await Promise.all([
@@ -85,6 +86,14 @@ export default async function PropertiesPage({
     getFeaturedProperties(typedLocale),
     getVipProperties(typedLocale),
   ]);
+
+  // On For sale / For rent the two promoted rows follow the view too.
+  // Unfiltered, the first cards under "For sale" were rentals, and the link
+  // looked as if it hadn't filtered anything.
+  const vipRow = purpose ? vip.filter((property) => property.purpose === purpose) : vip;
+  const featuredRow = purpose
+    ? featured.filter((property) => property.purpose === purpose)
+    : featured;
 
   // Named views only — see the badge's own comment below.
   const viewBadge =
@@ -132,30 +141,27 @@ export default async function PropertiesPage({
           sale, for rent, featured, and the unfiltered list -- three to a
           view, on request. Skipped only on `?vip=1`, where the results
           below *are* the VIP list and the row would repeat them, the same
-          way `FeaturedStrip` steps aside on `?featured=1`. */}
-      {vipOnly || vip.length === 0 ? null : (
+          way the Featured row steps aside on `?featured=1`. */}
+      {vipOnly || vipRow.length === 0 ? null : (
         <section className="section properties-section inner-vip-section" id="vip-properties">
           <div className="container">
-            {/* "VIP" in Latin before the crown, on request, with the button
-                that opens the full list back beside it. The badge names the
-                section; the button is what you press. */}
+            {/* Same heading as the home page's: "VIP" in gold, the crown on
+                the front of the button. */}
             <SectionHeading
               stackAction
               badge={
-                <span className="section-badge">
+                <span className="section-badge section-badge-gold">
                   <b>{t("card.vip")}</b>
-                  <i>
-                    <Crown size={19} />
-                  </i>
                 </span>
               }
               action={
                 <Link className="button button-showcase" href="/properties?vip=1">
+                  <Crown size={15} />
                   {siteText(settings, "vip_cta", typedLocale) ?? t("home.vipCta")}
                 </Link>
               }
             />
-            <VipCarousel properties={vip} locale={typedLocale} columns={3} />
+            <VipCarousel properties={vipRow} locale={typedLocale} columns={3} />
           </div>
         </section>
       )}
@@ -164,17 +170,14 @@ export default async function PropertiesPage({
           gold rail that used to ride above the results -- on request, so the
           listing pages read as the home page does. Skipped on `?featured=1`,
           where the paginated grid below already is this list. */}
-      {featuredOnly || featured.length === 0 ? null : (
+      {featuredOnly || featuredRow.length === 0 ? null : (
         <section className="section properties-section inner-featured-section">
           <div className="container">
-            {/* Same shape as VIP above: the word, the mark, then the door. */}
+            {/* Same heading as the home page's: the star badge, and the star
+                again on the front of the button. */}
             <SectionHeading
               stackAction
               badge={
-                /* The star alone -- the word is gone from both locales on
-                   request. VIP keeps its "VIP" because the acronym is the
-                   name of the tier; "Featured" was only labelling its own
-                   icon. The section's wording lives on in the button below. */
                 <span className="section-badge">
                   <i>
                     <Star size={19} />
@@ -183,11 +186,12 @@ export default async function PropertiesPage({
               }
               action={
                 <Link className="button button-showcase" href="/properties?featured=1">
+                  <Star size={15} />
                   {siteText(settings, "featured_cta", typedLocale) ?? t("home.featuredCta")}
                 </Link>
               }
             />
-            <PropertyCarousel properties={featured} locale={typedLocale} />
+            <PropertyCarousel properties={featuredRow} locale={typedLocale} />
           </div>
         </section>
       )}
