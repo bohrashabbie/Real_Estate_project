@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import type { Locale } from "@/i18n/routing";
 import { localeAlternates } from "@/i18n/routing";
-import { Crown, KeyRound, Star, Tag } from "lucide-react";
+import { Crown, Star } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import {
@@ -95,20 +95,10 @@ export default async function PropertiesPage({
   const vipRow = vip;
   const featuredRow = featured;
 
-  // Named views only — see the badge's own comment below.
-  const viewBadge =
-    vipOnly
-      ? { Icon: Crown, label: siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle") }
-      : featuredOnly
-        ? {
-            Icon: Star,
-            label: siteText(settings, "featured_title", typedLocale) ?? t("home.featuredTitle"),
-          }
-        : purpose === "sale"
-          ? { Icon: Tag, label: t("purpose.sale") }
-          : purpose === "rent"
-            ? { Icon: KeyRound, label: t("purpose.rent") }
-            : null;
+  // The VIP view only — see the badge's own comment below.
+  const viewBadge = vipOnly
+    ? { Icon: Crown, label: siteText(settings, "vip_title", typedLocale) ?? t("home.vipTitle") }
+    : null;
 
   return (
     <>
@@ -122,12 +112,11 @@ export default async function PropertiesPage({
         initial={{ area, type, purpose, priceMin, priceMax }}
       />
 
-      {/* Which view you are on, said plainly: "For sale" / "For rent" in a
-          gold badge under the search bar, on request. Only for the views
-          that are a named place in the nav -- a page filtered to three
-          areas and a price range has no one word for what it is, and a
-          badge reading "For sale" there would be describing a third of the
-          filter and hiding the rest. */}
+      {/* A gold badge under the search bar naming the view. Removed from
+          For sale, For rent and Featured on request -- the nav and the
+          search bar's own purpose field already say which one you are on.
+          Kept only on the VIP view (`?vip=1`), which the request didn't
+          name and which no nav item or search field labels. */}
       {viewBadge ? (
         <div className="container listing-view-badge-row">
           <span className="listing-view-badge">
