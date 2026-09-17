@@ -10599,16 +10599,18 @@ body {
   right:auto;
 }
 
-/* --- The chat launcher in blue rather than gold. */
+/* --- The chat launcher in the call float's dark navy, on request, so the
+   two read as one pair. (Gold first, then blue for a round; navy is what
+   the office settled on.) */
 .chat-launcher {
-  background:linear-gradient(135deg,#2f6fc4,#1d4f97);
-  border-color:#4a86d4;
-  box-shadow:0 13px 34px #1d4f976b;
+  background:var(--navy);
+  border-color:#1f3348;
+  box-shadow:0 10px 25px #0d1b2a40;
 }
 
 .chat-launcher:hover {
-  background:linear-gradient(135deg,#3a7bd0,#2359a6);
-  box-shadow:0 16px 38px #1d4f9780;
+  background:#152b40;
+  box-shadow:0 13px 30px #0d1b2a52;
 }
 
 /* --- VIP slide kicker ("FOR RENT • FLOOR"): pale gold straight on the photo
@@ -10865,12 +10867,4 @@ a.home-ad:hover img {
    rather than under them, and still below the sticky header (50). */
 .home-quick-search:has(details[open]) {
   z-index:45;
-}
-
-/* The call float wears the chat launcher's blue, on request, so the two
-   read as one pair. */
-.contact-floats a[href^="tel:"] {
-  background:linear-gradient(135deg,#2f6fc4,#1d4f97);
-  border:1px solid #4a86d4;
-  box-shadow:0 13px 34px #1d4f976b;
 }
