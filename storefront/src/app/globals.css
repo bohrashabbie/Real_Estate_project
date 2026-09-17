@@ -10825,3 +10825,21 @@ a.home-ad:hover img {
 .map-marker .map-pin.is-active .map-pin-price {
   opacity:1;
 }
+
+/* One line per nav label. The +1px size and the For exchange item made the
+   row tight enough at a 1366px laptop width that "For sale" and "Search map"
+   broke onto two lines. Labels never wrap now; between the drawer handover
+   (1023px) and 1280px the row tightens its gaps and keeps the old size so
+   it still fits. */
+.main-nav a {
+  white-space:nowrap;
+}
+
+@media (min-width:1024px) and (max-width:1280px) {
+  .main-nav {
+    gap:14px;
+  }
+  .main-nav a {
+    font-size:15px;
+  }
+}
