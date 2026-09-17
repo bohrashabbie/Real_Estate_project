@@ -10843,3 +10843,34 @@ a.home-ad:hover img {
     font-size:15px;
   }
 }
+
+/* English area picker. The panel was pinned to the field's physical right
+   edge, which suits Arabic (the Area field sits on the right) but in English
+   threw a 590px panel off the left of the screen. It opens from the field's
+   left edge there instead, and the area names read left-aligned. */
+[dir="ltr"] .home-area-menu {
+  right:auto;
+  left:-12px;
+}
+
+[dir="ltr"] .unified-area-option {
+  text-align:left;
+}
+
+[dir="ltr"] .unified-area-options {
+  padding:2px 5px 2px 2px;
+}
+
+/* An open search menu sits above the floating contact buttons (z-index 39)
+   rather than under them, and still below the sticky header (50). */
+.home-quick-search:has(details[open]) {
+  z-index:45;
+}
+
+/* The call float wears the chat launcher's blue, on request, so the two
+   read as one pair. */
+.contact-floats a[href^="tel:"] {
+  background:linear-gradient(135deg,#2f6fc4,#1d4f97);
+  border:1px solid #4a86d4;
+  box-shadow:0 13px 34px #1d4f976b;
+}
