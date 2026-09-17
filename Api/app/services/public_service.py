@@ -35,6 +35,10 @@ PUBLIC_SETTING_KEYS = {
     "site.snapchat": "snapchat",
     "site.name_ar": "name_ar",
     "site.name_en": "name_en",
+    # Extra links in the header's contact dropdown, beside the built-in
+    # language switch and call button: a JSON list of
+    # {"label_ar", "label_en", "href"} managed from admin Settings.
+    "site.header_menu": "header_menu",
     # Page copy the office can edit without a deploy. Each is a plain
     # site.<field>_<locale> pair rather than a translations table — these are
     # singleton strings (one hero, one footer), not rows keyed by an entity,

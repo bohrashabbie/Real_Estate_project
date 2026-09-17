@@ -87,13 +87,16 @@ export default async function PropertiesPage({
     getVipProperties(typedLocale),
   ]);
 
-  // The VIP and Featured rows are the same on every listing view -- For
-  // sale, For rent, Featured -- on request. They were briefly narrowed to
-  // the view's purpose, which left "For sale" with two VIP slides in a
-  // three-slide row: left-aligned, nothing to scroll, and unlike the other
-  // pages. The results grid below is what the view filters.
+  // VIP is the same row on every listing view, on request: narrowing it left
+  // "For sale" with two slides in a three-slide row, unlike the other pages.
+  // Featured follows the view's purpose, also on request -- a rental pick has
+  // no place on For sale, and shows on For rent instead. A short row centres
+  // itself rather than hugging one edge (see `.card-carousel-track` in
+  // globals.css).
   const vipRow = vip;
-  const featuredRow = featured;
+  const featuredRow = purpose
+    ? featured.filter((property) => property.purpose === purpose)
+    : featured;
 
   // The VIP view only — see the badge's own comment below.
   const viewBadge = vipOnly

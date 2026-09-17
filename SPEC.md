@@ -13,7 +13,7 @@ area/type/price/rooms, view details with photos + map, and contact the office
 by phone / WhatsApp / inquiry form. Staff manage listings through the admin.
 
 - Bilingual **Arabic (default) / English**, RTL primary. Locale prefix `/ar` `/en`, `ar` default.
-- Money is **KWD, NUMERIC(12,3)**, never float. Prices shown as `650 KD/month` (rent) or `KD 85,000` (sale).
+- Money is **KWD, NUMERIC(12,3)**, never float. Prices shown as `650 KD/month` (rent) or `KD 85,000` (sale and exchange).
 - Theme (from the old kwt25.com): cream background `#FAF6EC`, navy `#152A3D`, gold `#B8934B` (hover `#a37f3d`), white cards, rounded-2xl, pill buttons. Status colors: Available=green, Rented/Sold=red/neutral, Reserved=amber.
 
 ## Database schema (Postgres 16, sync SQLAlchemy, Alembic)
@@ -31,16 +31,16 @@ are rows in `*_translations` keyed by `locale`, slugs unique per locale):
 - **amenities** — id, key, sort_order, is_active + translations (name). Seed: private_entrance, maids_room, driver_room, large_hall, two_entrances, storage, new_finish, central_ac, balcony, elevator, parking, garden, swimming_pool, sea_view, furnished, basement.
 - **properties** —
   - id, ref_no VARCHAR unique (format `KW-YYYY-NNNN`, auto-generated),
-  - purpose ENUM `rent|sale`, status ENUM `available|rented|sold|reserved` (default available),
+  - purpose ENUM `rent|sale|exchange` (exchange = للبدل, offered in swap for another property), status ENUM `available|rented|sold|reserved` (default available),
   - property_type_id FK, area_id FK, block VARCHAR(20) nullable, address_note VARCHAR nullable,
-  - price NUMERIC(12,3) (monthly rent for `rent`, total for `sale`),
+  - price NUMERIC(12,3) (monthly rent for `rent`, total for `sale`, the owner's valuation for `exchange`),
   - rooms SMALLINT null, bathrooms SMALLINT null, floors SMALLINT null, area_sqm NUMERIC(10,2) null,
   - latitude NUMERIC(9,6) null, longitude NUMERIC(9,6) null,
   - is_featured BOOL (home "Our distinctive properties"), is_premium BOOL ("distinct" badge),
   - is_active BOOL soft-delete, published_at TIMESTAMPTZ null (null = draft),
   - created_by FK users, created_at, updated_at.
   - `property_translations`(property_id, locale, title, slug, description). Slug unique per locale.
-- **banners** — home-page hero slides, admin-managed (nothing hardcoded in the storefront):
+- **banners** — home-page artwork, admin-managed (nothing hardcoded in the storefront). `placement` VARCHAR(20) `hero|home_ad`: `hero` is the slider at the top, `home_ad` the advert band under the property types:
   - id, media_id FK media (fallback artwork for every locale), href VARCHAR(500) null (link target; null = not clickable),
   - sort_order INT, is_active BOOL soft-delete,
   - starts_at / ends_at TIMESTAMPTZ null (optional live window; null = unbounded),
@@ -50,9 +50,9 @@ are rows in `*_translations` keyed by `locale`, slugs unique per locale):
 - **property_media** — id, property_id FK, media_id FK (GRC-style media table holding uploaded file path/mime/size), sort_order, is_main BOOL.
 - **property_amenities** — property_id, amenity_id (PK pair).
 - **inquiries** — id, property_id FK nullable, name, phone, message, source ENUM `property|contact|home`, status ENUM `new|contacted|closed` default new, created_at. Public insert; admin list/update-status.
-- **property_requests** — "Request your property": id, name, phone, purpose ENUM `rent|sale` null, property_type_id FK null, area_id FK null, budget_min NUMERIC(12,3) null, budget_max NUMERIC(12,3) null, rooms SMALLINT null, notes TEXT null, status ENUM `new|in_progress|matched|closed` default new, created_at.
+- **property_requests** — "Request your property": id, name, phone, purpose ENUM `rent|sale|exchange` null, property_type_id FK null, area_id FK null, budget_min NUMERIC(12,3) null, budget_max NUMERIC(12,3) null, rooms SMALLINT null, notes TEXT null, status ENUM `new|in_progress|matched|closed` default new, created_at.
 
-Settings seeded keys: `site.phone` (+965 XXXXXXXX), `site.whatsapp`, `site.email`, `site.instagram`, `site.x`, `site.snapchat`, `site.name_ar` (Kwt25), `site.name_en` (Kwt25).
+Settings seeded keys: `site.phone` (+965 XXXXXXXX), `site.whatsapp`, `site.email`, `site.instagram`, `site.x`, `site.snapchat`, `site.name_ar` (Kwt25), `site.name_en` (Kwt25). `site.header_menu` (not seeded) is a JSON list of `{label_ar, label_en, href}` — extra links under the header dropdown's built-in language and call entries.
 
 The `Setting` model is a generic key/value store — `bulk_upsert_settings`
 upserts any `{key, value}` pair with no whitelist, so page copy the office
@@ -93,9 +93,9 @@ Permission keys (in `permissions.py`): `properties.view/create/edit/delete/publi
 `audit.view`, `analytics.view`.
 
 ### Public `/public/v1` (no auth, storefront CORS)
-- `GET settings` → `{phone, whatsapp, email, instagram, name_ar, name_en}`
+- `GET settings` → `{phone, whatsapp, email, instagram, name_ar, name_en, header_menu, …page copy}`
 - `GET areas`, `GET property-types`, `GET amenities` → active only, id+key/slug+localized name (accept `?locale=`)
-- `GET banners` → live slides only (active **and** inside their start/end window), in `sort_order`. Flattened for one locale: `[{id, image_url, alt, href}]`, falling back locale → ar → en for both the alt text and the artwork. Empty list is normal; the storefront then shows the artwork bundled in `public/banners/`.
+- `GET banners?placement=hero|home_ad` (default `hero`) → live slides only (active **and** inside their start/end window), in `sort_order`. Flattened for one locale: `[{id, image_url, alt, href}]`, falling back locale → ar → en for both the alt text and the artwork. Empty list is normal; the storefront then shows the artwork bundled in `public/banners/`.
 - `GET properties` — published+active only. Filters: `purpose`, `type` (key), `area` (slug), `price_min`, `price_max`, `rooms` (int, meaning ≥), `status`, `premium_only` (bool, `is_premium`), `featured_only` (bool, `is_featured` — the flag `GET properties/featured` picks by), `vip_only` (bool, `is_vip`), `q`. Sort newest first, cursor pagination, `?locale=` picks translation (fallback other locale). Item shape: `{id, ref_no, slug, title, purpose, status, price, currency:"KWD", type:{key,name}, area:{slug,name}, block, rooms, bathrooms, floors, area_sqm, is_premium, is_featured, main_image, images_count, published_at}`.
 - `GET properties/featured` → up to 10 featured published items, same shape.
 - `GET properties/{slug}` (locale-aware; also match ref_no) → full detail: above + `description`, `amenities:[{key,name}]`, `images:[{url,alt,is_main,sort_order}]`, `latitude`, `longitude`, `created_at`.

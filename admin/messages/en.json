@@ -109,8 +109,8 @@
       "totalProperties": "Total properties",
       "publishedProperties": "Published",
       "availableProperties": "Available",
-      "byPurpose": "Rent / Sale",
-      "byPurposeValue": "{rent} / {sale}",
+      "byPurpose": "Rent / Sale / Exchange",
+      "byPurposeValue": "{rent} / {sale} / {exchange}",
       "newInquiries7d": "New inquiries (7 days)",
       "newRequests7d": "New requests (7 days)"
     },
@@ -163,7 +163,8 @@
     },
     "purposes": {
       "rent": "For rent",
-      "sale": "For sale"
+      "sale": "For sale",
+      "exchange": "For exchange"
     },
     "statuses": {
       "available": "Available",
@@ -382,18 +383,25 @@
       "href": "Links to",
       "startsAt": "Starts",
       "endsAt": "Ends",
-      "isActive": "Visible on the site"
+      "isActive": "Visible on the site",
+      "placement": "Placement"
     },
     "hints": {
       "image": "Full-bleed at up to 3:1 — supply around 1920×640 so it stays sharp on a desktop monitor.",
       "href": "A path on this site such as /smart-search, or a full URL. Leave empty for a banner that isn't clickable.",
-      "window": "Leave both empty to run the banner until you hide it."
+      "window": "Leave both empty to run the banner until you hide it.",
+      "placement": "Hero slider runs at the top of the home page. Home adverts fill the band under the property types, in place of the two photos that used to sit there."
     },
     "validation": {
       "altRequired": "Add alt text in at least one language.",
       "imageRequired": "Upload the banner artwork first.",
       "windowOrder": "The end date must come after the start date."
-    }
+    },
+    "placements": {
+      "hero": "Hero slider",
+      "home_ad": "Home adverts"
+    },
+    "summaryAds": "{count} live advert(s) in the band under the property types."
   },
   "users": {
     "title": "Staff users",
@@ -566,6 +574,19 @@
       "types_title_en": "Heading (English)",
       "types_body_ar": "Subtitle (Arabic)",
       "types_body_en": "Subtitle (English)"
+    },
+    "headerMenuTitle": "Header dropdown",
+    "headerMenuDescription": "The dropdown at the end of the site header always offers the language switch and a call button. Add more links here and they appear under those two.",
+    "headerMenu": {
+      "labelAr": "Label (Arabic)",
+      "labelEn": "Label (English)",
+      "href": "Links to",
+      "hrefHint": "A path on this site such as /request, or a full URL.",
+      "add": "Add link",
+      "remove": "Remove",
+      "empty": "No extra links yet: the dropdown shows the language switch and the call button only.",
+      "saved": "Header dropdown updated.",
+      "invalid": "Each link needs a label and a destination."
     }
   },
   "audit": {

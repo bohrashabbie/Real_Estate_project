@@ -11,6 +11,7 @@ import {
   Check,
   House,
   KeyRound,
+  Repeat2,
   LandPlot,
   Search,
   Sparkles,
@@ -128,14 +129,22 @@ export function FooterSearch({
               <>
                 <h1>{t("smart.q1")}</h1>
                 <div className="wizard-question-options">
-                  {(["rent", "sale"] as const).map((value) => (
+                  {(["rent", "sale", "exchange"] as const).map((value) => (
                     <button
                       key={value}
                       type="button"
                       className={`option-card${purpose === value ? " is-selected" : ""}`}
                       onClick={() => setPurpose(purpose === value ? "" : value)}
                     >
-                      <span>{value === "rent" ? <KeyRound size={16} /> : <Tag size={16} />}</span>
+                      <span>
+                        {value === "rent" ? (
+                          <KeyRound size={16} />
+                        ) : value === "sale" ? (
+                          <Tag size={16} />
+                        ) : (
+                          <Repeat2 size={16} />
+                        )}
+                      </span>
                       <strong>{t(`purpose.${value}`)}</strong>
                     </button>
                   ))}

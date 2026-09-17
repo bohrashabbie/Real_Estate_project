@@ -22,12 +22,18 @@ import {
   type PropertyDetail,
   type PropertyListItem,
 } from "@/lib/api";
-import { formatBareAmount, formatPrice, formatSqm } from "@/lib/format";
+import { formatPrice, formatSqm } from "@/lib/format";
 import { PropertyCard } from "@/components/property/property-card";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 const KUWAIT_CENTER: [number, number] = [47.8, 29.35];
 const MAX_PROPERTIES = 200;
+
+/** A filled pin with a white centre -- drawn inline rather than as a React
+ *  icon, because MapLibre markers are plain DOM elements built outside
+ *  React. `currentColor` lets the CSS recolour it on hover. */
+const PIN_SVG =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C7.6 2 4 5.5 4 9.8c0 5.6 7.1 11.6 7.4 11.9a.9.9 0 0 0 1.2 0C12.9 21.4 20 15.4 20 9.8 20 5.5 16.4 2 12 2z"/><circle cx="12" cy="9.8" r="3.3" fill="#fff"/></svg>';
 
 interface Located {
   item: PropertyListItem;
@@ -35,14 +41,19 @@ interface Located {
   lng: number;
 }
 
-/** Pages through `/properties` until exhausted, or the cap. */
-async function fetchAll(locale: Locale): Promise<PropertyListItem[]> {
+/** Pages through `/properties` with the page's filters until exhausted, or
+ *  the cap. */
+async function fetchAll(
+  locale: Locale,
+  filters: Record<string, string | string[]>,
+): Promise<PropertyListItem[]> {
   const collected: PropertyListItem[] = [];
   let cursor: string | null = null;
   do {
     const page: Paginated<PropertyListItem> = await apiGet("/properties", {
       locale,
       limit: 50,
+      ...filters,
       ...(cursor ? { cursor } : {}),
     });
     collected.push(...page.items);
@@ -52,15 +63,26 @@ async function fetchAll(locale: Locale): Promise<PropertyListItem[]> {
 }
 
 /**
- * The map browser: gold price pins over Kuwait, a card for whichever is
- * selected, and a list view for anyone who would rather scroll than pan.
+ * The map browser: a gold pin on every property over Kuwait, its price on
+ * hover, a card for whichever is selected, and a list view for anyone who
+ * would rather scroll than pan.
+ *
+ * It shows what the page's search bar asked for -- `filters` is read from the
+ * same query string the listing page uses -- so narrowing the search narrows
+ * the pins.
  *
  * The list endpoint carries no coordinates, so each listing is resolved through
  * the detail endpoint once and the ones the office never pinned drop out — the
  * toolbar says how many survived, because "8 properties" on a map showing three
  * pins is the kind of quiet lie that erodes trust in the whole listing.
  */
-export function MapExplorer({ locale }: { locale: Locale }) {
+export function MapExplorer({
+  locale,
+  filters = {},
+}: {
+  locale: Locale;
+  filters?: Record<string, string | string[]>;
+}) {
   const t = useTranslations();
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
@@ -70,14 +92,20 @@ export function MapExplorer({ locale }: { locale: Locale }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
+  const filterKey = JSON.stringify(filters);
+
   const { data: properties } = useQuery({
-    queryKey: ["map-properties", locale],
-    queryFn: () => fetchAll(locale),
+    queryKey: ["map-properties", locale, filterKey],
+    queryFn: () => fetchAll(locale, filters),
   });
 
+  // Keyed by the ids themselves, not a count: two searches can return the
+  // same number of listings and must not share each other's coordinates.
+  const idsKey = (properties ?? []).map((item) => item.id).join(",");
+
   const { data: located, isLoading } = useQuery({
-    queryKey: ["map-located", locale, properties?.length ?? 0],
-    enabled: Boolean(properties?.length),
+    queryKey: ["map-located", locale, idsKey],
+    enabled: properties !== undefined,
     queryFn: async (): Promise<Located[]> => {
       const details = await Promise.all(
         (properties ?? []).map(async (item) => {
@@ -136,26 +164,40 @@ export function MapExplorer({ locale }: { locale: Locale }) {
   );
 
   useEffect(() => {
-    if (!located?.length || !map.current) return;
+    if (!map.current) return;
     let cancelled = false;
 
     (async () => {
       const maplibregl = (await import("maplibre-gl")).default;
       if (cancelled || !map.current) return;
 
+      // Cleared first and unconditionally: a search that matches nothing
+      // must empty the map, not leave the previous search's pins standing.
       for (const marker of markers.current) marker.remove();
       markers.current = [];
 
-      for (const entry of located) {
-        const element = document.createElement("button");
-        element.type = "button";
-        element.className = `map-pin${entry.item.slug === current?.item.slug ? " is-active" : ""}`;
-        element.textContent = formatBareAmount(entry.item.price, locale);
-        element.setAttribute("aria-label", entry.item.title);
-        element.addEventListener("click", () => setSelected(entry.item.slug));
+      for (const entry of located ?? []) {
+        const price = formatPrice(entry.item.price, entry.item.purpose, locale);
+
+        // MapLibre owns the outer element's transform to position it, so the
+        // pin that lifts and scales on hover is a child it doesn't touch.
+        const element = document.createElement("div");
+        element.className = "map-marker";
+
+        const pin = document.createElement("button");
+        pin.type = "button";
+        pin.className = `map-pin${entry.item.slug === current?.item.slug ? " is-active" : ""}`;
+        pin.setAttribute("aria-label", `${entry.item.title} — ${price}`);
+        pin.innerHTML = PIN_SVG;
+        const label = document.createElement("span");
+        label.className = "map-pin-price";
+        label.textContent = price;
+        pin.appendChild(label);
+        pin.addEventListener("click", () => setSelected(entry.item.slug));
+        element.appendChild(pin);
 
         markers.current.push(
-          new maplibregl.Marker({ element })
+          new maplibregl.Marker({ element, anchor: "bottom" })
             .setLngLat([entry.lng, entry.lat])
             .addTo(map.current),
         );
@@ -168,7 +210,7 @@ export function MapExplorer({ locale }: { locale: Locale }) {
   }, [located, locale, current?.item.slug, ready]);
 
   function recenter() {
-    if (!map.current || !located?.length) return;
+    if (!map.current) return;
     map.current.flyTo({ center: KUWAIT_CENTER, zoom: 8.4 });
   }
 

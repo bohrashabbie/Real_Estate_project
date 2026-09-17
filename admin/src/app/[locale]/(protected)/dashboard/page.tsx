@@ -127,6 +127,8 @@ function AnalyticsSection() {
     data.by_purpose.find((entry) => entry.purpose === "rent")?.count ?? 0
   const saleCount =
     data.by_purpose.find((entry) => entry.purpose === "sale")?.count ?? 0
+  const exchangeCount =
+    data.by_purpose.find((entry) => entry.purpose === "exchange")?.count ?? 0
 
   return (
     <div className="flex flex-col gap-4">
@@ -148,7 +150,11 @@ function AnalyticsSection() {
         />
         <StatTile
           label={t("kpi.byPurpose")}
-          value={t("kpi.byPurposeValue", { rent: rentCount, sale: saleCount })}
+          value={t("kpi.byPurposeValue", {
+            rent: rentCount,
+            sale: saleCount,
+            exchange: exchangeCount,
+          })}
           changePct={null}
         />
         <StatTile

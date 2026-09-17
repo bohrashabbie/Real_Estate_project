@@ -20,7 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, CreatedAtMixin, TimestampMixin
 
 # Postgres ENUM types, shared between columns where the value set is the same.
-PropertyPurpose = Enum("rent", "sale", name="property_purpose")
+PropertyPurpose = Enum("rent", "sale", "exchange", name="property_purpose")
 PropertyStatus = Enum("available", "rented", "sold", "reserved", name="property_status")
 InquirySource = Enum("property", "contact", "home", name="inquiry_source")
 InquiryStatus = Enum("new", "contacted", "closed", name="inquiry_status")
@@ -227,6 +227,12 @@ class Banner(Base, TimestampMixin):
     # Internal path such as "/smart-search" or an absolute URL. NULL = the
     # slide is not clickable.
     href: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Where on the site the artwork runs: "hero" is the home-page slider at
+    # the top, "home_ad" the advert band that replaced the two static
+    # "Kuwait Real Estate" photos. One table rather than two -- both are an
+    # image, alt text, a link, an order and a live window, managed from the
+    # same admin screen.
+    placement: Mapped[str] = mapped_column(String(20), nullable=False, default="hero")
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     # Optional scheduling window; NULL on either side means "no bound".
@@ -241,6 +247,7 @@ class Banner(Base, TimestampMixin):
     __table_args__ = (
         Index("ix_banners_is_active", "is_active"),
         Index("ix_banners_sort_order", "sort_order"),
+        Index("ix_banners_placement", "placement"),
     )
 
 

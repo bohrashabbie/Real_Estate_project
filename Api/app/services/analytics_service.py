@@ -44,7 +44,7 @@ def dashboard(db: Session) -> dict:
         "properties_available": available,
         "by_purpose": [
             {"purpose": purpose, "count": purpose_counts.get(purpose, 0)}
-            for purpose in ("rent", "sale")
+            for purpose in ("rent", "sale", "exchange")
         ],
         "new_inquiries_7d": new_inquiries_7d,
         "new_requests_7d": new_requests_7d,

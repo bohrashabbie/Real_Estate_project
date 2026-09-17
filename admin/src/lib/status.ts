@@ -9,7 +9,7 @@ export type BadgeTone = "neutral" | "success" | "warning" | "danger" | "info"
 /* Vocabularies                                                                */
 /* -------------------------------------------------------------------------- */
 
-export const PROPERTY_PURPOSE_VALUES = ["rent", "sale"] as const
+export const PROPERTY_PURPOSE_VALUES = ["rent", "sale", "exchange"] as const
 export const PROPERTY_STATUS_VALUES = [
   "available",
   "rented",

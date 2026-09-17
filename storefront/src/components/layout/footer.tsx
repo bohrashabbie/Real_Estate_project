@@ -1,11 +1,12 @@
 import { getTranslations } from "next-intl/server";
-import { MessageCircle, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { siteText, type SiteSettings } from "@/lib/api";
 import { formatPhone, telLink, waLink } from "@/lib/format";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { SnapchatIcon } from "@/components/ui/snapchat-icon";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import type { Locale } from "@/i18n/routing";
 
 /** `w91111`, `@w91111` and a full profile URL all end up as one link. */
@@ -60,6 +61,7 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
           <Link href="/properties">{t("footer.allProperties")}</Link>
           <Link href="/properties?purpose=sale">{t("nav.sale")}</Link>
           <Link href="/properties?purpose=rent">{t("nav.rent")}</Link>
+          <Link href="/properties?purpose=exchange">{t("nav.exchange")}</Link>
           <Link href="/properties?featured=1">{t("nav.featured")}</Link>
           <Link href="/smart-search">{t("footer.smartChoice")}</Link>
           <Link href="/compare">{t("footer.compare")}</Link>
@@ -81,13 +83,25 @@ export async function Footer({ settings, locale }: { settings: SiteSettings; loc
               {formatPhone(phone)}
             </a>
           ) : null}
+          {/* The WhatsApp mark says what the number is for, on request, in
+              place of the word; the word survives as the link's name. */}
           {whatsapp ? (
-            <a href={waLink(whatsapp)} target="_blank" rel="noopener noreferrer">
-              <MessageCircle size={14} />
-              {t("footer.whatsappWith", { phone: formatPhone(whatsapp) })}
+            <a
+              href={waLink(whatsapp)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t("footer.whatsappWith", { phone: formatPhone(whatsapp) })}
+            >
+              <WhatsAppIcon size={15} />
+              <span dir="ltr">{formatPhone(whatsapp)}</span>
             </a>
           ) : null}
-          {settings.email ? <a href={`mailto:${settings.email}`}>{settings.email}</a> : null}
+          {settings.email ? (
+            <a href={`mailto:${settings.email}`}>
+              <Mail size={14} />
+              {settings.email}
+            </a>
+          ) : null}
         </div>
       </div>
 

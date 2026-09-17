@@ -8,7 +8,7 @@ import {
   KeyRound,
   MapPinned,
   Menu,
-  Phone,
+  Repeat2,
   Sparkles,
   Star,
   Tag,
@@ -18,14 +18,14 @@ import {
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { NAV_ITEMS, type NavIcon } from "@/lib/nav";
-import { formatPhone, telLink } from "@/lib/format";
 import type { SiteSettings } from "@/lib/api";
-import { LocaleToggle } from "@/components/layout/locale-toggle";
+import { HeaderMenu } from "@/components/layout/header-menu";
 
 const ICONS: Record<NavIcon, typeof House> = {
   house: House,
   tag: Tag,
   keyRound: KeyRound,
+  repeat: Repeat2,
   star: Star,
   mapPinned: MapPinned,
   sparkles: Sparkles,
@@ -68,8 +68,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
-
-  const phone = settings.phone?.trim();
 
   return (
     <>
@@ -152,17 +150,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
               </Link>
             )}
 
-            {phone ? (
-              <a
-                className="header-phone header-phone-button"
-                href={telLink(phone)}
-                aria-label={t("nav.callAria", { phone: formatPhone(phone) })}
-              >
-                <Phone size={16} />
-              </a>
-            ) : null}
-
-            <LocaleToggle />
+            {/* One dropdown in place of the call disc and the language disc,
+                on request -- see HeaderMenu for what it holds. */}
+            <HeaderMenu settings={settings} />
 
             <button
               type="button"

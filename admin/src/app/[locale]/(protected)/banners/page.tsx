@@ -24,7 +24,7 @@ import { getErrorMessage } from "@/lib/api/error-message"
 import { uploadUrl } from "@/lib/format"
 import { PERMISSIONS } from "@/lib/permissions"
 import { queryKeys } from "@/lib/query/keys"
-import type { BannerOut } from "@/lib/api/types"
+import type { BannerOut, BannerPlacement } from "@/lib/api/types"
 
 export default function BannersPage() {
   return (
@@ -42,6 +42,10 @@ export default function BannersPage() {
  * Order here is the order the storefront renders. One live slide shows as a
  * static hero; two or more turn the hero into a slider automatically, so
  * there is no separate "carousel on/off" switch to keep in sync.
+ *
+ * Two placements share the screen, one tab each: the hero slider, and the
+ * home-page advert band that replaced the two static "Kuwait Real Estate"
+ * photos. Ordering and the live summary apply within the tab you are on.
  */
 function BannersContent() {
   const t = useTranslations("banners")
@@ -52,13 +56,14 @@ function BannersContent() {
   const [editing, setEditing] = useState<BannerOut | undefined>()
   const [hiding, setHiding] = useState<BannerOut | null>(null)
   const [reordering, setReordering] = useState(false)
+  const [placement, setPlacement] = useState<BannerPlacement>("hero")
 
   const query = useQuery({
     queryKey: queryKeys.banners.list({ include_inactive: true }),
     queryFn: ({ signal }) => bannersApi.list({ include_inactive: true }, signal),
   })
 
-  const banners = query.data ?? []
+  const banners = (query.data ?? []).filter((banner) => banner.placement === placement)
   const liveCount = banners.filter((banner) => banner.is_live).length
 
   async function invalidate() {
@@ -132,13 +137,31 @@ function BannersContent() {
         }
       />
 
+      <div className="flex flex-wrap gap-2" role="tablist">
+        {(["hero", "home_ad"] as const).map((value) => (
+          <Button
+            key={value}
+            type="button"
+            role="tab"
+            aria-selected={placement === value}
+            variant={placement === value ? "default" : "outline"}
+            size="sm"
+            onClick={() => setPlacement(value)}
+          >
+            {t(`placements.${value}`)}
+          </Button>
+        ))}
+      </div>
+
       {banners.length > 0 && (
         <p className="text-sm text-muted-foreground">
-          {liveCount === 0
-            ? t("summaryNone")
-            : liveCount === 1
-              ? t("summaryStatic")
-              : t("summarySlider", { count: liveCount })}
+          {placement === "home_ad"
+            ? t("summaryAds", { count: liveCount })
+            : liveCount === 0
+              ? t("summaryNone")
+              : liveCount === 1
+                ? t("summaryStatic")
+                : t("summarySlider", { count: liveCount })}
         </p>
       )}
 
@@ -173,6 +196,7 @@ function BannersContent() {
         <BannerFormDialog
           key={editing?.id ?? "new"}
           banner={editing}
+          placement={placement}
           nextSortOrder={banners.length}
           open={formOpen}
           onOpenChange={setFormOpen}

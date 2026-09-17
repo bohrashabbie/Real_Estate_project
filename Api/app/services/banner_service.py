@@ -52,6 +52,7 @@ def _out(banner: Banner, urls: dict[int, str]) -> dict:
         "media_id": banner.media_id,
         "image_url": urls.get(banner.media_id),
         "href": banner.href,
+        "placement": banner.placement,
         "sort_order": banner.sort_order,
         "is_active": banner.is_active,
         "starts_at": banner.starts_at,
@@ -163,6 +164,7 @@ def create_banner(db: Session, data, actor_user_id: int) -> dict:
 
     banner = Banner(
         media_id=data.media_id,
+        placement=data.placement,
         href=data.href,
         sort_order=data.sort_order,
         is_active=data.is_active,
@@ -182,6 +184,7 @@ def create_banner(db: Session, data, actor_user_id: int) -> dict:
         entity_id=banner.id,
         after={
             "media_id": data.media_id,
+            "placement": data.placement,
             "href": data.href,
             "sort_order": data.sort_order,
             "is_active": data.is_active,
@@ -203,13 +206,13 @@ def update_banner(db: Session, banner_id: int, data, actor_user_id: int) -> dict
     # scheduling window impossible to undo once set.
     sent = data.model_dump(exclude_unset=True)
     proposed: dict = {}
-    for field in ("media_id", "href", "sort_order", "is_active", "starts_at", "ends_at"):
+    for field in ("media_id", "placement", "href", "sort_order", "is_active", "starts_at", "ends_at"):
         if field not in sent:
             continue
         value = sent[field]
         # The non-nullable columns have no "clear" meaning; ignore a stray null
         # rather than writing one and failing at the database.
-        if value is None and field in ("media_id", "sort_order", "is_active"):
+        if value is None and field in ("media_id", "placement", "sort_order", "is_active"):
             continue
         proposed[field] = value
     _assert_media_exists(db, proposed.get("media_id"))
@@ -297,14 +300,18 @@ def soft_delete_banner(db: Session, banner_id: int, actor_user_id: int) -> None:
 # Public read
 # ---------------------------------------------------------------------------
 
-def public_banners(db: Session, locale: str) -> list[dict]:
-    """Live slides only, flattened for one locale.
+def public_banners(db: Session, locale: str, placement: str = "hero") -> list[dict]:
+    """Live slides for one placement only, flattened for one locale.
 
     Falls back locale → ar → en for both the alt text and the artwork, so a
     banner translated only into Arabic still renders on the English site
     rather than vanishing from it.
     """
-    banners = list(db.execute(_base_stmt().where(Banner.is_active.is_(True))).scalars().all())
+    banners = list(
+        db.execute(
+            _base_stmt().where(Banner.is_active.is_(True), Banner.placement == placement)
+        ).scalars().all()
+    )
     banners = [b for b in banners if is_live(b)]
     urls = _media_urls(db, banners)
 

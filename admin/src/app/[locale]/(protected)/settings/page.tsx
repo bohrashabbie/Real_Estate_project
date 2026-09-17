@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { PageHeader } from "@/components/page-header"
+import { HEADER_MENU_KEY, HeaderMenuCard } from "@/components/settings/header-menu-card"
 import { RequireRoutePermission } from "@/components/permission/require-route-permission"
 import {
   ListErrorState,
@@ -226,6 +227,13 @@ function SettingsContent() {
         <ListErrorState
           error={settingsQuery.error}
           onRetry={() => settingsQuery.refetch()}
+        />
+      )}
+
+      {settingsQuery.data && (
+        <HeaderMenuCard
+          value={settingsQuery.data.find((setting) => setting.key === HEADER_MENU_KEY)?.value}
+          canManage={canManage}
         />
       )}
 

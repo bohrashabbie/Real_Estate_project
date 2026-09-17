@@ -32,7 +32,12 @@ export function ListPropertyForm({ areas, types }: { areas: Area[]; types: Prope
     // into the message rather than dropped for lack of a column.
     const message = [
       t("summary", {
-        purpose: purpose === "sale" ? t("forSale") : t("forRent"),
+        purpose:
+          purpose === "sale"
+            ? t("forSale")
+            : purpose === "exchange"
+              ? t("forExchange")
+              : t("forRent"),
         type: type || t("unspecified"),
         area: area || t("unspecified"),
       }),
@@ -100,6 +105,7 @@ export function ListPropertyForm({ areas, types }: { areas: Area[]; types: Prope
           <select name="purpose" defaultValue="sale">
             <option value="sale">{t("forSale")}</option>
             <option value="rent">{t("forRent")}</option>
+            <option value="exchange">{t("forExchange")}</option>
           </select>
         </label>
         <label>

@@ -112,6 +112,7 @@ export function RequestForm({
           <select name="purpose" defaultValue="rent">
             <option value="rent">{tp("rent")}</option>
             <option value="sale">{tp("sale")}</option>
+            <option value="exchange">{tp("exchange")}</option>
           </select>
         </label>
         <label>

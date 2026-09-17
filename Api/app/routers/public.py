@@ -43,14 +43,19 @@ def amenities(locale: str = "ar", db: Session = Depends(get_db)) -> list[dict]:
 
 
 @router.get("/banners")
-def banners(locale: str = "ar", db: Session = Depends(get_db)) -> list[dict]:
-    """Home-page hero slides: active, inside their scheduling window, in order."""
-    return banner_service.public_banners(db, public_service.normalize_locale(locale))
+def banners(
+    locale: str = "ar",
+    placement: str = Query("hero", pattern="^(hero|home_ad)$"),
+    db: Session = Depends(get_db),
+) -> list[dict]:
+    """Live artwork for one placement -- the hero slider by default, or the
+    home-page advert band -- active, inside its window, in order."""
+    return banner_service.public_banners(db, public_service.normalize_locale(locale), placement)
 
 
 @router.get("/properties")
 def properties(
-    purpose: str | None = Query(None, pattern="^(rent|sale)$"),
+    purpose: str | None = Query(None, pattern="^(rent|sale|exchange)$"),
     type: list[str] = Query([]),  # property_type keys — repeated, any match
     area: list[str] = Query([]),  # area slugs — repeated (?area=a&area=b), any match
     price_min: Decimal | None = Query(None, ge=0),

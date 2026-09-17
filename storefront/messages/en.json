@@ -29,12 +29,15 @@
     "rentSub": "Properties available to rent",
     "featured": "Featured",
     "featuredSub": "The office's picks",
-    "map": "Map",
+    "map": "Search map",
     "mapSub": "Search by location",
     "smartSearch": "Smart search",
     "smartSearchSub": "Matched results in 30 seconds",
     "request": "Request",
-    "requestSub": "Send us what you're looking for"
+    "requestSub": "Send us what you're looking for",
+    "exchange": "For exchange",
+    "exchangeSub": "Properties offered for exchange",
+    "menuAria": "Language and contact"
   },
   "hero": {
     "eyebrow": "kwt25",
@@ -55,14 +58,15 @@
     "title": "Find the property that fits",
     "area": "Area",
     "type": "Property type",
-    "purpose": "Buy or rent",
+    "purpose": "Sale, rent or exchange",
     "allTypes": "All types",
     "allPurposes": "All",
     "submit": "Search",
     "shortcutsAria": "Property shortcuts",
     "shortcut": {
       "sale": "For sale",
-      "rent": "For rent"
+      "rent": "For rent",
+      "exchange": "For exchange"
     },
     "price": "Price (KD)",
     "anyPrice": "Any price",
@@ -96,7 +100,8 @@
   },
   "purpose": {
     "rent": "For rent",
-    "sale": "For sale"
+    "sale": "For sale",
+    "exchange": "For exchange"
   },
   "status": {
     "available": "Available",
@@ -131,7 +136,10 @@
     "allBody": "Browse every published property for sale and rent in Kuwait.",
     "allCta": "Browse all properties for sale or rent",
     "saleCta": "View properties for sale",
-    "rentCta": "View properties for rent"
+    "rentCta": "View properties for rent",
+    "exchangeTitle": "Properties for exchange",
+    "exchangeCta": "See the exchange properties",
+    "adsAria": "Advertisements"
   },
   "footerSearch": {
     "title": "Didn't find what you're after?",
@@ -369,7 +377,8 @@
     "privacyNote": "Your details are never shown publicly; the message reaches the admin panel only.",
     "successTitle": "Your property details arrived",
     "successBody": "The team will review them and contact you before the listing goes live.",
-    "error": "The details couldn't be sent. Check the fields and try again."
+    "error": "The details couldn't be sent. Check the fields and try again.",
+    "forExchange": "List the property for exchange"
   },
   "contact": {
     "kicker": "We're close by",

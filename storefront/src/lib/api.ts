@@ -33,6 +33,13 @@ export function mediaUrl(path: string | null | undefined): string | null {
 // Types (shapes per SPEC.md "Public /public/v1")
 // ---------------------------------------------------------------------------
 
+/** One extra entry in the header dropdown, added from admin Settings. */
+export interface HeaderMenuLink {
+  label_ar: string;
+  label_en: string;
+  href: string;
+}
+
 export interface SiteSettings {
   phone: string;
   whatsapp: string;
@@ -43,6 +50,9 @@ export interface SiteSettings {
   snapchat: string | null;
   name_ar: string;
   name_en: string;
+  /** Extra links under the header dropdown's built-in language and call
+   *  entries (`site.header_menu`). Null until the office saves one. */
+  header_menu: HeaderMenuLink[] | null;
   // Page copy the office can edit from the admin's Settings screen without a
   // deploy — one `site.<field>_<locale>` setting per string, not a
   // translations table (see SPEC.md). Every one of these is optional: null
@@ -97,6 +107,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   snapchat: null,
   name_ar: "kwt25",
   name_en: "kwt25",
+  header_menu: null,
   footer_blurb_ar: null,
   footer_blurb_en: null,
   footer_tagline_ar: null,
@@ -190,7 +201,7 @@ export interface Amenity {
   name: string;
 }
 
-export type Purpose = "rent" | "sale";
+export type Purpose = "rent" | "sale" | "exchange";
 export type PropertyStatus = "available" | "rented" | "sold" | "reserved";
 
 export interface PropertyListItem {
@@ -347,8 +358,13 @@ export function getPropertyTypes(locale: Locale): Promise<PropertyType[]> {
  *  Image, alt text and link target all come from here — the storefront ships
  *  no banner artwork of its own. Empty means the hero renders nothing, which
  *  is the correct reading of "every banner is hidden". */
-export function getBanners(locale: Locale): Promise<Banner[]> {
-  return safeGet<Banner[]>("/banners", { locale }, []);
+/** "hero" is the slider at the top of the home page; "home_ad" the advert
+ *  band under the property types, managed from the same admin screen. */
+export function getBanners(
+  locale: Locale,
+  placement: "hero" | "home_ad" = "hero",
+): Promise<Banner[]> {
+  return safeGet<Banner[]>("/banners", { locale, placement }, []);
 }
 
 /** `/properties/featured` answers `{items:[…]}`, not a bare array — reading it

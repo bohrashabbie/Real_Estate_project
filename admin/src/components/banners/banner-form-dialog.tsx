@@ -28,6 +28,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { locales, type Locale } from "@/i18n/routing"
 import { bannersApi } from "@/lib/api/endpoints"
@@ -35,7 +42,9 @@ import { getErrorMessage } from "@/lib/api/error-message"
 import { applyFieldErrors, isApiError } from "@/lib/api/errors"
 import { uploadUrl } from "@/lib/format"
 import { cn } from "@/lib/utils"
-import type { BannerOut } from "@/lib/api/types"
+import type { BannerOut, BannerPlacement } from "@/lib/api/types"
+
+const PLACEMENTS: BannerPlacement[] = ["hero", "home_ad"]
 
 /** `datetime-local` speaks naive local time; the API speaks ISO 8601. */
 function toLocalInput(iso: string | null): string {
@@ -58,6 +67,7 @@ function useBannerSchema() {
   const t = useTranslations("banners")
   return z
     .object({
+      placement: z.enum(["hero", "home_ad"]),
       href: z.string(),
       is_active: z.boolean(),
       starts_at: z.string(),
@@ -78,7 +88,7 @@ function useBannerSchema() {
 }
 
 type FormValues = z.infer<ReturnType<typeof useBannerSchema>>
-const FIELD_NAMES = ["href", "is_active", "starts_at", "ends_at"] as const
+const FIELD_NAMES = ["placement", "href", "is_active", "starts_at", "ends_at"] as const
 
 /** Media chosen in this dialog but not yet saved, keyed by what it applies to:
  *  "default" is the banner's own artwork, a locale key is that locale's override. */
@@ -99,6 +109,7 @@ function withSlot(
 
 export function BannerFormDialog({
   banner,
+  placement = "hero",
   nextSortOrder,
   open,
   onOpenChange,
@@ -106,6 +117,9 @@ export function BannerFormDialog({
 }: {
   /** Undefined = create mode. */
   banner?: BannerOut
+  /** Where a new banner goes -- the tab the office was on. An existing
+   *  banner keeps its own placement unless the field is changed. */
+  placement?: BannerPlacement
   /** Appends new banners to the end of the list rather than the front. */
   nextSortOrder: number
   open: boolean
@@ -139,6 +153,7 @@ export function BannerFormDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
+      placement: banner?.placement ?? placement,
       href: banner?.href ?? "",
       is_active: banner?.is_active ?? true,
       starts_at: toLocalInput(banner?.starts_at ?? null),
@@ -171,6 +186,7 @@ export function BannerFormDialog({
 
     const payload = {
       media_id: defaultMedia.id,
+      placement: values.placement,
       href: values.href.trim() ? values.href.trim() : null,
       is_active: values.is_active,
       starts_at: fromLocalInput(values.starts_at),
@@ -210,6 +226,32 @@ export function BannerFormDialog({
             className="flex flex-col gap-4"
             noValidate
           >
+            <FormField
+              control={form.control}
+              name="placement"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.placement")}</FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {PLACEMENTS.map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {t(`placements.${value}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>{t("hints.placement")}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <ArtworkField
               label={t("fields.image")}
               hint={t("hints.image")}

@@ -3,11 +3,13 @@ import { ArrowLeft, Building2 } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { formatPhone, waLink } from "@/lib/format";
-import { siteText, type PropertyType, type SiteSettings } from "@/lib/api";
+import { mediaUrl, siteText, type Banner, type PropertyType, type SiteSettings } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
+import { ScrollRail } from "@/components/ui/scroll-rail";
 import type { Locale } from "@/i18n/routing";
 
-/** The gold strip above the footer: one line, one WhatsApp number. */
+/** The gold strip above the footer: one line, one WhatsApp number. Rendered by
+ *  the layout, so it closes every page rather than only the home page. */
 export async function ContactBand({ settings }: { settings: SiteSettings }) {
   const t = await getTranslations("contactBand");
   const whatsapp = settings.whatsapp?.trim();
@@ -29,6 +31,53 @@ export async function ContactBand({ settings }: { settings: SiteSettings }) {
         </a>
       </div>
     </section>
+  );
+}
+
+/**
+ * The office's advert band, managed from admin → Banners → Home adverts, on
+ * request -- in place of the two photographs of a villa and a tower that used
+ * to stand here and could only be changed by editing the catalogue.
+ *
+ * Two to a row, the size those photographs were. More than two scroll sideways
+ * on the same rail (and bar) as the property rows; a single advert runs the
+ * full width. The artwork carries its own message, so nothing is laid over it
+ * -- the alt text the office writes is its accessible name.
+ */
+function HomeAds({ ads, ariaLabel }: { ads: Banner[]; ariaLabel: string }) {
+  const shown = ads.flatMap((ad) => {
+    const image = mediaUrl(ad.image_url);
+    return image ? [{ ...ad, image }] : [];
+  });
+  if (shown.length === 0) return null;
+
+  return (
+    <ScrollRail
+      className={`home-ads${shown.length === 1 ? " is-single" : ""}`}
+      trackClassName="home-ads-track"
+      ariaLabel={ariaLabel}
+    >
+      {shown.map((ad) => {
+        // eslint-disable-next-line @next/next/no-img-element
+        const artwork = <img src={ad.image} alt={ad.alt} loading="lazy" />;
+        if (!ad.href) {
+          return (
+            <div className="home-ad" key={ad.id}>
+              {artwork}
+            </div>
+          );
+        }
+        return /^https?:\/\//.test(ad.href) ? (
+          <a className="home-ad" key={ad.id} href={ad.href} target="_blank" rel="noopener noreferrer">
+            {artwork}
+          </a>
+        ) : (
+          <Link className="home-ad" key={ad.id} href={ad.href}>
+            {artwork}
+          </Link>
+        );
+      })}
+    </ScrollRail>
   );
 }
 
@@ -61,18 +110,15 @@ export async function PropertyTypeGrid({
   types,
   settings,
   locale,
-  shots = [],
+  ads = [],
 }: {
   types: PropertyType[];
   settings: SiteSettings;
   locale: Locale;
-  /** A villa and an apartment/building, drawn from the catalogue itself
-   *  rather than shipped as artwork: the office asked for the two together
-   *  here to stand for the range of property types, and real listings mean
-   *  the pair is never stock photography of a building the office doesn't
-   *  have. Empty when neither type is published yet, and the band drops out
-   *  rather than rendering holes. */
-  shots?: { href: string; image: string; label: string }[];
+  /** The home advert band's live banners (`placement=home_ad`). Empty until
+   *  the office publishes one, and the band drops out rather than leaving a
+   *  hole. */
+  ads?: Banner[];
 }) {
   const t = await getTranslations("home");
   // The reference showed six because it only ever had six; the marquee now
@@ -104,17 +150,7 @@ export async function PropertyTypeGrid({
             still in Settings but nothing reads it now. */}
         <SectionHeading title={siteText(settings, "types_title", locale) ?? t("typesTitle")} />
 
-        {shots.length > 0 ? (
-          <div className="type-shots">
-            {shots.map((shot) => (
-              <Link className="type-shot" key={shot.href} href={shot.href}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={shot.image} alt="" aria-hidden loading="lazy" />
-                <span>{shot.label}</span>
-              </Link>
-            ))}
-          </div>
-        ) : null}
+        <HomeAds ads={ads} ariaLabel={t("adsAria")} />
 
         <div className="type-marquee">
           {/* The loop is timed per card (5s each), not per lap: a nine-type
@@ -156,9 +192,9 @@ export function SectionHeading({
   kicker?: string;
   /** Optional: VIP and Featured drop it and let their badge stand for the
    *  section on its own, on request -- the gold "VIP" and the star say it,
-   *  and a title under them was saying it twice. The badge
-   *  keeps the title as its accessible name, so nothing is lost to a
-   *  screen reader (see those call sites' `aria-label`). */
+   *  and a title under them was saying it twice. The badge keeps the title
+   *  as its accessible name, so nothing is lost to a screen reader (see
+   *  those call sites' `aria-label`). */
   title?: string;
   /** Stands where the title would: the office's logo on All listings. A
    *  section has one or the other, never both. */

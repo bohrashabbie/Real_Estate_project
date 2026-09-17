@@ -6,7 +6,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-Purpose = Literal["rent", "sale"]
+Purpose = Literal["rent", "sale", "exchange"]
+BannerPlacement = Literal["hero", "home_ad"]
 PropertyStatusValue = Literal["available", "rented", "sold", "reserved"]
 InquirySourceValue = Literal["property", "contact", "home"]
 InquiryStatusValue = Literal["new", "contacted", "closed"]
@@ -175,6 +176,7 @@ class BannerTranslationIn(BaseModel):
 
 class BannerCreate(BaseModel):
     media_id: int
+    placement: BannerPlacement = "hero"
     href: str | None = Field(default=None, max_length=500)
     sort_order: int = 0
     is_active: bool = True
@@ -185,6 +187,7 @@ class BannerCreate(BaseModel):
 
 class BannerUpdate(BaseModel):
     media_id: int | None = None
+    placement: BannerPlacement | None = None
     href: str | None = Field(default=None, max_length=500)
     sort_order: int | None = None
     is_active: bool | None = None

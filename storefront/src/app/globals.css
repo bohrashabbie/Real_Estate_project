@@ -10451,3 +10451,377 @@ body {
     min-width:0;
   }
 }
+
+/* ===========================================================================
+   September round, on request. Kept together at the end so each rule here
+   wins over the older rule it adjusts without hunting for it.
+   ======================================================================== */
+
+/* --- Header dropdown: language + call + admin links, in one control, in
+   place of the separate call and language discs. Same navy, height and
+   shadow as the discs it replaces. */
+.header-menu {
+  position:relative;
+}
+
+.header-menu-trigger {
+  background:var(--navy);
+  color:#fff;
+  border-radius:999px;
+  align-items:center;
+  gap:7px;
+  height:46px;
+  padding:0 14px;
+  font-weight:800;
+  line-height:1;
+  display:inline-flex;
+  transition:background .2s,box-shadow .2s;
+  box-shadow:0 8px 24px #0d1b2a29;
+}
+
+.header-menu-trigger:hover,
+.header-menu.is-open .header-menu-trigger {
+  background:#152b40;
+  box-shadow:0 11px 28px #0d1b2a33;
+}
+
+.header-menu-trigger > svg:first-child {
+  color:var(--gold);
+}
+
+.header-menu-lang-en {
+  font-size:15px;
+}
+
+.header-menu-lang-ar {
+  font-size:19px;
+}
+
+.header-menu-chevron {
+  opacity:.8;
+  transition:transform .2s;
+}
+
+.header-menu.is-open .header-menu-chevron {
+  transform:rotate(180deg);
+}
+
+.header-menu-panel {
+  z-index:70;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  flex-direction:column;
+  min-width:220px;
+  padding:6px;
+  display:flex;
+  position:absolute;
+  top:calc(100% + 8px);
+  inset-inline-end:0;
+  box-shadow:0 22px 50px #0d1b2a2e;
+}
+
+/* Bridges the gap the pointer crosses between trigger and panel. */
+.header-menu-panel::before {
+  content:"";
+  height:10px;
+  position:absolute;
+  inset-inline:0;
+  top:-10px;
+}
+
+.header-menu-panel a {
+  color:var(--navy);
+  white-space:nowrap;
+  border-radius:10px;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  font-size:14px;
+  font-weight:700;
+  display:flex;
+}
+
+.header-menu-panel a svg {
+  color:var(--gold-dark);
+  flex:none;
+}
+
+.header-menu-panel a:hover {
+  background:var(--ivory);
+}
+
+@media (max-width:760px) {
+  .header-menu-trigger {
+    gap:5px;
+    height:39px;
+    padding:0 10px;
+  }
+  .header-menu-panel {
+    min-width:200px;
+  }
+}
+
+/* --- Header nav and footer: one pixel larger. */
+.main-nav a {
+  font-size:16px;
+}
+
+.footer-grid p,
+.footer-grid a,
+.footer-grid span,
+.footer-grid button,
+.footer-bottom {
+  font-size:15px;
+}
+
+.footer-grid strong {
+  font-size:16px;
+}
+
+.footer-grid a > svg {
+  color:var(--gold);
+  flex:none;
+}
+
+/* --- Property cards everywhere (Featured, All listings, exchange, the
+   listing grid, the related rail): the availability pill moves to the top
+   left, clear of the Featured badge at the top right, and the photo is 10px
+   shorter. */
+.property-image {
+  height:228px;
+}
+
+.property-status {
+  top:12px;
+  bottom:auto;
+  left:12px;
+  right:auto;
+}
+
+/* --- The chat launcher in blue rather than gold. */
+.chat-launcher {
+  background:linear-gradient(135deg,#2f6fc4,#1d4f97);
+  border-color:#4a86d4;
+  box-shadow:0 13px 34px #1d4f976b;
+}
+
+.chat-launcher:hover {
+  background:linear-gradient(135deg,#3a7bd0,#2359a6);
+  box-shadow:0 16px 38px #1d4f9780;
+}
+
+/* --- VIP slide kicker ("FOR RENT • FLOOR"): pale gold straight on the photo
+   vanished over sand and sky. It now sits on the same dark glass pill as the
+   slide's status badge, so it reads over any photograph. */
+.vip-slide-kicker {
+  color:#f1d9a0;
+  -webkit-backdrop-filter:blur(6px);
+  backdrop-filter:blur(6px);
+  background:#04101fbd;
+  border:1px solid #ffffff26;
+  border-radius:999px;
+  padding:4px 11px;
+  display:inline-block;
+  text-shadow:0 1px 2px #0009;
+}
+
+/* --- A row with fewer cards than it has room for centres itself instead of
+   hugging one edge. Auto margins only take up *spare* space, so a row that
+   overflows and scrolls is untouched. */
+.card-carousel-track > :first-child,
+.vip-carousel-track > :first-child {
+  margin-inline-start:auto;
+}
+
+.card-carousel-track > :last-child,
+.vip-carousel-track > :last-child {
+  margin-inline-end:auto;
+}
+
+/* --- Home search: every field looks like the Area field -- icon and name on
+   top, the selection under it, same height, same text. */
+.home-area-picker summary,
+.quick-filter-select summary {
+  color:var(--muted);
+  min-height:30px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.quick-filter-select summary > .area-field-chips {
+  flex:1;
+  min-width:0;
+}
+
+@media (max-width:760px) {
+  .home-area-picker summary,
+  .quick-filter-select summary {
+    font-size:15px;
+  }
+}
+
+/* Picked areas scroll sideways in one line instead of stacking down, and
+   each chip's X is a bright white disc so it can be found and pressed. */
+.area-field-chips {
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+}
+
+.area-field-chips::-webkit-scrollbar {
+  display:none;
+}
+
+.area-chip > button {
+  color:var(--gold-dark);
+  background:#fff;
+  width:17px;
+  height:17px;
+  box-shadow:0 1px 4px #0d1b2a33;
+}
+
+.area-chip > button:hover {
+  color:#fff;
+  background:var(--navy);
+}
+
+.area-chip > button svg {
+  stroke-width:3;
+}
+
+/* --- Home advert band: the office's own adverts from admin → Banners →
+   Home adverts, in place of the two static photos. Two to a row; more than
+   two scroll sideways with the same rail bar as the property rows; a single
+   advert runs the full width. */
+.home-ads {
+  margin-bottom:22px;
+}
+
+.home-ads-track {
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+  gap:18px;
+  padding-block:4px 16px;
+  display:flex;
+  overflow-x:auto;
+}
+
+.home-ads-track::-webkit-scrollbar {
+  display:none;
+}
+
+.home-ad {
+  scroll-snap-align:start;
+  background:#e9e2d2;
+  border:1px solid #c8a45d3d;
+  border-radius:18px;
+  flex:0 0 calc((100% - 18px) / 2);
+  aspect-ratio:16/7;
+  display:block;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 16px 40px #0d1b2a1f;
+}
+
+.home-ads.is-single .home-ad {
+  flex-basis:100%;
+  aspect-ratio:16/5;
+}
+
+.home-ad img {
+  object-fit:cover;
+  width:100%;
+  height:100%;
+  transition:transform .45s;
+}
+
+a.home-ad:hover img {
+  transform:scale(1.04);
+}
+
+@media (max-width:639px) {
+  .home-ad {
+    flex-basis:88%;
+  }
+  .home-ads.is-single .home-ad {
+    flex-basis:100%;
+    aspect-ratio:16/7;
+  }
+}
+
+/* --- Home "For exchange" row, after All listings, spaced like Featured. */
+.home-all-properties + .home-exchange-section {
+  padding-top:34px;
+}
+
+.home-exchange-section {
+  padding-bottom:24px;
+}
+
+/* --- Map: a pin on every property, with its price shown on hover (and on
+   the selected pin), in place of a price label on every one. MapLibre
+   positions `.map-marker`; the pin inside it is free to lift and scale. */
+.map-marker {
+  cursor:pointer;
+}
+
+.map-marker .map-pin {
+  color:var(--gold-dark);
+  box-shadow:none;
+  background:none;
+  border:0;
+  border-radius:0;
+  padding:0;
+  display:block;
+  position:relative;
+  transform:none;
+  filter:drop-shadow(0 6px 10px #0d1b2a59);
+  transition:transform .18s,color .18s;
+}
+
+.map-marker .map-pin svg {
+  color:inherit;
+  width:34px;
+  height:34px;
+  display:block;
+}
+
+.map-marker .map-pin:hover,
+.map-marker .map-pin:focus-visible,
+.map-marker .map-pin.is-active {
+  color:var(--navy);
+  background:none;
+  transform:translateY(-3px) scale(1.12);
+}
+
+.map-marker .map-pin:hover svg,
+.map-marker .map-pin.is-active svg {
+  color:inherit;
+}
+
+.map-pin-price {
+  color:#fff;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  background:var(--navy);
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:12px;
+  font-weight:800;
+  transition:opacity .15s;
+  position:absolute;
+  bottom:calc(100% + 6px);
+  left:50%;
+  transform:translateX(-50%);
+  box-shadow:0 8px 20px #0d1b2a47;
+}
+
+.map-marker .map-pin:hover .map-pin-price,
+.map-marker .map-pin:focus-visible .map-pin-price,
+.map-marker .map-pin.is-active .map-pin-price {
+  opacity:1;
+}

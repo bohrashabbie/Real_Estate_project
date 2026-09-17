@@ -15,7 +15,7 @@ router = APIRouter()
 @router.get("")
 def list_properties(
     q: str | None = None,
-    purpose: str | None = Query(None, pattern="^(rent|sale)$"),
+    purpose: str | None = Query(None, pattern="^(rent|sale|exchange)$"),
     status_: str | None = Query(None, alias="status", pattern="^(available|rented|sold|reserved)$"),
     type_id: int | None = None,
     area_id: int | None = None,

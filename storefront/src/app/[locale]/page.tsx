@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Crown, KeyRound, Star, Tag } from "lucide-react";
+import { Crown, KeyRound, Repeat2, Star, Tag } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -11,24 +11,20 @@ import {
   getPropertyTypes,
   getSettings,
   getVipProperties,
-  mediaUrl,
   siteText,
 } from "@/lib/api";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import { VipCarousel } from "@/components/home/vip-carousel";
-import {
-  ContactBand,
-  PropertyTypeGrid,
-  SectionHeading,
-} from "@/components/home/sections";
+import { PropertyTypeGrid, SectionHeading } from "@/components/home/sections";
 import { FooterSearch } from "@/components/home/footer-search";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 
 /**
  * The front page, in the reference's order: campaign hero, quick search,
- * the office's picks, the property types, everything else, the request nudge,
- * the WhatsApp band.
+ * the office's picks, the property types and adverts, everything else, the
+ * exchange listings, the search-again cards. The WhatsApp band and footer
+ * come from the layout.
  *
  * Every read is a `safeGet`, so an API that is down or a `next build` running
  * without one still produces a page — the grids simply come back empty and
@@ -40,9 +36,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const typedLocale = locale as Locale;
   const t = await getTranslations();
 
-  const [settings, banners, areas, types, vip, featured, all] = await Promise.all([
+  const [settings, banners, ads, areas, types, vip, featured, all, exchange] = await Promise.all([
     getSettings(),
     getBanners(typedLocale),
+    getBanners(typedLocale, "home_ad"),
     getAreas(typedLocale),
     getPropertyTypes(typedLocale),
     getVipProperties(typedLocale),
@@ -53,39 +50,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     // nothing, which is exactly backwards for the one row meant to catch
     // everything the two curated rows above it didn't.
     getProperties(typedLocale, { limit: 24 }),
+    getProperties(typedLocale, { purpose: "exchange", limit: 12 }),
   ]);
 
   // "All listings" means the newest of what is left — it has to clear
   // everything already promoted above it (VIP and every Featured pick, not
   // just the first page of the Featured carousel), or the same card can
-  // appear twice on the front page.
+  // appear twice on the front page. Exchange listings have their own row
+  // below, so they are cleared from this one for the same reason.
   const promotedIds = new Set([...vip, ...featured].map((property) => property.id));
-  const latest = all.items.filter((property) => !promotedIds.has(property.id));
-
-  // The pair of photographs standing over the type row: a villa and
-  // something tall. Taken from the catalogue rather than shipped as
-  // artwork, so the office never advertises a building it doesn't have.
-  // Searched across everything fetched, not just `latest` -- a villa that
-  // happens to be this week's VIP pick is still the best villa to show.
-  const shotFor = (keys: string[]) => {
-    for (const key of keys) {
-      const match = all.items.find(
-        (property) => property.type.key === key && property.main_image,
-      );
-      if (match) {
-        return {
-          href: `/properties?type=${match.type.key}`,
-          image: mediaUrl(match.main_image)!,
-          label: match.type.name,
-        };
-      }
-    }
-    return null;
-  };
-  const typeShots = [
-    shotFor(["villa", "chalet"]),
-    shotFor(["apartment", "building", "floor", "office"]),
-  ].filter((shot): shot is NonNullable<typeof shot> => shot !== null);
+  const latest = all.items.filter(
+    (property) => !promotedIds.has(property.id) && property.purpose !== "exchange",
+  );
 
   return (
     <>
@@ -149,7 +125,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      <PropertyTypeGrid types={types} settings={settings} locale={typedLocale} shots={typeShots} />
+      <PropertyTypeGrid types={types} settings={settings} locale={typedLocale} ads={ads} />
 
       {latest.length > 0 ? (
         <section className="section properties-section home-all-properties" id="all-properties">
@@ -195,12 +171,34 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      {/* ContactBand is last so it lands directly above <Footer> (which
-          layout.tsx renders after the page): the search-again cards answer
-          the listings above them, and the WhatsApp band is the last word
-          before the footer. */}
+      {/* Listings offered for exchange, after All listings, on request --
+          built exactly like Featured: a mark for a badge, and the button
+          that opens the full For exchange page under it. */}
+      {exchange.items.length > 0 ? (
+        <section className="section properties-section home-exchange-section" id="exchange-properties">
+          <div className="container">
+            <SectionHeading
+              stackAction
+              badge={
+                <span className="section-badge" aria-label={t("home.exchangeTitle")}>
+                  <i>
+                    <Repeat2 size={19} />
+                  </i>
+                </span>
+              }
+              action={
+                <Link className="button button-showcase" href="/properties?purpose=exchange">
+                  <Repeat2 size={15} />
+                  {t("home.exchangeCta")}
+                </Link>
+              }
+            />
+            <PropertyCarousel properties={exchange.items} locale={typedLocale} />
+          </div>
+        </section>
+      ) : null}
+
       <FooterSearch areas={areas} types={types} locale={typedLocale} />
-      <ContactBand settings={settings} />
     </>
   );
 }

@@ -427,6 +427,7 @@ export function QuickSearch({
   locale,
   initial,
   variant = "home",
+  action = "/properties",
 }: {
   areas: Area[];
   types: PropertyType[];
@@ -439,6 +440,10 @@ export function QuickSearch({
     priceMax?: string;
   };
   variant?: "home" | "properties";
+  /** Where a search goes: the listing page, or `/map` when the bar sits on
+   *  the map page and should filter the pins instead. The shortcut links
+   *  follow it too. */
+  action?: string;
 }) {
   const t = useTranslations();
   const router = useRouter();
@@ -484,7 +489,7 @@ export function QuickSearch({
     if (low) params.set("price_min", low);
     if (high) params.set("price_max", high);
     const query = params.toString();
-    router.push(query ? `/properties?${query}` : "/properties");
+    router.push(query ? `${action}?${query}` : action);
   }
 
   return (
@@ -534,6 +539,7 @@ export function QuickSearch({
               { value: "", label: t("quickSearch.allPurposes") },
               { value: "sale", label: t("purpose.sale") },
               { value: "rent", label: t("purpose.rent") },
+              { value: "exchange", label: t("purpose.exchange") },
             ]}
           />
 
@@ -560,19 +566,23 @@ export function QuickSearch({
             (a bed for "chalet", a magnifying glass for "other") reads as
             more different from its neighbours than it should. */}
         <nav className="home-quick-links" aria-label={t("quickSearch.shortcutsAria")}>
-          <Link href="/properties?purpose=sale">
+          <Link href={`${action}?purpose=sale`}>
             <Tag size={14} />
             {t("quickSearch.shortcut.sale")}
           </Link>
           {types.map((type) => (
-            <Link key={type.key} href={`/properties?type=${type.key}`}>
+            <Link key={type.key} href={`${action}?type=${type.key}`}>
               <Building2 size={14} />
               {type.name}
             </Link>
           ))}
-          <Link href="/properties?purpose=rent">
+          <Link href={`${action}?purpose=rent`}>
             <KeyRound size={14} />
             {t("quickSearch.shortcut.rent")}
+          </Link>
+          <Link href={`${action}?purpose=exchange`}>
+            <Repeat2 size={14} />
+            {t("quickSearch.shortcut.exchange")}
           </Link>
         </nav>
 

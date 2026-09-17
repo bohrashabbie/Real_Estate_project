@@ -12,6 +12,7 @@ export type NavIcon =
   | "house"
   | "tag"
   | "keyRound"
+  | "repeat"
   | "star"
   | "mapPinned"
   | "sparkles"
@@ -31,6 +32,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/", key: "home", icon: "house" },
   { href: "/properties?purpose=sale", key: "sale", icon: "tag" },
   { href: "/properties?purpose=rent", key: "rent", icon: "keyRound" },
+  { href: "/properties?purpose=exchange", key: "exchange", icon: "repeat" },
   { href: "/properties?featured=1", key: "featured", icon: "star", accent: true },
   { href: "/map", key: "map", icon: "mapPinned" },
   { href: "/smart-search", key: "smartSearch", icon: "sparkles", accent: true },

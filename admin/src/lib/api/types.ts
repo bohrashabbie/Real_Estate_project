@@ -283,7 +283,7 @@ export type PropertyMediaUpdate = {
 /* Properties                                                                  */
 /* -------------------------------------------------------------------------- */
 
-export type PropertyPurpose = "rent" | "sale"
+export type PropertyPurpose = "rent" | "sale" | "exchange"
 export type PropertyStatus = "available" | "rented" | "sold" | "reserved"
 
 export type PropertyOut = {
@@ -526,11 +526,16 @@ export type BannerTranslationOut = {
   image_url: string | null
 }
 
+/** "hero" = the home-page slider; "home_ad" = the advert band under the
+ *  property types. */
+export type BannerPlacement = "hero" | "home_ad"
+
 export type BannerOut = {
   id: number
   media_id: number
   image_url: string | null
   href: string | null
+  placement: BannerPlacement
   sort_order: number
   is_active: boolean
   starts_at: string | null
@@ -544,6 +549,7 @@ export type BannerOut = {
 
 export type BannerCreate = {
   media_id: number
+  placement?: BannerPlacement
   href?: string | null
   sort_order?: number
   is_active?: boolean
@@ -554,6 +560,7 @@ export type BannerCreate = {
 
 export type BannerUpdate = {
   media_id?: number | null
+  placement?: BannerPlacement | null
   href?: string | null
   sort_order?: number | null
   is_active?: boolean | null

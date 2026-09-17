@@ -7,6 +7,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BrandIntro } from "@/components/layout/brand-intro";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { ContactBand } from "@/components/home/sections";
 import { ContactFloats } from "@/components/layout/contact-floats";
 import { ChatLauncher } from "@/components/layout/chat-launcher";
 import { CompareBar } from "@/components/property/compare-bar";
@@ -79,6 +80,10 @@ export default async function LocaleLayout({
             <main>
               <Header settings={settings} />
               {children}
+              {/* The gold WhatsApp strip closes every page now, on request,
+                  not only the home page -- so it lives here, directly above
+                  the footer, rather than in each page. */}
+              <ContactBand settings={settings} />
               <Footer settings={settings} locale={typedLocale} />
             </main>
             {/* One rail, not two opposite corners: the launcher and the three
