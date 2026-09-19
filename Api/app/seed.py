@@ -310,8 +310,8 @@ AMENITIES: list[tuple[str, str, str]] = [
 ]
 
 SETTINGS: list[tuple[str, str]] = [
-    ("site.phone", "+965 22405060"),
-    ("site.whatsapp", "+965 99887766"),
+    ("site.phone", "+965 97711779"),
+    ("site.whatsapp", "+965 99310022"),
     ("site.email", "info@kwt25.com"),
     ("site.instagram", "kwt25_realestate"),
     ("site.x", "kwt25_realestate"),
