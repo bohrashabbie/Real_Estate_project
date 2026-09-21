@@ -28,6 +28,7 @@ import {
 import { formatPrice, formatSqm, telLink, waLink } from "@/lib/format";
 import { kuwaitFinderUrl } from "@/lib/kuwait-finder";
 import { InquiryForm } from "@/components/property/inquiry-form";
+import { PropertyGallery } from "@/components/property/property-gallery";
 import { PropertyMap } from "@/components/property/property-map";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 
@@ -86,12 +87,23 @@ export default async function PropertyDetailPage({
     getProperties(typedLocale, { area: property.area.slug, limit: 16 }),
   ]);
 
-  const images = property.images.length > 0 ? property.images : [];
-  const primary = mediaUrl(images.find((image) => image.is_main)?.url ?? property.main_image);
-  const side = images
-    .filter((image) => !image.is_main)
-    .slice(0, 2)
-    .map((image) => ({ url: mediaUrl(image.url), alt: image.alt }));
+  // Every photo, main one first, in the office's order after it -- the
+  // gallery shows three and opens all of them full size.
+  const mainImage = property.images.find((image) => image.is_main);
+  const ordered = [
+    ...(mainImage ? [mainImage] : []),
+    ...property.images.filter((image) => !image.is_main),
+  ];
+  const gallery = ordered.flatMap((image, index) => {
+    const url = mediaUrl(image.url);
+    return url
+      ? [{ url, alt: image.alt || `${property.title} ${index + 1}` }]
+      : [];
+  });
+  const fallback = mediaUrl(property.main_image);
+  if (gallery.length === 0 && fallback) {
+    gallery.push({ url: fallback, alt: t("card.imageAlt", { title: property.title }) });
+  }
 
   const sqm = formatSqm(property.area_sqm);
   const latitude = coordinate(property.latitude);
@@ -123,24 +135,7 @@ export default async function PropertyDetailPage({
         <b>{property.title}</b>
       </div>
 
-      {primary ? (
-        <section className="container property-gallery">
-          <div className="gallery-primary">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={primary} alt={t("card.imageAlt", { title: property.title })} />
-          </div>
-          {side.length > 0 ? (
-            <div className="gallery-side">
-              {side.map((image, index) =>
-                image.url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={image.url} src={image.url} alt={image.alt ?? `${property.title} ${index + 2}`} />
-                ) : null,
-              )}
-            </div>
-          ) : null}
-        </section>
-      ) : null}
+      <PropertyGallery images={gallery} />
 
       <section className="container property-main-grid">
         <div>

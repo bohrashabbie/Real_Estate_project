@@ -398,5 +398,12 @@
   },
   "carousel": {
     "scrollAria": "Scroll the row"
+  },
+  "gallery": {
+    "open": "Open photo {n} of {total}",
+    "viewer": "Photo viewer",
+    "close": "Close",
+    "previous": "Previous photo",
+    "next": "Next photo"
   }
 }
