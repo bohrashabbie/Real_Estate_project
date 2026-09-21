@@ -53,6 +53,9 @@ export interface SiteSettings {
   /** Extra links under the header dropdown's built-in language and call
    *  entries (`site.header_menu`). Null until the office saves one. */
   header_menu: HeaderMenuLink[] | null;
+  /** ISO time any public setting last changed. The sitemap uses it as a
+   *  floor for every page's lastModified, since every page shows them. */
+  updated_at: string | null;
   // Page copy the office can edit from the admin's Settings screen without a
   // deploy — one `site.<field>_<locale>` setting per string, not a
   // translations table (see SPEC.md). Every one of these is optional: null
@@ -108,6 +111,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   name_ar: "kwt25",
   name_en: "kwt25",
   header_menu: null,
+  updated_at: null,
   footer_blurb_ar: null,
   footer_blurb_en: null,
   footer_tagline_ar: null,

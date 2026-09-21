@@ -115,6 +115,12 @@ def public_settings(db: Session) -> dict:
     out = {alias: None for alias in PUBLIC_SETTING_KEYS.values()}
     for row in rows:
         out[PUBLIC_SETTING_KEYS[row.key]] = row.value
+    # When any public setting last changed. Every page carries the header and
+    # footer these feed (phone, WhatsApp, email), so the storefront's sitemap
+    # uses it as a floor for every page's lastModified -- a new phone number
+    # is a change to every page, and search engines should be told so.
+    stamps = [row.updated_at for row in rows if row.updated_at is not None]
+    out["updated_at"] = max(stamps).isoformat() if stamps else None
     return out
 
 
