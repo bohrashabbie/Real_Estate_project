@@ -15,6 +15,7 @@ import { QueryProvider } from "@/providers/query-provider";
 import { getSettings } from "@/lib/api";
 import { fontVariables } from "@/lib/fonts";
 import { SITE_URL } from "@/lib/site";
+import { officeStructuredData } from "@/lib/structured-data";
 import { localeAlternates, localeDirection, routing, type Locale } from "@/i18n/routing";
 import "../globals.css";
 
@@ -74,6 +75,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={localeDirection[typedLocale]} className={fontVariables}>
       <body>
+        {/* The office's own contact details, machine-readable, on every page:
+            the one authoritative answer to "what is kwt25's number" for
+            search engines and AI answers, straight from admin Settings. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(officeStructuredData(settings, typedLocale)),
+          }}
+        />
         <NextIntlClientProvider>
           <QueryProvider>
             <BrandIntro />

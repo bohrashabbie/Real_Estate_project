@@ -4,18 +4,11 @@ import { Mail, Phone } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { siteText, type SiteSettings } from "@/lib/api";
 import { formatPhone, telLink, waLink } from "@/lib/format";
+import { socialUrl } from "@/lib/structured-data";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { SnapchatIcon } from "@/components/ui/snapchat-icon";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import type { Locale } from "@/i18n/routing";
-
-/** `w91111`, `@w91111` and a full profile URL all end up as one link. */
-function socialUrl(base: string, handle: string | null | undefined): string | null {
-  const value = handle?.trim();
-  if (!value) return null;
-  if (/^https?:\/\//.test(value)) return value;
-  return `${base}${value.replace(/^@/, "")}`;
-}
 
 export async function Footer({ settings, locale }: { settings: SiteSettings; locale: Locale }) {
   const t = await getTranslations();
