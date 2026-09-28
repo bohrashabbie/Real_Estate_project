@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
 
@@ -9,6 +9,13 @@ import { mediaUrl, siteText, type Banner, type SiteSettings } from "@/lib/api";
 import type { Locale } from "@/i18n/routing";
 
 const INTERVAL = 6500;
+
+/** The artwork hero's box (`.launch-hero.is-artwork` in globals.css). */
+const HERO_RATIO = 2.8;
+/** How far off that shape a banner can be and still fill the box. The
+ *  office's 3:1 artwork is ~7% off and fills it, as it always has; a square
+ *  flyer is ~64% off and is shown whole instead of cropped to a strip. */
+const SHAPE_TOLERANCE = 0.15;
 
 /**
  * The campaign hero: cross-fading frames behind a fixed headline.
@@ -88,16 +95,49 @@ export function LaunchHero({
 
   const href = officeArtwork ? published[index]?.href : null;
 
-  const frames = slides.map((src, i) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      key={`${i}-${src}`}
-      className={`hero-slide-image${i === index ? " is-active" : ""}`}
-      src={src}
-      alt={i === index ? alts[i] : ""}
-      fetchPriority={i === 0 ? "high" : "low"}
-    />
-  ));
+  // Banners that don't match the hero's shape are shown whole instead of
+  // cropped. Measured from each image once it loads; until then every slide
+  // assumes it fits, which is true of the office's usual 3:1 artwork.
+  const [contained, setContained] = useState<Record<number, boolean>>({});
+  const measure = (i: number) => (event: SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = event.currentTarget;
+    if (!naturalWidth || !naturalHeight) return;
+    const offShape = Math.abs(naturalWidth / naturalHeight / HERO_RATIO - 1) > SHAPE_TOLERANCE;
+    setContained((current) => (current[i] === offShape ? current : { ...current, [i]: offShape }));
+  };
+
+  const frames = officeArtwork
+    ? slides.map((src, i) => (
+        <div
+          key={`${i}-${src}`}
+          className={`hero-artwork-frame${i === index ? " is-active" : ""}${
+            contained[i] ? " is-contained" : ""
+          }`}
+        >
+          {/* A blurred, darkened copy fills the space around a banner shown
+              whole, so an off-shape upload reads as framed, not broken. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="hero-artwork-backdrop" src={src} alt="" aria-hidden />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="hero-artwork-image"
+            src={src}
+            alt={i === index ? alts[i] : ""}
+            fetchPriority={i === 0 ? "high" : "low"}
+            onLoad={measure(i)}
+          />
+        </div>
+      ))
+    : slides.map((src, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={`${i}-${src}`}
+          className={`hero-slide-image${i === index ? " is-active" : ""}`}
+          src={src}
+          alt={i === index ? alts[i] : ""}
+          fetchPriority={i === 0 ? "high" : "low"}
+        />
+      ));
 
   return (
     <section className={`launch-hero${officeArtwork ? " is-artwork" : ""}`}>
