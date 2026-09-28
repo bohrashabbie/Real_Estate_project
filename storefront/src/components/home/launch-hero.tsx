@@ -99,11 +99,18 @@ export function LaunchHero({
   // cropped. Measured from each image once it loads; until then every slide
   // assumes it fits, which is true of the office's usual 3:1 artwork.
   const [contained, setContained] = useState<Record<number, boolean>>({});
-  const measure = (i: number) => (event: SyntheticEvent<HTMLImageElement>) => {
-    const { naturalWidth, naturalHeight } = event.currentTarget;
+  const measureImage = useCallback((i: number, image: HTMLImageElement) => {
+    const { naturalWidth, naturalHeight } = image;
     if (!naturalWidth || !naturalHeight) return;
     const offShape = Math.abs(naturalWidth / naturalHeight / HERO_RATIO - 1) > SHAPE_TOLERANCE;
     setContained((current) => (current[i] === offShape ? current : { ...current, [i]: offShape }));
+  }, []);
+  const measure = (i: number) => (event: SyntheticEvent<HTMLImageElement>) =>
+    measureImage(i, event.currentTarget);
+  // An image that finished loading before the page hydrated never fires
+  // `onLoad` for React, so it is measured on mount as well.
+  const measureIfLoaded = (i: number) => (image: HTMLImageElement | null) => {
+    if (image?.complete) measureImage(i, image);
   };
 
   const frames = officeArtwork
@@ -124,6 +131,7 @@ export function LaunchHero({
             src={src}
             alt={i === index ? alts[i] : ""}
             fetchPriority={i === 0 ? "high" : "low"}
+            ref={measureIfLoaded(i)}
             onLoad={measure(i)}
           />
         </div>

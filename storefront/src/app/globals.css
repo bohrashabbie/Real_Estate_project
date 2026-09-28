@@ -9978,10 +9978,14 @@ body {
    isn't -- a square flyer uploaded as the 4th slide, say -- used to be
    cropped to a thin strip through its middle; it is now shown whole,
    centred, over a blurred and darkened copy of itself. */
+/* Laid over the box, not in its flow: as grid items the frames sized the row
+   from each image's own height, which stretched the hero taller than 2.8:1
+   and zoomed the artwork into the extra height. Absolute, the box's
+   aspect-ratio alone decides the height. */
 .hero-artwork-frame {
   opacity: 0;
-  grid-area: 1 / 1;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   transition: opacity .7s;
 }
