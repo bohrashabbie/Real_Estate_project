@@ -1,5 +1,6 @@
 import { api, apiUpload } from "./client"
 import type {
+  GeocodeResult,
   AmenityCreate,
   AmenityOut,
   AmenityUpdate,
@@ -172,6 +173,22 @@ export const amenitiesApi = {
 /* -------------------------------------------------------------------------- */
 /* Properties                                                                  */
 /* -------------------------------------------------------------------------- */
+
+/** Address -> map pin for the property form (OpenStreetMap, via the API). */
+export const geocodeApi = {
+  locate: (
+    params: { area_id: number; block?: string; address?: string },
+    signal?: AbortSignal
+  ) =>
+    api.get<GeocodeResult>("/geocode", {
+      query: {
+        area_id: params.area_id,
+        block: params.block || undefined,
+        address: params.address || undefined,
+      },
+      signal,
+    }),
+}
 
 export const propertiesApi = {
   list: (params: PropertyListParams = {}, signal?: AbortSignal) =>

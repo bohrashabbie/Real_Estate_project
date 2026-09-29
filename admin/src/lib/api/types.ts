@@ -283,6 +283,16 @@ export type PropertyMediaUpdate = {
 /* Properties                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/** GET /geocode. `precision` says what matched: a street/landmark from the
+ *  address note, the block, or only the area's centre. */
+export type GeocodeResult = {
+  found: boolean
+  precision: "address" | "block" | "area" | null
+  lat: string | null
+  lng: string | null
+  label: string | null
+}
+
 export type PropertyPurpose = "rent" | "sale" | "exchange"
 export type PropertyStatus = "available" | "rented" | "sold" | "reserved"
 

@@ -228,6 +228,14 @@
       "deleted": "Photo removed.",
       "deleteTitle": "Remove this photo?",
       "deleteDescription": "The photo will be removed from this property's gallery."
+    },
+    "geocode": {
+      "looking": "Finding the address on the map…",
+      "address": "Pin placed on: {label}",
+      "block": "Pin placed on the block: {label}",
+      "area": "That street or block isn't on the map, so the pin is at the centre of {label}. Drag it to the exact spot.",
+      "none": "That address wasn't found on the map. Click the map to place the pin.",
+      "error": "The map lookup didn't respond. Click the map to place the pin."
     }
   },
   "inquiries": {

@@ -16,11 +16,15 @@ export function LocationPicker({
   latitude,
   longitude,
   disabled,
+  focusKey = 0,
   onChange,
 }: {
   latitude: string
   longitude: string
   disabled?: boolean
+  /** Bumped by the form when it places the pin from the address, so the map
+   *  zooms to it. Dragging or typing coordinates moves the pin, not the view. */
+  focusKey?: number
   onChange: (latitude: string, longitude: string) => void
 }) {
   const container = useRef<HTMLDivElement>(null)
@@ -92,10 +96,20 @@ export function LocationPicker({
     placeMarker.current?.(lng, lat)
   }, [latitude, longitude])
 
+  useEffect(() => {
+    if (!focusKey) return
+    const lat = Number(latitude)
+    const lng = Number(longitude)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
+    map.current?.flyTo({ center: [lng, lat], zoom: 15 })
+    // Only a new geocode should move the view.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusKey])
+
   return (
     <div
       ref={container}
-      className="h-72 w-full overflow-hidden rounded-lg border border-border"
+      className="h-[500px] w-full overflow-hidden rounded-lg border border-border"
       dir="ltr"
     />
   )

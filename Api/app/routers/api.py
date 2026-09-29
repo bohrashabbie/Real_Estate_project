@@ -5,6 +5,7 @@ from app.routers import (
     audit,
     auth,
     banners,
+    geocode,
     inquiries,
     media,
     properties,
@@ -24,6 +25,7 @@ api_router.include_router(taxonomy.areas_router, prefix="/areas", tags=["taxonom
 api_router.include_router(taxonomy.property_types_router, prefix="/property-types", tags=["taxonomy"])
 api_router.include_router(taxonomy.amenities_router, prefix="/amenities", tags=["taxonomy"])
 api_router.include_router(properties.router, prefix="/properties", tags=["properties"])
+api_router.include_router(geocode.router, prefix="/geocode", tags=["properties"])
 api_router.include_router(inquiries.router, prefix="/inquiries", tags=["inquiries"])
 api_router.include_router(property_requests.router, prefix="/property-requests", tags=["property-requests"])
 api_router.include_router(media.router, prefix="/media", tags=["media"])

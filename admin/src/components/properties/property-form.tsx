@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { useLocale, useTranslations } from "next-intl"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -42,7 +43,7 @@ import {
   useAreaOptions,
   usePropertyTypeOptions,
 } from "@/hooks/use-taxonomy-options"
-import { propertiesApi } from "@/lib/api/endpoints"
+import { geocodeApi, propertiesApi } from "@/lib/api/endpoints"
 import { applyFieldErrors, isApiError } from "@/lib/api/errors"
 import { getErrorMessage } from "@/lib/api/error-message"
 import { translatedName } from "@/lib/format"
@@ -180,6 +181,51 @@ export function PropertyForm({
       translations: toPropertyTranslationForm(property?.translations),
     },
   })
+
+  // Area / block / address note -> map pin. After a pause in typing, the
+  // address is looked up (most exact first: street, block, then the area's
+  // centre) and the pin, the map view and the coordinates follow it. Only on
+  // an edit: opening a saved property never moves its stored pin, and the
+  // office can still drag it afterwards to fine-tune.
+  const [areaId, block, addressNote] = form.watch(["area_id", "block", "address_note"])
+  const lastLocated = useRef(`${areaId}|${block}|${addressNote}`)
+  const [focusKey, setFocusKey] = useState(0)
+  const [geocode, setGeocode] = useState<{
+    state: "idle" | "looking" | "address" | "block" | "area" | "none" | "error"
+    label?: string
+  }>({ state: "idle" })
+
+  useEffect(() => {
+    const key = `${areaId}|${block}|${addressNote}`
+    if (!canWrite || !areaId || key === lastLocated.current) return
+    const controller = new AbortController()
+    const timer = setTimeout(async () => {
+      lastLocated.current = key
+      setGeocode({ state: "looking" })
+      try {
+        const result = await geocodeApi.locate(
+          { area_id: Number(areaId), block: block.trim(), address: addressNote.trim() },
+          controller.signal
+        )
+        if (!result.found || !result.lat || !result.lng || !result.precision) {
+          setGeocode({ state: "none" })
+          return
+        }
+        form.setValue("latitude", result.lat, { shouldDirty: true, shouldValidate: true })
+        form.setValue("longitude", result.lng, { shouldDirty: true, shouldValidate: true })
+        setFocusKey((value) => value + 1)
+        setGeocode({ state: result.precision, label: result.label ?? "" })
+      } catch {
+        if (!controller.signal.aborted) setGeocode({ state: "error" })
+      }
+    }, 900)
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
+    // `form` is stable; the three watched values are what should trigger it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaId, block, addressNote, canWrite])
 
   function toggleAmenity(amenityId: number, checked: boolean) {
     const current = form.getValues("amenity_ids")
@@ -541,11 +587,24 @@ export function PropertyForm({
                 latitude={form.watch("latitude") ?? ""}
                 longitude={form.watch("longitude") ?? ""}
                 disabled={!canWrite}
+                focusKey={focusKey}
                 onChange={(latitude, longitude) => {
                   form.setValue("latitude", latitude, { shouldDirty: true, shouldValidate: true })
                   form.setValue("longitude", longitude, { shouldDirty: true, shouldValidate: true })
                 }}
               />
+              {geocode.state !== "idle" && (
+                <p
+                  className={
+                    geocode.state === "none" || geocode.state === "error" || geocode.state === "area"
+                      ? "text-xs text-amber-700"
+                      : "text-xs text-muted-foreground"
+                  }
+                  role="status"
+                >
+                  {t(`geocode.${geocode.state}`, { label: geocode.label ?? "" })}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
