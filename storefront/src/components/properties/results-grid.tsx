@@ -70,6 +70,14 @@ export function ResultsGrid({
     paged.current = false;
   }, [key, initial.items, initial.next_cursor]);
 
+  // A search from the bar or a shortcut chip lands here with `#results`, on
+  // request: bring the results into view once the new filter has rendered.
+  // (`#results` carries a scroll-margin, so it clears the sticky header.)
+  useEffect(() => {
+    if (window.location.hash !== "#results") return;
+    document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [key]);
+
   useEffect(() => {
     // A phone's row keeps its sideways position across renders; a new page
     // has to start back at its first card, not wherever the last one ended.

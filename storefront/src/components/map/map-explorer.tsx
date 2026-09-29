@@ -94,6 +94,13 @@ export function MapExplorer({
 
   const filterKey = JSON.stringify(filters);
 
+  // A search from the bar above lands with `#map-results`: bring the map
+  // into view once the new filter is in.
+  useEffect(() => {
+    if (window.location.hash !== "#map-results") return;
+    document.getElementById("map-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [filterKey]);
+
   const { data: properties } = useQuery({
     queryKey: ["map-properties", locale, filterKey],
     queryFn: () => fetchAll(locale, filters),

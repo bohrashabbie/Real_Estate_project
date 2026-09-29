@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
   ClipboardList,
@@ -19,7 +20,7 @@ import {
 import { Link, usePathname } from "@/i18n/navigation";
 import { NAV_ITEMS, type NavIcon } from "@/lib/nav";
 import type { SiteSettings } from "@/lib/api";
-import { HeaderMenu } from "@/components/layout/header-menu";
+import { DrawerMenuEntries, HeaderMenu } from "@/components/layout/header-menu";
 
 const ICONS: Record<NavIcon, typeof House> = {
   house: House,
@@ -31,6 +32,56 @@ const ICONS: Record<NavIcon, typeof House> = {
   sparkles: Sparkles,
   clipboardList: ClipboardList,
 };
+
+/**
+ * Whether a nav item is the page being shown, on request. The path must match,
+ * and so must every query parameter the item's own link sets -- that is what
+ * tells For sale, For rent and For exchange apart on the one /properties page.
+ * Extra filters on top (an area, a price) keep the view highlighted; a
+ * property's own page or the unfiltered list highlights nothing.
+ */
+function isCurrent(href: string, pathname: string, search: URLSearchParams): boolean {
+  const [path, query = ""] = href.split("?");
+  if (path !== pathname) return false;
+  for (const [key, value] of new URLSearchParams(query)) {
+    if (search.get(key) !== value) return false;
+  }
+  return true;
+}
+
+function NavCardsWithSearch({ pathname }: { pathname: string }) {
+  return <NavCards pathname={pathname} search={useSearchParams().toString()} />;
+}
+
+function NavCards({ pathname, search }: { pathname: string; search: string }) {
+  const t = useTranslations();
+  const params = new URLSearchParams(search);
+  return (
+    <>
+      {NAV_ITEMS.map((item) => {
+        const Icon = ICONS[item.icon];
+        const current = isCurrent(item.href, pathname, params);
+        return (
+          <Link
+            key={item.key}
+            className={`nav-card${item.accent ? " nav-card-accent" : ""}${current ? " is-current" : ""}`}
+            href={item.href}
+            aria-current={current ? "page" : undefined}
+          >
+            <span className="nav-card-icon">
+              <Icon size={19} />
+            </span>
+            <span className="nav-card-copy">
+              <b>{t(`nav.${item.key}`)}</b>
+              <small>{t(`nav.${item.key}Sub`)}</small>
+            </span>
+            <ArrowLeft size={17} className="nav-card-arrow" />
+          </Link>
+        );
+      })}
+    </>
+  );
+}
 
 /**
  * One nav, two shapes.
@@ -100,25 +151,14 @@ export function Header({ settings }: { settings: SiteSettings }) {
               </button>
             </div>
 
-            {NAV_ITEMS.map((item) => {
-              const Icon = ICONS[item.icon];
-              return (
-                <Link
-                  key={item.key}
-                  className={`nav-card${item.accent ? " nav-card-accent" : ""}`}
-                  href={item.href}
-                >
-                  <span className="nav-card-icon">
-                    <Icon size={19} />
-                  </span>
-                  <span className="nav-card-copy">
-                    <b>{t(`nav.${item.key}`)}</b>
-                    <small>{t(`nav.${item.key}Sub`)}</small>
-                  </span>
-                  <ArrowLeft size={17} className="nav-card-arrow" />
-                </Link>
-              );
-            })}
+            <Suspense fallback={<NavCards pathname={pathname} search="" />}>
+              <NavCardsWithSearch pathname={pathname} />
+            </Suspense>
+
+            {/* The header dropdown's entries (language, phone, the office's
+                own links), shown here only in drawer mode -- see
+                DrawerMenuEntries. */}
+            <DrawerMenuEntries settings={settings} />
           </nav>
 
           <div className="nav-actions">

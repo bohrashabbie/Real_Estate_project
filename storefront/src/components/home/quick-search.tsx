@@ -104,10 +104,14 @@ export function Menu({
   options,
   onPick,
   onToggle,
+  onClose,
   detailsName,
 }: {
   label: string;
   icon: React.ReactNode;
+  /** Called when the menu closes -- which is when the search bar applies
+   *  what was picked, so ticking several types is one search, not several. */
+  onClose?: () => void;
   /** Single-pick mode: the chosen value, "" meaning "all". */
   value?: string;
   /** Multi-pick mode: every chosen value. Passing this switches the field
@@ -141,7 +145,13 @@ export function Menu({
         {icon}
         <b>{label}</b>
       </span>
-      <details ref={ref} name={detailsName}>
+      <details
+        ref={ref}
+        name={detailsName}
+        onToggle={(event) => {
+          if (!event.currentTarget.open) onClose?.();
+        }}
+      >
         <summary>
           {/* Gold chip once something other than "all" is picked, same
               treatment as the area field's chips — "this is selected"
@@ -245,12 +255,15 @@ export function AreaField({
   locale,
   idPrefix,
   detailsName,
+  onClose,
 }: {
   areas: Area[];
   area: string[];
   onChange: (value: string[]) => void;
   locale: Locale;
   idPrefix: string;
+  /** See `Menu`'s own doc on this prop. */
+  onClose?: () => void;
   /** See `Menu`'s own doc on this prop — same shared-group mechanism. Area
    *  still doesn't close itself on a pick (it's multi-select; that's what
    *  the "done" button is for) but it does close when a sibling field
@@ -271,7 +284,13 @@ export function AreaField({
         <MapPin size={14} />
         <b>{t("quickSearch.area")}</b>
       </span>
-      <details ref={details} name={detailsName}>
+      <details
+        ref={details}
+        name={detailsName}
+        onToggle={(event) => {
+          if (!event.currentTarget.open) onClose?.();
+        }}
+      >
         <summary>
           {selectedAreas.length === 0 ? (
             <span>{t("picker.allAreas")}</span>
@@ -345,12 +364,14 @@ function PriceField({
   onMin,
   onMax,
   detailsName,
+  onClose,
 }: {
   min: string;
   max: string;
   onMin: (value: string) => void;
   onMax: (value: string) => void;
   detailsName?: string;
+  onClose?: () => void;
 }) {
   const t = useTranslations();
   const ref = useRef<HTMLDetailsElement>(null);
@@ -377,7 +398,13 @@ function PriceField({
         <Wallet size={14} />
         <b>{t("quickSearch.price")}</b>
       </span>
-      <details ref={ref} name={detailsName}>
+      <details
+        ref={ref}
+        name={detailsName}
+        onToggle={(event) => {
+          if (!event.currentTarget.open) onClose?.();
+        }}
+      >
         <summary>
           <span className={min || max ? "area-chip" : undefined}>{summary}</span>
           <ChevronDown size={14} />
@@ -467,11 +494,29 @@ export function QuickSearch({
     setPurpose(initial?.purpose ?? "");
     setPriceMin(initial?.priceMin ?? "");
     setPriceMax(initial?.priceMax ?? "");
+    // The page now shows this search -- a chip link or the back button got
+    // here -- so it is what the next close compares against.
+    applied.current = queryFor({
+      area: initial?.area ?? [],
+      type: initial?.type ?? [],
+      purpose: initial?.purpose ?? "",
+      priceMin: initial?.priceMin ?? "",
+      priceMax: initial?.priceMax ?? "",
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialAreaKey, initialTypeKey, initial?.purpose, initial?.priceMin, initial?.priceMax]);
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  // Where the results are on the page this search lands on, so a search --
+  // or a shortcut chip -- scrolls straight down to them, on request.
+  const resultsAnchor = action === "/map" ? "#map-results" : "#results";
+
+  // The filters as they stand, readable from a menu's close event without a
+  // stale closure: that event fires after the pick has re-rendered.
+  const latest = useRef({ area, type, purpose, priceMin, priceMax });
+  latest.current = { area, type, purpose, priceMin, priceMax };
+
+  function queryFor(values: typeof latest.current): string {
+    const { area, type, purpose, priceMin, priceMax } = values;
     const params = new URLSearchParams();
     // One area used to mean one `area=` param; picking several now means
     // several, in URL-param order, so a shared link round-trips every one
@@ -488,8 +533,35 @@ export function QuickSearch({
     const high = priceMin && priceMax && Number(priceMin) > Number(priceMax) ? priceMin : priceMax;
     if (low) params.set("price_min", low);
     if (high) params.set("price_max", high);
-    const query = params.toString();
-    router.push(query ? `${action}?${query}` : action);
+    return params.toString();
+  }
+
+  // The search the page is currently showing. Applying the same one again is
+  // skipped, so opening a menu and leaving it untouched does not reload the
+  // page or jump it down to the results.
+  const applied = useRef(
+    queryFor({
+      area: initial?.area ?? [],
+      type: initial?.type ?? [],
+      purpose: initial?.purpose ?? "",
+      priceMin: initial?.priceMin ?? "",
+      priceMax: initial?.priceMax ?? "",
+    }),
+  );
+
+  // Filters apply by themselves, on request -- no Search press needed: the
+  // single-choice purpose as soon as it is picked, and area, type and price
+  // when their menu closes (so several can be ticked as one search).
+  function apply(force = false) {
+    const query = queryFor(latest.current);
+    if (!force && query === applied.current) return;
+    applied.current = query;
+    router.push(`${query ? `${action}?${query}` : action}${resultsAnchor}`);
+  }
+
+  function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    apply(true);
   }
 
   return (
@@ -511,6 +583,7 @@ export function QuickSearch({
             locale={locale}
             idPrefix="quick-areas"
             detailsName="quick-search-fields"
+            onClose={() => apply()}
           />
 
           <Menu
@@ -522,6 +595,7 @@ export function QuickSearch({
                 current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
               )
             }
+            onClose={() => apply()}
             detailsName="quick-search-fields"
             options={[
               { value: "", label: t("quickSearch.allTypes") },
@@ -534,6 +608,7 @@ export function QuickSearch({
             icon={<Repeat2 size={14} />}
             value={purpose}
             onPick={setPurpose}
+            onClose={() => apply()}
             detailsName="quick-search-fields"
             options={[
               { value: "", label: t("quickSearch.allPurposes") },
@@ -549,6 +624,7 @@ export function QuickSearch({
             onMin={setPriceMin}
             onMax={setPriceMax}
             detailsName="quick-search-fields"
+            onClose={() => apply()}
           />
 
           <button className="button button-dark" type="submit">
@@ -565,25 +641,50 @@ export function QuickSearch({
             reader is scanning names, and a mismatched pictogram per type
             (a bed for "chalet", a magnifying glass for "other") reads as
             more different from its neighbours than it should. */}
+        {/* The three purposes stay put and the property types scroll beside
+            them, on request -- the purposes are the first question anyone
+            arrives with and should never scroll out of reach. The chip for
+            the view being shown is marked as selected, and every chip lands
+            on the results rather than the top of the page. */}
         <nav className="home-quick-links" aria-label={t("quickSearch.shortcutsAria")}>
-          <Link href={`${action}?purpose=sale`}>
-            <Tag size={14} />
-            {t("quickSearch.shortcut.sale")}
-          </Link>
-          {types.map((type) => (
-            <Link key={type.key} href={`${action}?type=${type.key}`}>
-              <Building2 size={14} />
-              {type.name}
-            </Link>
-          ))}
-          <Link href={`${action}?purpose=rent`}>
-            <KeyRound size={14} />
-            {t("quickSearch.shortcut.rent")}
-          </Link>
-          <Link href={`${action}?purpose=exchange`}>
-            <Repeat2 size={14} />
-            {t("quickSearch.shortcut.exchange")}
-          </Link>
+          <div className="quick-links-fixed">
+            {(
+              [
+                ["sale", <Tag key="i" size={14} />],
+                ["rent", <KeyRound key="i" size={14} />],
+                ["exchange", <Repeat2 key="i" size={14} />],
+              ] as const
+            ).map(([value, icon]) => {
+              const current = initial?.purpose === value;
+              return (
+                <Link
+                  key={value}
+                  href={`${action}?purpose=${value}${resultsAnchor}`}
+                  className={current ? "is-current" : undefined}
+                  aria-current={current ? "page" : undefined}
+                >
+                  {icon}
+                  {t(`quickSearch.shortcut.${value}`)}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="quick-links-scroll">
+            {types.map((type) => {
+              const current = Boolean(initial?.type?.includes(type.key));
+              return (
+                <Link
+                  key={type.key}
+                  href={`${action}?type=${type.key}${resultsAnchor}`}
+                  className={current ? "is-current" : undefined}
+                  aria-current={current ? "page" : undefined}
+                >
+                  <Building2 size={14} />
+                  {type.name}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
         {/* The office's advert rail. It lives inside this section rather than

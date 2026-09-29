@@ -75,7 +75,7 @@ export default async function MapPage({
         initial={{ area, type, purpose, priceMin, priceMax }}
       />
 
-      <section className="section map-browser">
+      <section className="section map-browser" id="map-results">
         <div className="container">
           <MapExplorer locale={typedLocale} filters={filters} />
         </div>

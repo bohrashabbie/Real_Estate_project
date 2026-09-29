@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronDown, ExternalLink, Languages, Link2, Phone } from "lucide-react";
+import { ArrowLeft, ExternalLink, Languages, Link2, Menu, Phone } from "lucide-react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -11,51 +11,62 @@ import type { SiteSettings } from "@/lib/api";
 import { formatPhone, telLink } from "@/lib/format";
 
 /**
- * The header's one dropdown, on request, in place of the separate call disc
- * and language disc that used to sit at the end of the header.
+ * The header's contact-and-language menu: the other language, the office's
+ * phone number, and every link the office adds under admin Settings → Header
+ * dropdown (`site.header_menu`).
  *
- * Two entries are built in and always there -- the other language, and the
- * office's phone number -- and every link the office adds under admin
- * Settings → Header dropdown (`site.header_menu`) is listed beneath them.
+ * Two shapes from one list, so they can never disagree:
  *
- * Opens on hover where hovering is a real gesture, and on tap everywhere --
- * the same split the quick-search fields use, for the same reason: on a touch
- * screen "hover" fires on the tap meant to open it and never fires again to
- * close it.
+ *   desktop  a three-line disc at the end of the header that opens a
+ *            dropdown on hover (or tap).
+ *   phone    the same entries as extra cards at the foot of the navigation
+ *            drawer. The drawer already has its own three-line button, and
+ *            two identical buttons side by side would be a guessing game --
+ *            so below the drawer handover the disc steps aside
+ *            (`.header-menu` in globals.css).
  *
  * The language entry keeps the query string, so switching language on
  * "For sale" stays on "For sale". `useSearchParams` sits behind a Suspense
  * boundary so statically rendered pages still build; until it resolves the
  * entry keeps the path alone.
  */
+function useMenuEntries(settings: SiteSettings, search: string) {
+  const locale = useLocale() as Locale;
+  const pathname = usePathname();
+  const next: Locale = locale === "ar" ? "en" : "ar";
+  const phone = settings.phone?.trim();
+  const extras = (Array.isArray(settings.header_menu) ? settings.header_menu : []).flatMap((item) => {
+    const href = item?.href?.trim();
+    const label = (locale === "ar" ? item?.label_ar || item?.label_en : item?.label_en || item?.label_ar)?.trim();
+    return href && label ? [{ href, label, external: /^https?:\/\//.test(href) }] : [];
+  });
+  return {
+    next,
+    pathname,
+    languageHref: search ? `${pathname}?${search}` : pathname,
+    languageName: next === "en" ? "English" : "العربية",
+    phone,
+    extras,
+  };
+}
+
 export function HeaderMenu({ settings }: { settings: SiteSettings }) {
   return (
-    <Suspense fallback={<Menu settings={settings} search="" />}>
-      <MenuWithSearch settings={settings} />
+    <Suspense fallback={<Dropdown settings={settings} search="" />}>
+      <DropdownWithSearch settings={settings} />
     </Suspense>
   );
 }
 
-function MenuWithSearch({ settings }: { settings: SiteSettings }) {
-  return <Menu settings={settings} search={useSearchParams().toString()} />;
+function DropdownWithSearch({ settings }: { settings: SiteSettings }) {
+  return <Dropdown settings={settings} search={useSearchParams().toString()} />;
 }
 
-function Menu({ settings, search }: { settings: SiteSettings; search: string }) {
-  const locale = useLocale() as Locale;
-  const pathname = usePathname();
+function Dropdown({ settings, search }: { settings: SiteSettings; search: string }) {
   const t = useTranslations("nav");
   const root = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-
-  const next: Locale = locale === "ar" ? "en" : "ar";
-  const phone = settings.phone?.trim();
-  const extras = (Array.isArray(settings.header_menu) ? settings.header_menu : []).flatMap(
-    (item) => {
-      const href = item?.href?.trim();
-      const label = (locale === "ar" ? item?.label_ar || item?.label_en : item?.label_en || item?.label_ar)?.trim();
-      return href && label ? [{ href, label, external: /^https?:\/\//.test(href) }] : [];
-    },
-  );
+  const { next, pathname, languageHref, languageName, phone, extras } = useMenuEntries(settings, search);
 
   // A tap on an entry navigates without unmounting the header.
   useEffect(() => setOpen(false), [pathname, search]);
@@ -103,6 +114,8 @@ function Menu({ settings, search }: { settings: SiteSettings; search: string }) 
 
   return (
     <div className={`header-menu${open ? " is-open" : ""}`} ref={root}>
+      {/* Three lines and nothing else, on request -- the phone, "ع" and
+          chevron it used to carry crowded a 46px disc into a smudge. */}
       <button
         type="button"
         className="header-menu-trigger"
@@ -111,22 +124,20 @@ function Menu({ settings, search }: { settings: SiteSettings; search: string }) 
         aria-label={t("menuAria")}
         onClick={() => setOpen((value) => !value)}
       >
-        <Phone size={15} />
-        <span className={`header-menu-lang header-menu-lang-${next}`}>{next === "en" ? "En" : "ع"}</span>
-        <ChevronDown size={14} className="header-menu-chevron" />
+        <Menu size={20} />
       </button>
 
       {open ? (
         <div className="header-menu-panel" role="menu">
           <Link
             role="menuitem"
-            href={search ? `${pathname}?${search}` : pathname}
+            href={languageHref}
             locale={next}
             hrefLang={next}
             aria-label={next === "en" ? t("switchToEnglish") : t("switchToArabic")}
           >
             <Languages size={16} />
-            <span>{next === "en" ? "English" : "العربية"}</span>
+            <span>{languageName}</span>
           </Link>
 
           {phone ? (
@@ -151,6 +162,59 @@ function Menu({ settings, search }: { settings: SiteSettings; search: string }) 
           )}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+/** The same entries as cards at the foot of the phone navigation drawer. */
+export function DrawerMenuEntries({ settings }: { settings: SiteSettings }) {
+  return (
+    <Suspense fallback={<DrawerEntries settings={settings} search="" />}>
+      <DrawerEntriesWithSearch settings={settings} />
+    </Suspense>
+  );
+}
+
+function DrawerEntriesWithSearch({ settings }: { settings: SiteSettings }) {
+  return <DrawerEntries settings={settings} search={useSearchParams().toString()} />;
+}
+
+function DrawerEntries({ settings, search }: { settings: SiteSettings; search: string }) {
+  const t = useTranslations("nav");
+  const { next, languageHref, languageName, phone, extras } = useMenuEntries(settings, search);
+
+  const card = (icon: React.ReactNode, title: React.ReactNode, sub?: string) => (
+    <>
+      <span className="nav-card-icon">{icon}</span>
+      <span className="nav-card-copy">
+        <b>{title}</b>
+        {sub ? <small>{sub}</small> : null}
+      </span>
+      <ArrowLeft size={17} className="nav-card-arrow" />
+    </>
+  );
+
+  return (
+    <div className="nav-drawer-extras">
+      <Link className="nav-card" href={languageHref} locale={next} hrefLang={next}>
+        {card(<Languages size={19} />, languageName, next === "en" ? t("switchToEnglish") : t("switchToArabic"))}
+      </Link>
+      {phone ? (
+        <a className="nav-card" href={telLink(phone)}>
+          {card(<Phone size={19} />, <span dir="ltr">{formatPhone(phone)}</span>, t("callOffice"))}
+        </a>
+      ) : null}
+      {extras.map((item) =>
+        item.external ? (
+          <a key={item.href} className="nav-card" href={item.href} target="_blank" rel="noopener noreferrer">
+            {card(<ExternalLink size={19} />, item.label)}
+          </a>
+        ) : (
+          <Link key={item.href} className="nav-card" href={item.href}>
+            {card(<Link2 size={19} />, item.label)}
+          </Link>
+        ),
+      )}
     </div>
   );
 }

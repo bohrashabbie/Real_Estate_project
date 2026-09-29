@@ -11043,3 +11043,138 @@ a.home-ad:hover img {
     bottom:26px;
   }
 }
+
+/* Header menu trigger: three lines in the navy disc, on request, instead of
+   a phone, an "ع" and a chevron crowded into it. Same 46px disc as before. */
+.header-menu-trigger {
+  justify-content:center;
+  width:46px;
+  padding:0;
+}
+
+.header-menu-trigger > svg:first-child {
+  color:#fff;
+}
+
+/* Its entries live in the drawer below the handover (DrawerMenuEntries), so
+   the disc steps aside there: the drawer already has a three-line button. */
+.nav-drawer-extras {
+  display:none;
+}
+
+@media (max-width:1023px) {
+  .header-menu {
+    display:none;
+  }
+  .nav-drawer-extras {
+    display:contents;
+  }
+}
+
+/* The page you are on, highlighted in the nav, on request: a gold underline
+   in the header row, and a gold-edged card in the phone drawer. */
+@media (min-width:1024px) {
+  .main-nav a.nav-card {
+    position:relative;
+  }
+  .main-nav a.nav-card.is-current {
+    color:var(--gold-dark);
+  }
+  .main-nav a.nav-card.is-current::after {
+    content:"";
+    background:var(--gold);
+    border-radius:2px;
+    height:2px;
+    position:absolute;
+    inset-inline:0;
+    bottom:-7px;
+  }
+}
+
+@media (max-width:1023px) {
+  .main-nav .nav-card.is-current {
+    background:#fbf4e4;
+    border-color:var(--gold);
+    box-shadow:0 0 0 1px var(--gold) inset;
+  }
+  .main-nav .nav-card.is-current .nav-card-icon {
+    color:#fff;
+    background:var(--gold);
+  }
+}
+
+/* Shortcut row: the three purposes are fixed, the property types scroll
+   beside them, on request. The row itself no longer scrolls; only the types
+   strip does, fading out at its far end so it reads as "more this way". */
+.home-quick-links {
+  justify-content:flex-start;
+  align-items:center;
+  overflow:visible;
+}
+
+.quick-links-fixed {
+  border-inline-end:1px solid #c8a45d59;
+  flex:none;
+  gap:8px;
+  padding-inline-end:10px;
+  display:flex;
+}
+
+.quick-links-scroll {
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+  flex:1;
+  gap:8px;
+  min-width:0;
+  padding-block:4px;
+  display:flex;
+  overflow-x:auto;
+  -webkit-mask-image:linear-gradient(to left, transparent, #000 32px);
+  mask-image:linear-gradient(to left, transparent, #000 32px);
+}
+
+[dir="ltr"] .quick-links-scroll {
+  -webkit-mask-image:linear-gradient(to right, transparent, #000 32px);
+  mask-image:linear-gradient(to right, transparent, #000 32px);
+}
+
+.quick-links-scroll::-webkit-scrollbar {
+  display:none;
+}
+
+/* The view being shown, as a selected chip. Has to outrank the forced white
+   fill every chip carries (`.home-quick-links a` ... !important), including
+   its inset box-shadow, which would otherwise paint white over the gold. */
+.home-quick-links a.is-current,
+.home-quick-links a.is-current:visited,
+.home-quick-links a.is-current:hover,
+.home-quick-links a.is-current:focus-visible {
+  color:#fff!important;
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d)!important;
+  border-color:transparent!important;
+  box-shadow:0 8px 18px #a7803d47!important;
+}
+
+.home-quick-links a.is-current svg {
+  color:#fff!important;
+}
+
+@media (max-width:760px) {
+  /* Too narrow for both side by side: the purposes take their own row, the
+     types scroll on the row under them. */
+  .home-quick-links {
+    flex-wrap:wrap;
+  }
+  .quick-links-fixed {
+    border-inline-end:0;
+    width:100%;
+    padding-inline-end:0;
+  }
+  .quick-links-scroll {
+    flex-basis:100%;
+  }
+}
+
+#map-results {
+  scroll-margin-top:96px;
+}
