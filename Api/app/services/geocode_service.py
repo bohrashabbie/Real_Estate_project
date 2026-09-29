@@ -9,7 +9,7 @@ streets well and its blocks only patchily. So the lookup runs from most to
 least exact and says which one matched:
 
     address   "<address note>, <area>, Kuwait"   a street, a landmark
-    block     "Block <n>, <area>, Kuwait"
+    block     "<area> - Block <n>, Kuwait"        only if the result names that block
     area      "<area>, Kuwait"                    the area's centre
 
 and the form tells the office when it could only place the pin at the area,
@@ -24,6 +24,7 @@ lock spaces calls a second apart, and answers are cached in memory.
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 import urllib.parse
@@ -97,17 +98,28 @@ def locate(db: Session, area_id: int, block: str | None, address: str | None) ->
     block = (block or "").strip()
     address = (address or "").strip()
 
-    candidates: list[tuple[str, str]] = []
-    if address:
-        candidates.append(("address", f"{address}, {area}, Kuwait"))
-    if block:
-        # "Block 10" and a bare "10" both mean the same block.
-        number = block if block.lower().startswith("block") else f"Block {block}"
-        candidates.append(("block", f"{number}, {area}, Kuwait"))
-    candidates.append(("area", f"{area}, Kuwait"))
+    # "Block 10" and a bare "10" both mean block 10.
+    number = re.sub(r"^\s*block\s*", "", block, flags=re.IGNORECASE)
 
-    for precision, query in candidates:
+    # (precision, query, check). OpenStreetMap names Kuwaiti blocks
+    # "<Area> - Block <n>", and answers that phrasing best; phrased
+    # "Block 10, Salmiya" it read the 10 as a house number and returned a
+    # street in Block 1. So a block result must name the block it was asked
+    # for -- anything else falls through to the area, and the form asks the
+    # office to drag the pin, rather than dropping it in the wrong block.
+    candidates: list[tuple[str, str, re.Pattern[str] | None]] = []
+    if address:
+        candidates.append(("address", f"{address}, {area}, Kuwait", None))
+    if number:
+        named = re.compile(rf"\bBlock\s*{re.escape(number)}\b", re.IGNORECASE)
+        candidates.append(("block", f"{area} - Block {number}, Kuwait", named))
+        candidates.append(("block", f"Block {number}, {area}, Kuwait", named))
+    candidates.append(("area", f"{area}, Kuwait", None))
+
+    for precision, query, check in candidates:
         hit = _search(query)
+        if hit and check is not None and not check.search(hit["label"]):
+            continue
         if hit:
             return {
                 "found": True,
