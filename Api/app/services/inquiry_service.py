@@ -102,7 +102,7 @@ def list_inquiries(
     cursor: str | None = None,
     limit: int = 50,
 ) -> dict:
-    stmt = select(Inquiry)
+    stmt = select(Inquiry).where(Inquiry.is_active.is_(True))
     if status is not None:
         stmt = stmt.where(Inquiry.status == status)
     if source is not None:
@@ -161,7 +161,7 @@ def create_property_request(db: Session, data, ip: str | None) -> PropertyReques
 def list_property_requests(
     db: Session, *, status: str | None = None, cursor: str | None = None, limit: int = 50
 ) -> dict:
-    stmt = select(PropertyRequest)
+    stmt = select(PropertyRequest).where(PropertyRequest.is_active.is_(True))
     if status is not None:
         stmt = stmt.where(PropertyRequest.status == status)
     items, next_cursor = paginate(db, stmt, PropertyRequest, cursor, limit)
@@ -186,3 +186,37 @@ def update_property_request_status(db: Session, request_id: int, status: str, ac
     db.commit()
     db.refresh(request)
     return request
+
+
+# ---------------------------------------------------------------------------
+# Soft delete -- "Delete" in the admin hides a lead, it never erases one.
+# ---------------------------------------------------------------------------
+
+def _soft_delete(db: Session, row, entity_type: str, actor_user_id: int) -> None:
+    if not row.is_active:
+        return
+    row.is_active = False
+    audit_service.record(
+        db,
+        actor_user_id=actor_user_id,
+        action=f"{entity_type}.delete",
+        entity_type=entity_type,
+        entity_id=row.id,
+        before={"is_active": True},
+        after={"is_active": False},
+    )
+    db.commit()
+
+
+def delete_inquiry(db: Session, inquiry_id: int, actor_user_id: int) -> None:
+    inquiry = db.get(Inquiry, inquiry_id)
+    if inquiry is None:
+        raise NotFoundError("Inquiry not found")
+    _soft_delete(db, inquiry, "inquiry", actor_user_id)
+
+
+def delete_property_request(db: Session, request_id: int, actor_user_id: int) -> None:
+    request = db.get(PropertyRequest, request_id)
+    if request is None:
+        raise NotFoundError("Property request not found")
+    _soft_delete(db, request, "property_request", actor_user_id)

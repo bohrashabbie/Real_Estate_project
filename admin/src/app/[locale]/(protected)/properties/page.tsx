@@ -20,6 +20,7 @@ import { DataTable } from "@/components/data-table"
 import { PageHeader } from "@/components/page-header"
 import { StatusBadge } from "@/components/status-badge"
 import { RequirePermission } from "@/components/permission/require-permission"
+import { DeleteRowAction } from "@/components/delete-row-action"
 import { RequireRoutePermission } from "@/components/permission/require-route-permission"
 import { useCursorList } from "@/hooks/use-cursor-list"
 import { useQueryParam } from "@/hooks/use-query-param"
@@ -234,6 +235,24 @@ function PropertiesContent() {
           }
         />
       ),
+    },
+    {
+      id: "actions",
+      header: c("actions"),
+      cell: ({ row }) =>
+        row.original.is_active ? (
+          <RequirePermission permission={PERMISSIONS.propertiesDelete}>
+            <DeleteRowAction
+              title={t("deleteTitle")}
+              description={t("deleteDescription", {
+                title: propertyTitle(row.original.translations, locale),
+              })}
+              successMessage={t("deleted")}
+              onDelete={() => propertiesApi.delete(row.original.id)}
+              invalidateKey={queryKeys.properties.all}
+            />
+          </RequirePermission>
+        ) : null,
     },
   ]
 

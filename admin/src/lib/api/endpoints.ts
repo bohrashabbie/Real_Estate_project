@@ -117,6 +117,9 @@ export const rolesApi = {
     }),
 
   create: (payload: RoleCreate) => api.post<RoleDetailOut>("/roles", payload),
+
+  /** Only a non-built-in role that nobody holds; the API says why otherwise. */
+  remove: (roleId: number) => api.del(`/roles/${roleId}`),
 }
 
 /* -------------------------------------------------------------------------- */
@@ -280,6 +283,9 @@ export const inquiriesApi = {
       signal,
     }),
 
+  /** Soft delete: hidden from the list, kept with its audit trail. */
+  remove: (inquiryId: number) => api.del(`/inquiries/${inquiryId}`),
+
   updateStatus: (inquiryId: number, payload: InquiryUpdate) =>
     api.patch<InquiryOut>(`/inquiries/${inquiryId}`, payload),
 }
@@ -298,6 +304,9 @@ export const propertyRequestsApi = {
       },
       signal,
     }),
+
+  /** Soft delete: hidden from the list, kept with its audit trail. */
+  remove: (requestId: number) => api.del(`/property-requests/${requestId}`),
 
   updateStatus: (requestId: number, payload: PropertyRequestUpdate) =>
     api.patch<PropertyRequestOut>(`/property-requests/${requestId}`, payload),

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { DataTable } from "@/components/data-table"
+import { DeleteRowAction } from "@/components/delete-row-action"
 import { PageHeader } from "@/components/page-header"
 import { StatusBadge } from "@/components/status-badge"
 import { RequireRoutePermission } from "@/components/permission/require-route-permission"
@@ -199,6 +200,20 @@ function RequestsContent() {
       header: t("columns.received"),
       cell: ({ row }) =>
         format.dateTime(new Date(row.original.created_at), "short"),
+    },
+    {
+      id: "actions",
+      header: c("actions"),
+      cell: ({ row }) =>
+        canManage ? (
+          <DeleteRowAction
+            title={t("deleteTitle")}
+            description={t("deleteDescription", { name: row.original.name })}
+            successMessage={t("deleted")}
+            onDelete={() => propertyRequestsApi.remove(row.original.id)}
+            invalidateKey={queryKeys.propertyRequests.all}
+          />
+        ) : null,
     },
   ]
 

@@ -4,7 +4,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 from passlib.hash import argon2
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.cache import (
@@ -222,6 +222,9 @@ def update_user(db: Session, user_id: int, data, actor_user_id: int | None) -> U
 
 
 def deactivate_user(db: Session, user_id: int, actor_user_id: int | None) -> None:
+    # Deleting your own account would lock you out mid-session.
+    if actor_user_id is not None and user_id == actor_user_id:
+        raise BusinessRuleError("You can't delete your own account.")
     user = get_user(db, user_id)
     if not user.is_active:
         return
@@ -383,6 +386,46 @@ def create_role(db: Session, data, actor_user_id: int | None) -> dict:
     # New role: nobody holds it yet, but the roles list cache is now stale.
     cache.invalidate(Namespace.ROLES)
     return get_role_detail(db, role.id)
+
+
+def delete_role(db: Session, role_id: int, actor_user_id: int | None) -> None:
+    """Delete a role nobody holds.
+
+    Roles carry no soft-delete flag, so this one is a real delete -- which is
+    why it refuses the two cases where that would do harm: a built-in role
+    (the app's own permissions model depends on it) and a role still granted
+    to anyone (deleting it would silently strip their permissions). The
+    office reassigns those users first. Its permission grants go with it;
+    the audit log keeps what it was.
+    """
+    role = db.get(Role, role_id)
+    if role is None:
+        raise NotFoundError("Role not found")
+    if role.is_system:
+        raise BusinessRuleError("Built-in roles can't be deleted.")
+    holders = db.execute(select(func.count()).select_from(UserRole).where(UserRole.role_id == role_id)).scalar_one()
+    if holders:
+        raise ConflictError(
+            f"This role is still assigned to {holders} user(s). Remove it from them first, then delete it."
+        )
+    keys = sorted(
+        db.execute(
+            select(Permission.key)
+            .join(RolePermission, RolePermission.permission_id == Permission.id)
+            .where(RolePermission.role_id == role_id)
+        ).scalars().all()
+    )
+    audit_service.record(
+        db,
+        actor_user_id=actor_user_id,
+        action="role.delete",
+        entity_type="role",
+        entity_id=role.id,
+        before={"code": role.code, "name_en": role.name_en, "permission_keys": keys},
+    )
+    db.delete(role)
+    db.commit()
+    cache.invalidate(Namespace.ROLES)
 
 
 def get_role_detail(db: Session, role_id: int) -> dict:

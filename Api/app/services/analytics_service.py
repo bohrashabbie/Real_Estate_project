@@ -26,14 +26,14 @@ def dashboard(db: Session) -> dict:
         ).all()
     )
     new_inquiries_7d = db.execute(
-        select(func.count()).select_from(Inquiry).where(Inquiry.created_at >= week_ago)
+        select(func.count()).select_from(Inquiry).where(Inquiry.is_active.is_(True), Inquiry.created_at >= week_ago)
     ).scalar_one()
     new_requests_7d = db.execute(
-        select(func.count()).select_from(PropertyRequest).where(PropertyRequest.created_at >= week_ago)
+        select(func.count()).select_from(PropertyRequest).where(PropertyRequest.is_active.is_(True), PropertyRequest.created_at >= week_ago)
     ).scalar_one()
     recent = list(
         db.execute(
-            select(Inquiry).order_by(Inquiry.created_at.desc(), Inquiry.id.desc()).limit(5)
+            select(Inquiry).where(Inquiry.is_active.is_(True)).order_by(Inquiry.created_at.desc(), Inquiry.id.desc()).limit(5)
         ).scalars().all()
     )
 

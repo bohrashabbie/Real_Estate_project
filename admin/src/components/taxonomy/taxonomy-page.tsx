@@ -200,7 +200,7 @@ function TaxonomyContent({
                 size="xs"
                 onClick={() => setDeactivating(row.original)}
               >
-                {c("deactivate")}
+                {c("delete")}
               </Button>
             )}
           </div>

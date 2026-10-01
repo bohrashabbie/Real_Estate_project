@@ -16,6 +16,8 @@ import { DataTable } from "@/components/data-table"
 import { CreateUserDialog } from "@/components/users/create-user-dialog"
 import { RequireRoutePermission } from "@/components/permission/require-route-permission"
 import { RequirePermission } from "@/components/permission/require-permission"
+import { DeleteRowAction } from "@/components/delete-row-action"
+import { useCurrentUser } from "@/providers/auth-provider"
 import { useCursorList } from "@/hooks/use-cursor-list"
 import { useQueryParam } from "@/hooks/use-query-param"
 import { usersApi } from "@/lib/api/endpoints"
@@ -45,6 +47,7 @@ function UsersPageContent() {
   const c = useTranslations("common")
   const format = useFormatter()
   const router = useRouter()
+  const me = useCurrentUser()
 
   const [statusParam, setStatusParam] = useQueryParam("status")
   const status = (statusParam as StatusFilter) ?? "all"
@@ -101,6 +104,24 @@ function UsersPageContent() {
       header: t("columns.created"),
       cell: ({ row }) =>
         format.dateTime(new Date(row.original.created_at), "short"),
+    },
+    {
+      id: "actions",
+      header: c("actions"),
+      // Not on your own row: deleting yourself would end your session (the
+      // API refuses it too).
+      cell: ({ row }) =>
+        row.original.is_active && row.original.id !== me?.id ? (
+          <RequirePermission permission={PERMISSIONS.usersManage}>
+            <DeleteRowAction
+              title={t("deleteTitle")}
+              description={t("deleteDescription", { name: row.original.full_name })}
+              successMessage={t("deleted")}
+              onDelete={() => usersApi.deactivate(row.original.id)}
+              invalidateKey={queryKeys.users.all}
+            />
+          </RequirePermission>
+        ) : null,
     },
   ]
 

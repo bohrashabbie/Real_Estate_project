@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -45,6 +45,16 @@ def update_role_permissions(
 ) -> dict:
     """Replaces the full permission set for this role."""
     return auth_service.update_role_permissions(db, role_id, payload.permission_keys, current_user.id)
+
+
+@router.delete("/{role_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
+def delete_role(
+    role_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(require("roles.manage")),
+) -> None:
+    """Only a non-built-in role that nobody holds can be deleted."""
+    auth_service.delete_role(db, role_id, current_user.id)
 
 
 # Permission keys used by this router: roles.view, roles.manage

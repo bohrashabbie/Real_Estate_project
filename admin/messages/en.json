@@ -37,7 +37,8 @@
     "add": "Add",
     "remove": "Remove",
     "view": "View",
-    "unknownError": "Something went wrong. Please try again."
+    "unknownError": "Something went wrong. Please try again.",
+    "delete": "Delete"
   },
   "states": {
     "errorTitle": "Couldn't load this",
@@ -141,9 +142,9 @@
     "published": "Property published.",
     "unpublished": "Property unpublished.",
     "delete": "Delete",
-    "deleted": "Property archived.",
-    "deleteTitle": "Archive this property?",
-    "deleteDescription": "\"{title}\" will be hidden everywhere. Nothing is hard-deleted — it can be restored from the database.",
+    "deleted": "Property deleted.",
+    "deleteTitle": "Delete this property?",
+    "deleteDescription": "\"{title}\" will be removed from the website and this list. It is kept in the database and can be restored.",
     "created": "Property created. Now add photos and publish.",
     "updated": "Property updated.",
     "empty": "No properties match these filters.",
@@ -236,6 +237,14 @@
       "area": "That street or block isn't on the map, so the pin is at the centre of {label}. Drag it to the exact spot.",
       "none": "That address wasn't found on the map. Click the map to place the pin.",
       "error": "The map lookup didn't respond. Click the map to place the pin."
+    },
+    "newPhotos": {
+      "title": "Photos",
+      "description": "Choose the listing's photos now; they upload as soon as you press Create. The first one becomes the main photo — you can reorder them afterwards.",
+      "choose": "Choose photos",
+      "remove": "Remove photo",
+      "main": "Main",
+      "failed": "{count, plural, one {# photo} other {# photos}} couldn't be uploaded. Add them again from the property's page."
     }
   },
   "inquiries": {
@@ -260,7 +269,10 @@
       "new": "New",
       "contacted": "Contacted",
       "closed": "Closed"
-    }
+    },
+    "deleteTitle": "Delete this inquiry?",
+    "deleteDescription": "The message from {name} will be removed from this list. It is kept in the database.",
+    "deleted": "Inquiry deleted."
   },
   "requests": {
     "title": "Property requests",
@@ -283,7 +295,10 @@
       "in_progress": "In progress",
       "matched": "Matched",
       "closed": "Closed"
-    }
+    },
+    "deleteTitle": "Delete this request?",
+    "deleteDescription": "The request from {name} will be removed from this list. It is kept in the database.",
+    "deleted": "Request deleted."
   },
   "taxonomy": {
     "fields": {
@@ -316,8 +331,8 @@
     "formDescription": "Name in both languages; the slug appears in storefront URLs.",
     "created": "Area created.",
     "updated": "Area updated.",
-    "deactivated": "Area deactivated.",
-    "deactivateTitle": "Deactivate this area?",
+    "deactivated": "Area deleted.",
+    "deactivateTitle": "Delete this area?",
     "deactivateDescription": "\"{name}\" will disappear from filters and forms. Existing properties keep it.",
     "empty": "No areas match these filters."
   },
@@ -330,8 +345,8 @@
     "formDescription": "Name in both languages; the key is a stable identifier.",
     "created": "Property type created.",
     "updated": "Property type updated.",
-    "deactivated": "Property type deactivated.",
-    "deactivateTitle": "Deactivate this type?",
+    "deactivated": "Property type deleted.",
+    "deactivateTitle": "Delete this type?",
     "deactivateDescription": "\"{name}\" will disappear from filters and forms. Existing properties keep it.",
     "empty": "No property types match these filters."
   },
@@ -344,8 +359,8 @@
     "formDescription": "Name in both languages; the key is a stable identifier.",
     "created": "Amenity created.",
     "updated": "Amenity updated.",
-    "deactivated": "Amenity deactivated.",
-    "deactivateTitle": "Deactivate this amenity?",
+    "deactivated": "Amenity deleted.",
+    "deactivateTitle": "Delete this amenity?",
     "deactivateDescription": "\"{name}\" will disappear from the property form. Existing properties keep it.",
     "empty": "No amenities match these filters."
   },
@@ -358,12 +373,12 @@
     "formDescription": "Upload the artwork, describe it for screen readers, and choose where it links.",
     "created": "Banner created.",
     "updated": "Banner updated.",
-    "hidden": "Banner hidden.",
-    "shown": "Banner is live again.",
-    "hide": "Hide",
-    "show": "Show",
-    "hideTitle": "Hide this banner?",
-    "hideDescription": "It disappears from the home page immediately. The artwork is kept, so you can show it again later.",
+    "hidden": "Banner deleted.",
+    "shown": "Banner restored.",
+    "hide": "Delete",
+    "show": "Restore",
+    "hideTitle": "Delete this banner?",
+    "hideDescription": "It disappears from the website immediately. The artwork is kept, so you can restore it later.",
     "moveUp": "Move up",
     "moveDown": "Move down",
     "upload": "Upload image",
@@ -382,7 +397,7 @@
       "live": "Live",
       "scheduled": "Scheduled",
       "expired": "Expired",
-      "hidden": "Hidden"
+      "hidden": "Deleted"
     },
     "fields": {
       "image": "Artwork",
@@ -462,7 +477,10 @@
       "revokeDescription": "{role} will be removed from {name}. They immediately lose every permission it granted.",
       "assignAtCreationHint": "Tick any roles to grant immediately. You can add or remove roles later from the user's page.",
       "assignFailedOnCreate": "The user was created, but these roles couldn't be assigned: {roles}. Try assigning them again from the user's page."
-    }
+    },
+    "deleteTitle": "Delete this user?",
+    "deleteDescription": "{name} will no longer be able to sign in. The account is kept and can be reactivated.",
+    "deleted": "User deleted."
   },
   "roles": {
     "title": "Roles & permissions",
@@ -503,7 +521,10 @@
     },
     "hints": {
       "code": "A stable identifier used internally — can't be changed after the role is created."
-    }
+    },
+    "deleteTitle": "Delete the role \"{role}\"?",
+    "deleteDescription": "Only possible when no user holds this role. Its permissions are removed with it.",
+    "deleted": "Role deleted."
   },
   "permissionGroups": {
     "properties": "Properties",

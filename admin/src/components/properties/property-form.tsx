@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { useLocale, useTranslations } from "next-intl"
+import { ImagePlus, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -269,10 +270,22 @@ export function PropertyForm({
         toast.success(t("updated"))
       } else {
         const created = await propertiesApi.create(base as PropertyCreate)
+        // Photos picked while creating go up as soon as the listing exists;
+        // the API makes the first one the main photo. One that fails leaves
+        // the listing saved -- it can be added on the edit page.
+        let failedPhotos = 0
+        for (const { file } of pendingPhotos) {
+          try {
+            await propertiesApi.uploadMedia(created.id, file)
+          } catch {
+            failedPhotos += 1
+          }
+        }
         await queryClient.invalidateQueries({
           queryKey: queryKeys.properties.all,
         })
         toast.success(t("created"))
+        if (failedPhotos > 0) toast.error(t("newPhotos.failed", { count: failedPhotos }))
         onCreated?.(created)
       }
     } catch (error) {
@@ -288,6 +301,28 @@ export function PropertyForm({
   }
 
   const amenityIds = form.watch("amenity_ids")
+
+  // Photos chosen on the New property page, uploaded after Create.
+  const photoInput = useRef<HTMLInputElement>(null)
+  const [pendingPhotos, setPendingPhotos] = useState<{ file: File; url: string }[]>([])
+  const pendingRef = useRef(pendingPhotos)
+  pendingRef.current = pendingPhotos
+  useEffect(() => () => pendingRef.current.forEach((photo) => URL.revokeObjectURL(photo.url)), [])
+
+  function addPhotos(files: FileList | null) {
+    if (!files) return
+    const added = Array.from(files)
+      .filter((file) => file.type.startsWith("image/"))
+      .map((file) => ({ file, url: URL.createObjectURL(file) }))
+    setPendingPhotos((current) => [...current, ...added])
+  }
+
+  function removePhoto(index: number) {
+    setPendingPhotos((current) => {
+      URL.revokeObjectURL(current[index].url)
+      return current.filter((_, i) => i !== index)
+    })
+  }
 
   return (
     <Form {...form}>
@@ -729,6 +764,69 @@ export function PropertyForm({
             />
           </CardContent>
         </Card>
+
+        {/* -------- Photos, while creating ---------------------------------
+            A listing needs to exist before a photo can be attached to it, so
+            the edit page's media manager can't run here. Photos chosen now
+            upload right after Create, the first one as the main photo. */}
+        {!isEdit && canWrite && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("newPhotos.title")}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t("newPhotos.description")}</p>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => photoInput.current?.click()}
+                >
+                  <ImagePlus className="size-4" aria-hidden />
+                  {t("newPhotos.choose")}
+                </Button>
+                <input
+                  ref={photoInput}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(event) => {
+                    addPhotos(event.target.files)
+                    event.target.value = ""
+                  }}
+                />
+              </div>
+              {pendingPhotos.length > 0 && (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {pendingPhotos.map((photo, index) => (
+                    <div
+                      key={photo.url}
+                      className="relative overflow-hidden rounded-lg border border-border"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={photo.url} alt="" className="aspect-4/3 w-full object-cover" />
+                      {index === 0 && (
+                        <span className="absolute start-2 top-2 rounded-full bg-gold px-2 py-0.5 text-xs font-medium text-white">
+                          {t("newPhotos.main")}
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        className="absolute end-2 top-2 grid size-7 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                        aria-label={t("newPhotos.remove")}
+                        onClick={() => removePhoto(index)}
+                      >
+                        <X className="size-4" aria-hidden />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {canWrite && (
           <div className="flex justify-end">

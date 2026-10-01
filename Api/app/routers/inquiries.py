@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -32,6 +32,16 @@ def update_inquiry(
     current_user: User = Depends(require("inquiries.manage")),
 ):
     return inquiry_service.update_inquiry_status(db, inquiry_id, payload.status, current_user.id)
+
+
+@router.delete("/{inquiry_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
+def delete_inquiry(
+    inquiry_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require("inquiries.manage")),
+) -> None:
+    """Soft delete: hidden from the list, kept with its audit trail."""
+    inquiry_service.delete_inquiry(db, inquiry_id, current_user.id)
 
 
 # Permission keys used by this router: inquiries.view, inquiries.manage

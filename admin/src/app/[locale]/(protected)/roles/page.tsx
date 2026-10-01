@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { DataTable } from "@/components/data-table"
 import { RequirePermission } from "@/components/permission/require-permission"
+import { DeleteRowAction } from "@/components/delete-row-action"
 import { RequireRoutePermission } from "@/components/permission/require-route-permission"
 import { CreateRoleDialog } from "@/components/roles/create-role-dialog"
 import { rolesApi } from "@/lib/api/endpoints"
@@ -26,6 +27,7 @@ export default function RolesPage() {
 
 function RolesPageContent() {
   const t = useTranslations("roles")
+  const c = useTranslations("common")
   const router = useRouter()
 
   const rolesQuery = useQuery({
@@ -69,6 +71,24 @@ function RolesPageContent() {
       accessorKey: "permission_keys",
       header: t("columns.permissions"),
       cell: ({ row }) => row.original.permission_keys.length,
+    },
+    {
+      id: "actions",
+      header: c("actions"),
+      // Built-in roles can't go; a role still held by someone is refused by
+      // the API with a message saying how many hold it.
+      cell: ({ row }) =>
+        row.original.is_system ? null : (
+          <RequirePermission permission={PERMISSIONS.rolesManage}>
+            <DeleteRowAction
+              title={t("deleteTitle", { role: row.original.name_en })}
+              description={t("deleteDescription")}
+              successMessage={t("deleted")}
+              onDelete={() => rolesApi.remove(row.original.id)}
+              invalidateKey={queryKeys.roles.all}
+            />
+          </RequirePermission>
+        ),
     },
   ]
 

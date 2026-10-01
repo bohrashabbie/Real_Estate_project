@@ -281,6 +281,8 @@ class Inquiry(Base, CreatedAtMixin):
     message: Mapped[str] = mapped_column(Text, nullable=False)
     source: Mapped[str] = mapped_column(InquirySource, nullable=False)
     status: Mapped[str] = mapped_column(InquiryStatus, nullable=False, default="new")
+    # Soft delete: "Delete" in the admin hides the lead, never erases it.
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
         Index("ix_inquiries_property_id", "property_id"),
@@ -305,6 +307,8 @@ class PropertyRequest(Base, CreatedAtMixin):
     rooms: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(RequestStatus, nullable=False, default="new")
+    # Soft delete: "Delete" in the admin hides the request, never erases it.
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
         Index("ix_property_requests_status", "status"),
