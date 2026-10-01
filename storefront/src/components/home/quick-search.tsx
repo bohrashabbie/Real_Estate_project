@@ -564,6 +564,12 @@ export function QuickSearch({
     apply(true);
   }
 
+  /** A shortcut chip's link: the search as it stands, with one change. */
+  function chipHref(change: Partial<typeof latest.current>): string {
+    const query = queryFor({ ...latest.current, ...change });
+    return `${query ? `${action}?${query}` : action}${resultsAnchor}`;
+  }
+
   return (
     <section
       className={`home-quick-search${variant === "properties" ? " properties-quick-search" : ""}`}
@@ -646,6 +652,11 @@ export function QuickSearch({
             arrives with and should never scroll out of reach. The chip for
             the view being shown is marked as selected, and every chip lands
             on the results rather than the top of the page. */}
+        {/* Chips build on the search already showing, on request: For rent
+            then Apartment is apartments for rent, not every apartment. A
+            purpose chip swaps the purpose and keeps the rest; a type chip
+            adds its type to the ones picked. Pressing a selected chip again
+            takes it off. */}
         <nav className="home-quick-links" aria-label={t("quickSearch.shortcutsAria")}>
           <div className="quick-links-fixed">
             {(
@@ -655,11 +666,11 @@ export function QuickSearch({
                 ["exchange", <Repeat2 key="i" size={14} />],
               ] as const
             ).map(([value, icon]) => {
-              const current = initial?.purpose === value;
+              const current = purpose === value;
               return (
                 <Link
                   key={value}
-                  href={`${action}?purpose=${value}${resultsAnchor}`}
+                  href={chipHref({ purpose: current ? "" : value })}
                   className={current ? "is-current" : undefined}
                   aria-current={current ? "page" : undefined}
                 >
@@ -670,17 +681,19 @@ export function QuickSearch({
             })}
           </div>
           <div className="quick-links-scroll">
-            {types.map((type) => {
-              const current = Boolean(initial?.type?.includes(type.key));
+            {types.map((item) => {
+              const current = type.includes(item.key);
               return (
                 <Link
-                  key={type.key}
-                  href={`${action}?type=${type.key}${resultsAnchor}`}
+                  key={item.key}
+                  href={chipHref({
+                    type: current ? type.filter((key) => key !== item.key) : [...type, item.key],
+                  })}
                   className={current ? "is-current" : undefined}
                   aria-current={current ? "page" : undefined}
                 >
                   <Building2 size={14} />
-                  {type.name}
+                  {item.name}
                 </Link>
               );
             })}
