@@ -11201,3 +11201,95 @@ a.home-ad:hover img {
 .footer-search + .type-section {
   padding-top:42px;
 }
+
+/* A VIP listing's detail page, on request: the same layout as any listing,
+   dressed in the VIP row's navy and gold -- a banner under the breadcrumb, a
+   gold frame and crown on the gallery, a VIP pill by the status and a
+   gold-edged contact card. */
+.vip-detail-banner {
+  color:#fff;
+  background:linear-gradient(135deg,#13243a,#0d1b2a 60%,#081019);
+  border:1px solid #c8a45d66;
+  border-radius:16px;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:14px;
+  margin-block:4px 18px;
+  padding:14px 18px;
+  display:flex;
+  box-shadow:0 14px 34px #0d1b2a33;
+}
+
+.vip-detail-badge,
+.vip-detail-pill,
+.gallery-vip-crown {
+  color:#fff;
+  background:linear-gradient(135deg,#e2c98d,#c8a45d 55%,#a7803d);
+  border-radius:999px;
+  align-items:center;
+  gap:6px;
+  font-weight:800;
+  letter-spacing:.06em;
+  display:inline-flex;
+  box-shadow:0 6px 18px #a7803d4d;
+}
+
+.vip-detail-badge {
+  padding:6px 14px;
+  font-size:14px;
+}
+
+.vip-detail-banner p {
+  color:#ffffffd9;
+  flex:1;
+  min-width:200px;
+  margin:0;
+  font-weight:600;
+}
+
+.vip-detail-more {
+  color:var(--gold);
+  align-items:center;
+  gap:6px;
+  font-weight:700;
+  display:inline-flex;
+}
+
+.vip-detail-more:hover {
+  color:#e2c98d;
+}
+
+.vip-detail-pill {
+  vertical-align:middle;
+  margin-inline-end:8px;
+  padding:5px 11px;
+  font-size:12px;
+}
+
+.property-gallery.is-vip .gallery-primary {
+  position:relative;
+  box-shadow:0 0 0 2px var(--gold), 0 20px 50px #a7803d40;
+}
+
+.property-gallery.is-vip .gallery-side .gallery-open {
+  box-shadow:0 0 0 1px #c8a45d99;
+}
+
+.gallery-vip-crown {
+  pointer-events:none;
+  z-index:2;
+  padding:6px 13px;
+  font-size:13px;
+  position:absolute;
+  top:14px;
+  inset-inline-start:14px;
+}
+
+.property-contact-card.is-vip {
+  border:1.5px solid var(--gold);
+  box-shadow:0 18px 44px #a7803d33;
+}
+
+.property-contact-card.is-vip > span {
+  color:var(--gold-dark);
+}

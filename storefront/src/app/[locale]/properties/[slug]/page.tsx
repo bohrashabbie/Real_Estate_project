@@ -7,6 +7,7 @@ import {
   BedDouble,
   Building2,
   CircleCheck,
+  Crown,
   ExternalLink,
   Layers,
   MapPin,
@@ -125,6 +126,8 @@ export default async function PropertyDetailPage({
   // has is reachable rather than only its first four.
   const others = related.items.filter((item) => item.id !== property.id);
 
+  const vip = Boolean(property.is_vip);
+
   return (
     <>
       <div className="container detail-breadcrumb">
@@ -135,7 +138,25 @@ export default async function PropertyDetailPage({
         <b>{property.title}</b>
       </div>
 
-      <PropertyGallery images={gallery} />
+      {/* A VIP listing opens on a VIP page, on request: this banner, a gold
+          frame and crown on the gallery, a VIP pill by the status and a
+          gold-edged contact card. Everything else matches a regular
+          listing, so the two read as one site. */}
+      {vip ? (
+        <div className="container vip-detail-banner">
+          <span className="vip-detail-badge">
+            <Crown size={16} />
+            VIP
+          </span>
+          <p>{t("detail.vipNote")}</p>
+          <Link className="vip-detail-more" href="/properties?vip=1">
+            {t("detail.vipMore")}
+            <ArrowLeft size={15} />
+          </Link>
+        </div>
+      ) : null}
+
+      <PropertyGallery images={gallery} vip={vip} />
 
       <section className="container property-main-grid">
         <div>
@@ -151,6 +172,12 @@ export default async function PropertyDetailPage({
               </p>
             </div>
             <div>
+              {vip ? (
+                <span className="vip-detail-pill">
+                  <Crown size={13} />
+                  VIP
+                </span>
+              ) : null}
               <span className="availability-pill">
                 <i />
                 {t(`status.${property.status}`)}
@@ -225,7 +252,7 @@ export default async function PropertyDetailPage({
           </article>
         </div>
 
-        <aside className="property-contact-card">
+        <aside className={`property-contact-card${vip ? " is-vip" : ""}`}>
           <span>{t("detail.contactKicker")}</span>
           <h3>{property.title}</h3>
 

@@ -228,7 +228,9 @@
     "nearbyKicker": "قريب من هنا",
     "nearbyTitle": "المزيد في {area}",
     "nearbyCta": "كل عقارات {area}",
-    "backToArea": "الرجوع إلى {area}"
+    "backToArea": "الرجوع إلى {area}",
+    "vipNote": "عقار حصري من مختارات VIP لدى المكتب.",
+    "vipMore": "جميع عقارات VIP"
   },
   "inquiry": {
     "name": "الاسم",

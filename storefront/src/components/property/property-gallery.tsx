@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Crown, X } from "lucide-react";
 
 export interface GalleryImage {
   url: string;
@@ -23,7 +23,14 @@ export interface GalleryImage {
  * Arrows are physical in both directions, following the site's other
  * sliders: left is previous, right is next.
  */
-export function PropertyGallery({ images }: { images: GalleryImage[] }) {
+export function PropertyGallery({
+  images,
+  vip = false,
+}: {
+  images: GalleryImage[];
+  /** A VIP listing's gallery: gold frame and a crown on the main photo. */
+  vip?: boolean;
+}) {
   const t = useTranslations("gallery");
   const [open, setOpen] = useState<number | null>(null);
   const count = images.length;
@@ -72,8 +79,16 @@ export function PropertyGallery({ images }: { images: GalleryImage[] }) {
 
   return (
     <>
-      <section className="container property-gallery">
-        <div className="gallery-primary">{thumb(primary, 0)}</div>
+      <section className={`container property-gallery${vip ? " is-vip" : ""}`}>
+        <div className="gallery-primary">
+          {thumb(primary, 0)}
+          {vip ? (
+            <span className="gallery-vip-crown" aria-hidden>
+              <Crown size={14} />
+              VIP
+            </span>
+          ) : null}
+        </div>
         {side.length > 0 ? (
           <div className="gallery-side">
             {side.map((image, i) => thumb(image, i + 1, i === side.length - 1 ? hidden : 0))}

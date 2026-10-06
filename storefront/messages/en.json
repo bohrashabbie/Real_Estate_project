@@ -228,7 +228,9 @@
     "nearbyKicker": "Nearby",
     "nearbyTitle": "More in {area}",
     "nearbyCta": "All properties in {area}",
-    "backToArea": "Back to {area}"
+    "backToArea": "Back to {area}",
+    "vipNote": "An exclusive listing from the office's VIP selection.",
+    "vipMore": "All VIP properties"
   },
   "inquiry": {
     "name": "Name",
