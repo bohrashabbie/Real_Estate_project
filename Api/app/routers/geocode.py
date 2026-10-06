@@ -23,4 +23,15 @@ def locate(
     return geocode_service.locate(db, area_id, block, address)
 
 
+@router.get("/area/{area_id}")
+def area_location(
+    area_id: int,
+    db: Session = Depends(get_db),
+    _user=Depends(require("properties.edit")),
+) -> dict:
+    """An area's centre and radius, so the form's map can fly to it and
+    shade it the moment the area is picked."""
+    return geocode_service.area_location(db, area_id)
+
+
 # Permission keys used by this router: properties.edit

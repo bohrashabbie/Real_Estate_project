@@ -1,5 +1,6 @@
 import { api, apiUpload } from "./client"
 import type {
+  GeocodeArea,
   GeocodeResult,
   AmenityCreate,
   AmenityOut,
@@ -179,6 +180,10 @@ export const amenitiesApi = {
 
 /** Address -> map pin for the property form (OpenStreetMap, via the API). */
 export const geocodeApi = {
+  /** The area's centre and radius, to fly to and shade it on the map. */
+  area: (areaId: number, signal?: AbortSignal) =>
+    api.get<GeocodeArea>(`/geocode/area/${areaId}`, { signal }),
+
   locate: (
     params: { area_id: number; block?: string; address?: string },
     signal?: AbortSignal

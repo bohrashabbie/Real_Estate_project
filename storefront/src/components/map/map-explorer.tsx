@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
-import type { Map as MapLibreMap, Marker } from "maplibre-gl";
+import type { GeoJSONSource, Map as MapLibreMap, Marker } from "maplibre-gl";
 import {
   ArrowLeft,
   List,
@@ -18,6 +18,7 @@ import type { Locale } from "@/i18n/routing";
 import {
   apiGet,
   mediaUrl,
+  type Area,
   type Paginated,
   type PropertyDetail,
   type PropertyListItem,
@@ -28,6 +29,25 @@ import { PropertyCard } from "@/components/property/property-card";
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 const KUWAIT_CENTER: [number, number] = [47.8, 29.35];
 const MAX_PROPERTIES = 200;
+// Esri's free World Imagery for the Satellite view, drawn under the street
+// style's labels so names stay readable over the photo.
+const SATELLITE_TILES =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+
+type Shape = { lat: number; lng: number; radius_m: number };
+
+function spans({ lat, radius_m }: Shape): [number, number] {
+  return [radius_m / 111_320, radius_m / (111_320 * Math.cos((lat * Math.PI) / 180))];
+}
+
+/** An area as a circle polygon -- close enough at a few kilometres. */
+function circle(shape: Shape, steps = 72): [number, number][] {
+  const [dLat, dLng] = spans(shape);
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const theta = (i / steps) * 2 * Math.PI;
+    return [shape.lng + dLng * Math.sin(theta), shape.lat + dLat * Math.cos(theta)];
+  });
+}
 
 /** A filled pin with a white centre -- drawn inline rather than as a React
  *  icon, because MapLibre markers are plain DOM elements built outside
@@ -79,9 +99,13 @@ async function fetchAll(
 export function MapExplorer({
   locale,
   filters = {},
+  areas = [],
 }: {
   locale: Locale;
   filters?: Record<string, string | string[]>;
+  /** Every area with its location, so the ones picked in the search bar can
+   *  be shaded and flown to. */
+  areas?: Area[];
 }) {
   const t = useTranslations();
   const container = useRef<HTMLDivElement>(null);
@@ -91,6 +115,17 @@ export function MapExplorer({
   const [view, setView] = useState<"map" | "list">("map");
   const [selected, setSelected] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [satellite, setSatellite] = useState(false);
+
+  // The areas picked in the search bar, as shapes the map can draw.
+  const picked = ([] as string[]).concat(filters.area ?? []);
+  const shapes: Shape[] = areas.flatMap((item) =>
+    picked.includes(item.slug) && item.latitude != null && item.longitude != null && item.radius_m
+      ? [{ lat: item.latitude, lng: item.longitude, radius_m: item.radius_m }]
+      : [],
+  );
+  const shapesKey = JSON.stringify(shapes);
+  const hadShapes = useRef(false);
 
   const filterKey = JSON.stringify(filters);
 
@@ -153,7 +188,34 @@ export function MapExplorer({
         attributionControl: { compact: true },
       });
       instance.addControl(new maplibregl.NavigationControl({ showCompass: false }));
-      instance.on("load", () => setReady(true));
+      instance.on("load", () => {
+        const firstLabel = instance.getStyle().layers?.find((layer) => layer.type === "symbol")?.id;
+        instance.addSource("satellite", {
+          type: "raster",
+          tiles: [SATELLITE_TILES],
+          tileSize: 256,
+          maxzoom: 19,
+          attribution: "Imagery © Esri",
+        });
+        instance.addLayer(
+          { id: "satellite", type: "raster", source: "satellite", layout: { visibility: "none" } },
+          firstLabel,
+        );
+        instance.addSource("areas", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+        instance.addLayer({
+          id: "areas-fill",
+          type: "fill",
+          source: "areas",
+          paint: { "fill-color": "#c8a45d", "fill-opacity": 0.16 },
+        });
+        instance.addLayer({
+          id: "areas-line",
+          type: "line",
+          source: "areas",
+          paint: { "line-color": "#a7803d", "line-width": 2.5, "line-dasharray": [2, 1.5] },
+        });
+        setReady(true);
+      });
       map.current = instance;
     })();
     return () => {
@@ -216,6 +278,45 @@ export function MapExplorer({
     };
   }, [located, locale, current?.item.slug, ready]);
 
+  // Picked areas, shaded and fitted, on request; clearing the pick goes back
+  // to the whole of Kuwait.
+  useEffect(() => {
+    if (!ready || !map.current) return;
+    (map.current.getSource("areas") as GeoJSONSource | undefined)?.setData({
+      type: "FeatureCollection",
+      features: shapes.map((shape) => ({
+        type: "Feature" as const,
+        properties: {},
+        geometry: { type: "Polygon" as const, coordinates: [circle(shape)] },
+      })),
+    });
+    if (shapes.length > 0) {
+      let west = Infinity;
+      let south = Infinity;
+      let east = -Infinity;
+      let north = -Infinity;
+      for (const shape of shapes) {
+        const [dLat, dLng] = spans(shape);
+        west = Math.min(west, shape.lng - dLng);
+        east = Math.max(east, shape.lng + dLng);
+        south = Math.min(south, shape.lat - dLat);
+        north = Math.max(north, shape.lat + dLat);
+      }
+      map.current.fitBounds([[west, south], [east, north]], { padding: 50, duration: 900 });
+      hadShapes.current = true;
+    } else if (hadShapes.current) {
+      map.current.flyTo({ center: KUWAIT_CENTER, zoom: 8.4 });
+      hadShapes.current = false;
+    }
+    // `shapesKey` stands for `shapes`, a fresh array every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, shapesKey]);
+
+  useEffect(() => {
+    if (!ready) return;
+    map.current?.setLayoutProperty("satellite", "visibility", satellite ? "visible" : "none");
+  }, [ready, satellite]);
+
   function recenter() {
     if (!map.current) return;
     map.current.flyTo({ center: KUWAIT_CENTER, zoom: 8.4 });
@@ -246,6 +347,25 @@ export function MapExplorer({
             {t("mapPage.listView")}
           </button>
         </div>
+
+        {view === "map" ? (
+          <div className="segmented">
+            <button
+              type="button"
+              className={satellite ? undefined : "is-active"}
+              onClick={() => setSatellite(false)}
+            >
+              {t("mapPage.street")}
+            </button>
+            <button
+              type="button"
+              className={satellite ? "is-active" : undefined}
+              onClick={() => setSatellite(true)}
+            >
+              {t("mapPage.satellite")}
+            </button>
+          </div>
+        ) : null}
 
         <button type="button" className="button button-outline" onClick={recenter}>
           <RefreshCw size={14} />

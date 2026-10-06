@@ -77,7 +77,7 @@ export default async function MapPage({
 
       <section className="section map-browser" id="map-results">
         <div className="container">
-          <MapExplorer locale={typedLocale} filters={filters} />
+          <MapExplorer locale={typedLocale} filters={filters} areas={areas} />
         </div>
       </section>
     </>

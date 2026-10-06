@@ -245,6 +245,10 @@
       "remove": "Remove photo",
       "main": "Main",
       "failed": "{count, plural, one {# photo} other {# photos}} couldn't be uploaded. Add them again from the property's page."
+    },
+    "map": {
+      "street": "Street",
+      "satellite": "Satellite"
     }
   },
   "inquiries": {

@@ -314,7 +314,9 @@
     "count": "{count} properties with full coordinates",
     "loading": "Working out the locations…",
     "loadingMap": "Loading the map…",
-    "openProperty": "Open the property"
+    "openProperty": "Open the property",
+    "street": "Street",
+    "satellite": "Satellite"
   },
   "request": {
     "kicker": "Didn't find the right property?",

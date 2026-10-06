@@ -131,7 +131,19 @@ def list_areas(db: Session, locale: str) -> list[dict]:
         .where(Area.is_active.is_(True))
         .order_by(Area.sort_order, Area.id)
     ).scalars().all()
-    return [{"id": a.id, "slug": a.slug, "name": _translated(a.translations, locale)} for a in rows]
+    return [
+        {
+            "id": a.id,
+            "slug": a.slug,
+            "name": _translated(a.translations, locale),
+            # So the Search map can fly to and shade a picked area. Null for an
+            # area not located yet (see app.locate_areas).
+            "latitude": float(a.latitude) if a.latitude is not None else None,
+            "longitude": float(a.longitude) if a.longitude is not None else None,
+            "radius_m": a.radius_m,
+        }
+        for a in rows
+    ]
 
 
 def list_property_types(db: Session, locale: str) -> list[dict]:

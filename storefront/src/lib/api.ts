@@ -190,6 +190,11 @@ export interface Area {
   id: number;
   slug: string;
   name: string;
+  /** Centre and rough radius, so the Search map can fly to and shade the
+   *  area. Null for an area not located yet. */
+  latitude?: number | null;
+  longitude?: number | null;
+  radius_m?: number | null;
 }
 
 export interface PropertyType {

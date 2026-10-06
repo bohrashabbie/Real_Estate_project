@@ -34,6 +34,11 @@ class Area(Base, TimestampMixin):
     slug: Mapped[str] = mapped_column(nullable=False, unique=True)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    # Centre and rough radius, from OpenStreetMap, so the maps can fly to an
+    # area and shade it. Null until looked up (`app.locate_areas`).
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
+    radius_m: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     translations: Mapped[list["AreaTranslation"]] = relationship(
         back_populates="area", cascade="all, delete-orphan"

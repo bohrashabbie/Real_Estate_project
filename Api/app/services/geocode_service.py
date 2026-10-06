@@ -24,6 +24,7 @@ lock spaces calls a second apart, and answers are cached in memory.
 from __future__ import annotations
 
 import json
+import math
 import re
 import threading
 import time
@@ -34,7 +35,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.middleware.error import BusinessRuleError, NotFoundError
-from app.models.realestate import AreaTranslation
+from app.models.realestate import Area, AreaTranslation
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "kwt25-admin/1.0 (+https://kwt25.com; info@kwt25.com)"
@@ -74,6 +75,11 @@ def _search(query: str) -> dict | None:
     if results:
         top = results[0]
         hit = {"lat": float(top["lat"]), "lng": float(top["lon"]), "label": top.get("display_name", "")}
+        # [south, north, west, east] -- the extent of what matched; an area's
+        # own outline when OSM has one, a few metres when it is only a point.
+        box = top.get("boundingbox")
+        if box and len(box) == 4:
+            hit["bbox"] = [float(value) for value in box]
 
     if len(_cache) >= CACHE_LIMIT:
         _cache.clear()
@@ -129,3 +135,44 @@ def locate(db: Session, area_id: int, block: str | None, address: str | None) ->
                 "label": hit["label"],
             }
     return {"found": False, "precision": None, "lat": None, "lng": None, "label": None}
+
+
+def _radius_m(lat: float, bbox: list[float] | None) -> int:
+    """Half the larger side of an area's extent, in metres, kept to what
+    reads well on a map. An area OSM knows only as a point (no real extent)
+    gets a typical Kuwaiti area's size rather than a dot."""
+    if not bbox:
+        return 1200
+    south, north, west, east = bbox
+    half_height = (north - south) / 2 * 111_320
+    half_width = (east - west) / 2 * 111_320 * math.cos(math.radians(lat))
+    radius = max(half_height, half_width)
+    if radius < 250:
+        return 1200
+    return int(min(max(radius, 400), 6000))
+
+
+def area_location(db: Session, area_id: int, refresh: bool = False) -> dict:
+    """An area's centre and radius, for flying a map to it and shading it.
+
+    Looked up once and stored on the area, so neither map waits on the
+    lookup service (one request a second) after the first time.
+    """
+    area = db.get(Area, area_id)
+    if area is None:
+        raise NotFoundError("Area not found")
+    if area.latitude is None or area.longitude is None or refresh:
+        hit = _search(f"{_area_name(db, area_id)}, Kuwait")
+        if not hit:
+            return {"found": False, "lat": None, "lng": None, "radius_m": None, "label": None}
+        area.latitude = round(hit["lat"], 6)
+        area.longitude = round(hit["lng"], 6)
+        area.radius_m = _radius_m(hit["lat"], hit.get("bbox"))
+        db.commit()
+    return {
+        "found": True,
+        "lat": f"{float(area.latitude):.6f}",
+        "lng": f"{float(area.longitude):.6f}",
+        "radius_m": area.radius_m,
+        "label": _area_name(db, area_id),
+    }

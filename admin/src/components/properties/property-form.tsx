@@ -37,7 +37,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { LocationPicker } from "@/components/properties/location-picker"
+import { LocationPicker, type AreaShape } from "@/components/properties/location-picker"
 import { usePermission } from "@/hooks/use-permission"
 import {
   useAmenityOptions,
@@ -214,7 +214,9 @@ export function PropertyForm({
         }
         form.setValue("latitude", result.lat, { shouldDirty: true, shouldValidate: true })
         form.setValue("longitude", result.lng, { shouldDirty: true, shouldValidate: true })
-        setFocusKey((value) => value + 1)
+        // An area-only match lands on the area's centre; the map is already
+        // fitted to the shaded area, which says more than a close-up does.
+        if (result.precision !== "area") setFocusKey((value) => value + 1)
         setGeocode({ state: result.precision, label: result.label ?? "" })
       } catch {
         if (!controller.signal.aborted) setGeocode({ state: "error" })
@@ -227,6 +229,35 @@ export function PropertyForm({
     // `form` is stable; the three watched values are what should trigger it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaId, block, addressNote, canWrite])
+
+  // The selected area, shaded on the map; picking one flies the map to fit
+  // it, on request. A saved property's own area is drawn without moving the
+  // view, which opens on its pin.
+  const initialAreaId = useRef(areaId)
+  const [areaShape, setAreaShape] = useState<AreaShape | null>(null)
+  const [areaFitKey, setAreaFitKey] = useState(0)
+
+  useEffect(() => {
+    if (!areaId) {
+      setAreaShape(null)
+      return
+    }
+    const controller = new AbortController()
+    geocodeApi
+      .area(Number(areaId), controller.signal)
+      .then((result) => {
+        if (!result.found || !result.lat || !result.lng || !result.radius_m) {
+          setAreaShape(null)
+          return
+        }
+        setAreaShape({ lat: Number(result.lat), lng: Number(result.lng), radius_m: result.radius_m })
+        if (areaId !== initialAreaId.current) setAreaFitKey((value) => value + 1)
+      })
+      .catch(() => {
+        // No shading is a fine fallback; the pin still works.
+      })
+    return () => controller.abort()
+  }, [areaId])
 
   function toggleAmenity(amenityId: number, checked: boolean) {
     const current = form.getValues("amenity_ids")
@@ -623,6 +654,8 @@ export function PropertyForm({
                 longitude={form.watch("longitude") ?? ""}
                 disabled={!canWrite}
                 focusKey={focusKey}
+                area={areaShape}
+                areaFitKey={areaFitKey}
                 onChange={(latitude, longitude) => {
                   form.setValue("latitude", latitude, { shouldDirty: true, shouldValidate: true })
                   form.setValue("longitude", longitude, { shouldDirty: true, shouldValidate: true })

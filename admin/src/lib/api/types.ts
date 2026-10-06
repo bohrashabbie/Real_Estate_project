@@ -285,6 +285,15 @@ export type PropertyMediaUpdate = {
 
 /** GET /geocode. `precision` says what matched: a street/landmark from the
  *  address note, the block, or only the area's centre. */
+/** GET /geocode/area/{id}: an area's centre and radius, for the form's map. */
+export type GeocodeArea = {
+  found: boolean
+  lat: string | null
+  lng: string | null
+  radius_m: number | null
+  label: string | null
+}
+
 export type GeocodeResult = {
   found: boolean
   precision: "address" | "block" | "area" | null
