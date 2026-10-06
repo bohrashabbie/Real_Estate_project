@@ -20,6 +20,7 @@ import { all, one, type SearchParams } from "@/lib/search-params";
 import { LaunchHero } from "@/components/home/launch-hero";
 import { QuickSearch } from "@/components/home/quick-search";
 import { SectionHeading } from "@/components/home/sections";
+import { FooterSearch } from "@/components/home/footer-search";
 import { VipCarousel } from "@/components/home/vip-carousel";
 import { PropertyCarousel } from "@/components/properties/property-carousel";
 import { ResultsGrid } from "@/components/properties/results-grid";
@@ -187,6 +188,11 @@ export default async function PropertiesPage({
           </div>
         </section>
       )}
+
+      {/* Smart search after the VIP and Featured rows, on every listing view,
+          on request -- the same block the home page carries in the same
+          place, ahead of the results. */}
+      <FooterSearch areas={areas} types={types} locale={typedLocale} />
 
       <section className="section properties-browser">
         <div className="container">

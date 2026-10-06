@@ -11178,3 +11178,26 @@ a.home-ad:hover img {
 #map-results {
   scroll-margin-top:96px;
 }
+
+/* Smart search mid-page, after the VIP and Featured rows (on request): a
+   tighter band than when it closed the page, and on the listing pages the
+   results after it keep the gold rule and spacing they had straight after
+   the Featured row. */
+.properties-section + .footer-search,
+.properties-quick-search + .footer-search,
+.listing-view-badge-row + .footer-search {
+  padding-block:48px;
+}
+
+.footer-search + .properties-browser {
+  padding-top:0;
+}
+
+.footer-search + .properties-browser > .container {
+  border-top:1px solid #c8a45d40;
+  padding-top:44px;
+}
+
+.footer-search + .type-section {
+  padding-top:42px;
+}
