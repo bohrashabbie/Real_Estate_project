@@ -34,4 +34,15 @@ def area_location(
     return geocode_service.area_location(db, area_id)
 
 
+@router.get("/area/{area_id}/blocks")
+def area_blocks(
+    area_id: int,
+    db: Session = Depends(get_db),
+    _user=Depends(require("properties.edit")),
+) -> dict:
+    """The area's blocks by number, for the form's Block dropdown. Empty when
+    none are known (the form then keeps a free-text field)."""
+    return geocode_service.area_blocks(db, area_id)
+
+
 # Permission keys used by this router: properties.edit

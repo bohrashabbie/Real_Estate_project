@@ -249,7 +249,10 @@
     "map": {
       "street": "Street",
       "satellite": "Satellite"
-    }
+    },
+    "selectBlock": "Select a block",
+    "blockOption": "Block {block}",
+    "otherBlock": "Other (type it)"
   },
   "inquiries": {
     "title": "Inquiries",

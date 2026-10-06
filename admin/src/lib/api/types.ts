@@ -294,12 +294,19 @@ export type GeocodeArea = {
   label: string | null
 }
 
+/** A block's real boundary from OpenStreetMap (GeoJSON geometry). */
+export type BlockShape =
+  | { type: "Polygon"; coordinates: number[][][] }
+  | { type: "MultiPolygon"; coordinates: number[][][][] }
+
 export type GeocodeResult = {
   found: boolean
   precision: "address" | "block" | "area" | null
   lat: string | null
   lng: string | null
   label: string | null
+  /** The typed block's outline, when OSM has it -- shaded on the map. */
+  block_shape: BlockShape | null
 }
 
 export type PropertyPurpose = "rent" | "sale" | "exchange"

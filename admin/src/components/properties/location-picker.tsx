@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl"
 import type { GeoJSONSource, Map as MapLibreMap, Marker } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 
+import type { BlockShape } from "@/lib/api/types"
+
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 const KUWAIT_CENTER: [number, number] = [47.96, 29.28]
 // Esri's free World Imagery -- the "Satellite" view. Drawn under the street
@@ -50,6 +52,8 @@ export function LocationPicker({
   focusKey = 0,
   area = null,
   areaFitKey = 0,
+  block = null,
+  blockFitKey = 0,
   onChange,
 }: {
   latitude: string
@@ -63,6 +67,10 @@ export function LocationPicker({
   /** Bumped when the office picks an area, so the map flies to fit it.
    *  Opening a saved property draws the area without moving the view. */
   areaFitKey?: number
+  /** The typed block's real outline, shaded more strongly inside the area. */
+  block?: BlockShape | null
+  /** Bumped when a block outline arrives from a lookup, so the map fits it. */
+  blockFitKey?: number
   onChange: (latitude: string, longitude: string) => void
 }) {
   const t = useTranslations("properties.map")
@@ -122,6 +130,20 @@ export function LocationPicker({
           type: "line",
           source: "area",
           paint: { "line-color": "#a7803d", "line-width": 2.5, "line-dasharray": [2, 1.5] },
+        })
+        // The block: its real boundary, stronger than the area around it.
+        instance.addSource("block", { type: "geojson", data: { type: "FeatureCollection", features: [] } })
+        instance.addLayer({
+          id: "block-fill",
+          type: "fill",
+          source: "block",
+          paint: { "fill-color": "#a7803d", "fill-opacity": 0.32 },
+        })
+        instance.addLayer({
+          id: "block-line",
+          type: "line",
+          source: "block",
+          paint: { "line-color": "#7a5a22", "line-width": 3 },
         })
         setLoaded(true)
       })
@@ -198,6 +220,36 @@ export function LocationPicker({
     // Only a new pick should move the view.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, areaFitKey])
+
+  // The block's outline follows the lookup.
+  useEffect(() => {
+    if (!loaded) return
+    const source = map.current?.getSource("block") as GeoJSONSource | undefined
+    source?.setData({
+      type: "FeatureCollection",
+      features: block ? [{ type: "Feature", properties: {}, geometry: block }] : [],
+    })
+  }, [loaded, block])
+
+  // A newly found block: fit the map to it.
+  useEffect(() => {
+    if (!loaded || !blockFitKey || !block) return
+    const points = (block.type === "Polygon" ? [block.coordinates] : block.coordinates).flat(2)
+    if (points.length === 0) return
+    let west = Infinity
+    let south = Infinity
+    let east = -Infinity
+    let north = -Infinity
+    for (const [x, y] of points) {
+      west = Math.min(west, x)
+      east = Math.max(east, x)
+      south = Math.min(south, y)
+      north = Math.max(north, y)
+    }
+    map.current?.fitBounds([[west, south], [east, north]], { padding: 60, duration: 900, maxZoom: 17 })
+    // Only a new lookup should move the view.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, blockFitKey])
 
   useEffect(() => {
     if (!loaded) return

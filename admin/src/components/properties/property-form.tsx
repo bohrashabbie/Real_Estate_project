@@ -4,6 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { useLocale, useTranslations } from "next-intl"
 import { ImagePlus, X } from "lucide-react"
+
+/** The Block dropdown's "type a block that isn't listed" entry. */
+const OTHER_BLOCK = "__other__"
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -59,6 +62,7 @@ import {
   PROPERTY_STATUS_VALUES,
 } from "@/lib/status"
 import type {
+  BlockShape,
   PropertyCreate,
   PropertyOut,
   PropertyPurpose,
@@ -208,15 +212,20 @@ export function PropertyForm({
           { area_id: Number(areaId), block: block.trim(), address: addressNote.trim() },
           controller.signal
         )
+        // The typed block's outline, shaded on the map, even when the pin
+        // itself could only be placed by area.
+        setBlockShape(result.block_shape ?? null)
         if (!result.found || !result.lat || !result.lng || !result.precision) {
           setGeocode({ state: "none" })
           return
         }
         form.setValue("latitude", result.lat, { shouldDirty: true, shouldValidate: true })
         form.setValue("longitude", result.lng, { shouldDirty: true, shouldValidate: true })
-        // An area-only match lands on the area's centre; the map is already
-        // fitted to the shaded area, which says more than a close-up does.
-        if (result.precision !== "area") setFocusKey((value) => value + 1)
+        // A street match zooms to its pin. Otherwise the shape says more than
+        // a close-up of a centre point: the block's outline when there is
+        // one, else the shaded area the map is already fitted to.
+        if (result.precision === "address") setFocusKey((value) => value + 1)
+        else if (result.block_shape) setBlockFitKey((value) => value + 1)
         setGeocode({ state: result.precision, label: result.label ?? "" })
       } catch {
         if (!controller.signal.aborted) setGeocode({ state: "error" })
@@ -236,6 +245,25 @@ export function PropertyForm({
   const initialAreaId = useRef(areaId)
   const [areaShape, setAreaShape] = useState<AreaShape | null>(null)
   const [areaFitKey, setAreaFitKey] = useState(0)
+  const [blockShape, setBlockShape] = useState<BlockShape | null>(null)
+  const [blockFitKey, setBlockFitKey] = useState(0)
+
+  // A saved property with a block: draw the block's outline on opening,
+  // without moving its stored pin (only the outline is used from the lookup).
+  useEffect(() => {
+    if (!property?.area_id || !property.block) return
+    const controller = new AbortController()
+    geocodeApi
+      .locate(
+        { area_id: property.area_id, block: property.block, address: "" },
+        controller.signal
+      )
+      .then((result) => setBlockShape(result.block_shape ?? null))
+      .catch(() => {})
+    return () => controller.abort()
+    // Once, for the property the form opened with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!areaId) {
@@ -258,6 +286,32 @@ export function PropertyForm({
       })
     return () => controller.abort()
   }, [areaId])
+
+  // The selected area's blocks, for the Block dropdown, on request. Picking
+  // another area clears the block -- block 10 of one area is not block 10 of
+  // the next. An area with no known blocks keeps the free-text field.
+  const [blockOptions, setBlockOptions] = useState<string[]>([])
+  const [blockCustom, setBlockCustom] = useState(false)
+  const blockArea = useRef(areaId)
+
+  useEffect(() => {
+    if (areaId !== blockArea.current) {
+      blockArea.current = areaId
+      form.setValue("block", "", { shouldDirty: true })
+    }
+    setBlockOptions([])
+    setBlockCustom(false)
+    if (!areaId || !canWrite) return
+    const controller = new AbortController()
+    geocodeApi
+      .blocks(Number(areaId), controller.signal)
+      .then((result) => setBlockOptions(result.blocks))
+      .catch(() => {
+        // No list: the free-text field still works.
+      })
+    return () => controller.abort()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaId, canWrite])
 
   function toggleAmenity(amenityId: number, checked: boolean) {
     const current = form.getValues("amenity_ids")
@@ -544,15 +598,51 @@ export function PropertyForm({
               <FormField
                 control={form.control}
                 name="block"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.block")}</FormLabel>
-                    <FormControl>
-                      <Input disabled={!canWrite} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  // "Block 10" and "10" are the same block.
+                  const number = field.value.replace(/^\s*block\s*/i, "").trim().toUpperCase()
+                  const listed = blockOptions.includes(number)
+                  const asList =
+                    blockOptions.length > 0 && !blockCustom && (field.value === "" || listed)
+                  return (
+                    <FormItem>
+                      <FormLabel>{t("fields.block")}</FormLabel>
+                      {asList ? (
+                        <Select
+                          value={listed ? number : ""}
+                          onValueChange={(value) => {
+                            if (value === OTHER_BLOCK) {
+                              setBlockCustom(true)
+                              field.onChange("")
+                            } else {
+                              field.onChange(value)
+                            }
+                          }}
+                          disabled={!canWrite}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder={t("selectBlock")} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {blockOptions.map((value) => (
+                              <SelectItem key={value} value={value}>
+                                {t("blockOption", { block: value })}
+                              </SelectItem>
+                            ))}
+                            <SelectItem value={OTHER_BLOCK}>{t("otherBlock")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <FormControl>
+                          <Input disabled={!canWrite} {...field} />
+                        </FormControl>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  )
+                }}
               />
               <FormField
                 control={form.control}
@@ -656,6 +746,8 @@ export function PropertyForm({
                 focusKey={focusKey}
                 area={areaShape}
                 areaFitKey={areaFitKey}
+                block={blockShape}
+                blockFitKey={blockFitKey}
                 onChange={(latitude, longitude) => {
                   form.setValue("latitude", latitude, { shouldDirty: true, shouldValidate: true })
                   form.setValue("longitude", longitude, { shouldDirty: true, shouldValidate: true })

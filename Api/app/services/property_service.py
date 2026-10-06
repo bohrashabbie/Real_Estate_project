@@ -277,6 +277,9 @@ def list_item_out(db: Session, prop: Property) -> dict:
         "is_featured": prop.is_featured,
         "is_vip": prop.is_vip,
         "is_premium": prop.is_premium,
+        # The admin list hides a row's Delete button unless this is true; it
+        # was missing here (only the detail had it), so no row ever showed one.
+        "is_active": prop.is_active,
         "published_at": prop.published_at,
         "main_image": media[0]["url"] if media else None,
         "main_image_key": media[0]["media"]["storage_key"] if media else None,

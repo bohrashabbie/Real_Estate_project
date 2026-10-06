@@ -249,7 +249,10 @@
     "map": {
       "street": "الشوارع",
       "satellite": "قمر صناعي"
-    }
+    },
+    "selectBlock": "اختر القطعة",
+    "blockOption": "قطعة {block}",
+    "otherBlock": "أخرى (اكتبها)"
   },
   "inquiries": {
     "title": "الاستفسارات",

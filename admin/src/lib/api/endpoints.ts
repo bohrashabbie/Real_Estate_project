@@ -184,6 +184,10 @@ export const geocodeApi = {
   area: (areaId: number, signal?: AbortSignal) =>
     api.get<GeocodeArea>(`/geocode/area/${areaId}`, { signal }),
 
+  /** The area's blocks by number, for the Block dropdown. Empty = free text. */
+  blocks: (areaId: number, signal?: AbortSignal) =>
+    api.get<{ blocks: string[] }>(`/geocode/area/${areaId}/blocks`, { signal }),
+
   locate: (
     params: { area_id: number; block?: string; address?: string },
     signal?: AbortSignal
