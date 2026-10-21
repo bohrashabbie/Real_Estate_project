@@ -11180,10 +11180,11 @@ a.home-ad:hover img {
 }
 
 /* Smart search mid-page, after the VIP and Featured rows (on request): a
-   tighter band than when it closed the page, and on the listing pages the
+   tighter band than when it closes the page, and on the listing pages the
    results after it keep the gold rule and spacing they had straight after
-   the Featured row. */
-.properties-section + .footer-search,
+   the Featured row. At the foot of the home page (after its last rows) it
+   keeps its full closing spacing. */
+.properties-section:not(.home-all-properties, .home-exchange-section) + .footer-search,
 .properties-quick-search + .footer-search,
 .listing-view-badge-row + .footer-search {
   padding-block:48px;

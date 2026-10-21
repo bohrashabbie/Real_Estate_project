@@ -125,10 +125,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       ) : null}
 
-      {/* Smart search right after the office's picks, on request -- on
-          every listing page too -- rather than at the foot of the page. */}
-      <FooterSearch areas={areas} types={types} locale={typedLocale} />
-
       <PropertyTypeGrid types={types} settings={settings} locale={typedLocale} ads={ads} />
 
       {latest.length > 0 ? (
@@ -201,6 +197,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </section>
       ) : null}
+
+      {/* Smart search closes the home page, just above the footer, on
+          request. The listing pages keep it right after their picks. */}
+      <FooterSearch areas={areas} types={types} locale={typedLocale} />
     </>
   );
 }

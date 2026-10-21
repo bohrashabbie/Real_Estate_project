@@ -40,9 +40,9 @@ const TYPE_ICONS: Record<string, typeof House> = {
 };
 
 /**
- * The smart-search block. It now sits right after the VIP and Featured rows
- * -- on the home page and on every listing page, on request -- where it used
- * to close the home page above the WhatsApp band.
+ * The smart-search block. It closes the home page, above the footer, and on
+ * every listing page sits right after the VIP and Featured rows (both on
+ * request).
  *
  * It replaces what used to be a plain "tell us what you want and we'll call
  * you" banner. Someone who scrolls this far already looked through the
