@@ -1,5 +1,6 @@
 import {
   Building2,
+  FileText,
   ClipboardList,
   FileClock,
   GalleryHorizontal,
@@ -49,6 +50,17 @@ export const NAV_SECTIONS: NavSection[] = [
         labelKey: "properties",
         icon: Building2,
         permission: PERMISSIONS.propertiesView,
+      },
+    ],
+  },
+  {
+    labelKey: "sectionWebsite",
+    items: [
+      {
+        href: "/content",
+        labelKey: "content",
+        icon: FileText,
+        permission: PERMISSIONS.contentView,
       },
       {
         href: "/banners",

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, ForeignKey, Index, Integer, TIMESTAMP
+from sqlalchemy import BigInteger, Boolean, ForeignKey, Index, Integer, String, Text, TIMESTAMP, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -18,6 +18,25 @@ class Setting(Base):
     updated_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
 
     __table_args__ = (Index("ix_settings_group", "group"),)
+
+
+class SiteText(Base):
+    """One website string the office reworded, from the Website Content page.
+
+    `key` is the string's path in the storefront's language files
+    ("hero.title"); only changed strings have a row, and deleting the row puts
+    the default back. Rows keyed by locale, per the translations rule.
+    """
+
+    __tablename__ = "site_texts"
+
+    key: Mapped[str] = mapped_column(String(200), primary_key=True)
+    locale: Mapped[str] = mapped_column(String(5), primary_key=True)
+    value: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_by_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
 
 
 class Media(Base, TimestampMixin):

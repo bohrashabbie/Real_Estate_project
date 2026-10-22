@@ -12,6 +12,7 @@ from app.routers import (
     property_requests,
     roles,
     settings,
+    site_texts,
     taxonomy,
     users,
 )
@@ -31,5 +32,6 @@ api_router.include_router(property_requests.router, prefix="/property-requests",
 api_router.include_router(media.router, prefix="/media", tags=["media"])
 api_router.include_router(banners.router, prefix="/banners", tags=["banners"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])
+api_router.include_router(site_texts.router, prefix="/site-texts", tags=["content"])
 api_router.include_router(audit.router, prefix="/audit", tags=["audit"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])

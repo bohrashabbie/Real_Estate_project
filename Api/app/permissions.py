@@ -36,6 +36,9 @@ PERMISSIONS: list[PermissionDef] = [
     # banners — home-page hero slides
     PermissionDef("banners.view", "banners", "View home-page banners"),
     PermissionDef("banners.manage", "banners", "Upload, edit, reorder and hide home-page banners"),
+    # content — the website's page text (Website Content page)
+    PermissionDef("content.view", "content", "View the website's page text"),
+    PermissionDef("content.manage", "content", "Change the website's page text"),
     # system
     PermissionDef("users.view", "system", "View staff accounts"),
     PermissionDef("users.manage", "system", "Create/edit staff accounts and assign roles", is_dangerous=True),
@@ -103,6 +106,7 @@ ROLE_PERMISSIONS: dict[str, list[str]] = {
         # Agents see what the home page is promoting but don't change it —
         # banners are the office's marketing surface, a manager decision.
         "banners.view",
+        "content.view",
         "analytics.view",
     ],
     "viewer": [
@@ -111,6 +115,7 @@ ROLE_PERMISSIONS: dict[str, list[str]] = {
         "requests.view",
         "taxonomy.view",
         "banners.view",
+        "content.view",
         "settings.view",
         "analytics.view",
     ],

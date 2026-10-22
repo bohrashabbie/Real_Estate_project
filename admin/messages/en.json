@@ -69,7 +69,9 @@
     "audit": "Audit log",
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "sectionWebsite": "Website",
+    "content": "Website content"
   },
   "auth": {
     "loginTitle": "Sign in",
@@ -543,7 +545,8 @@
     "roles": "Roles",
     "settings": "Settings",
     "audit": "Audit",
-    "analytics": "Analytics"
+    "analytics": "Analytics",
+    "content": "Website content"
   },
   "settings": {
     "title": "Settings",
@@ -654,5 +657,56 @@
       "changedOnly": "Only the fields that changed are recorded."
     },
     "system": "System"
+  },
+  "content": {
+    "title": "Website content",
+    "description": "Every text on the public website, in Arabic and English. Change a line and save; the website shows it within a minute.",
+    "search": "Search the texts…",
+    "sections": "Page sections",
+    "edited": "Edited",
+    "editedCount": "{count} edited",
+    "english": "English",
+    "arabic": "Arabic",
+    "reset": "Back to default",
+    "default": "Default: {text}",
+    "keepPlaceholders": "Keep {names} exactly as written; the website fills them in.",
+    "placeholderError": "This line must keep {names} exactly as written.",
+    "screenReader": "Read aloud by screen readers",
+    "inSettings": "This text is managed on the Settings page.",
+    "openSettings": "Open Settings",
+    "save": "Save {count} changes",
+    "saved": "Saved. The website shows the new text within a minute.",
+    "noResults": "No text matches “{query}”.",
+    "results": "{count} matching texts",
+    "sectionLabels": {
+      "app": "Site name & browser tab",
+      "intro": "Opening splash screen",
+      "nav": "Header & menu",
+      "hero": "Home — top of the page",
+      "quickSearch": "Home — quick search",
+      "announcement": "Advert strip",
+      "picker": "Area picker",
+      "purpose": "Sale / rent / exchange",
+      "status": "Property status",
+      "card": "Property cards",
+      "home": "Home page sections",
+      "footerSearch": "Smart search block",
+      "contactBand": "Contact strip",
+      "footer": "Footer",
+      "floats": "Floating contact buttons",
+      "chat": "Live chat",
+      "listing": "Property list pages",
+      "detail": "Property page",
+      "inquiry": "Inquiry form",
+      "compare": "Compare properties",
+      "smart": "Smart search page",
+      "mapPage": "Map search page",
+      "request": "Request a property form",
+      "listProperty": "List your property form",
+      "contact": "Contact page",
+      "notFound": "Page not found",
+      "carousel": "Scrolling rows",
+      "gallery": "Photo gallery"
+    }
   }
 }

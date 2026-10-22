@@ -72,6 +72,11 @@ export const queryKeys = {
       ["property-requests", "list", params] as const,
   },
 
+  siteTexts: {
+    all: ["site-texts"] as const,
+    list: () => ["site-texts", "list"] as const,
+    defaults: () => ["site-texts", "defaults"] as const,
+  },
   settings: {
     all: ["settings"] as const,
     list: () => ["settings", "list"] as const,

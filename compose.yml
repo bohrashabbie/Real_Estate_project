@@ -56,6 +56,8 @@ services:
     environment:
       API_BASE_URL: http://api:8000/api/v1
       AUTH_COOKIE_SECURE: "1"
+      # Where the Website Content page reads the site's default texts.
+      STOREFRONT_URL: http://storefront:3100
     depends_on:
       api:
         condition: service_healthy

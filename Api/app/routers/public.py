@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas.public import PublicInquiryIn, PublicPropertyRequestIn, SmartSearchIn
-from app.services import banner_service, inquiry_service, public_service
+from app.services import banner_service, inquiry_service, public_service, site_text_service
 
 router = APIRouter(tags=["public"])
 
@@ -25,6 +25,12 @@ def _client_ip(request: Request) -> str | None:
 @router.get("/settings")
 def settings(db: Session = Depends(get_db)) -> dict:
     return public_service.public_settings(db)
+
+
+@router.get("/site-texts")
+def site_texts(locale: str = "ar", db: Session = Depends(get_db)) -> dict:
+    """The office's own wording, {key: value}, laid over the site's defaults."""
+    return site_text_service.public_texts(db, locale)
 
 
 @router.get("/areas")

@@ -1,6 +1,9 @@
 import { api, apiUpload } from "./client"
 import type {
   GeocodeArea,
+  SiteTextOut,
+  SiteTextTree,
+  SiteTextsBulkUpdate,
   GeocodeResult,
   AmenityCreate,
   AmenityOut,
@@ -331,6 +334,24 @@ export const settingsApi = {
   /** PUT bulk — owner only per SPEC.md. */
   updateBulk: (payload: SettingsBulkUpdate) =>
     api.put<SettingOut[]>("/settings", payload),
+}
+
+/** The website's page text (Website Content page). */
+export const siteTextsApi = {
+  /** The strings the office has changed. */
+  list: (signal?: AbortSignal) => api.get<SiteTextOut[]>("/site-texts", { signal }),
+
+  save: (payload: SiteTextsBulkUpdate) => api.put<SiteTextOut[]>("/site-texts", payload),
+
+  /** Every string's default, from the website itself (via this admin app). */
+  defaults: async (signal?: AbortSignal): Promise<{ ar: SiteTextTree; en: SiteTextTree }> => {
+    const response = await fetch("/api/site-texts/defaults", { signal, cache: "no-store" })
+    if (!response.ok) {
+      const body = await response.json().catch(() => null)
+      throw new Error(body?.message ?? "Could not load the website's texts.")
+    }
+    return response.json()
+  },
 }
 
 export const auditApi = {

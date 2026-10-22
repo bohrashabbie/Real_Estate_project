@@ -28,6 +28,10 @@ export const PERMISSIONS = {
   bannersView: "banners.view",
   bannersManage: "banners.manage",
 
+  // content (the website's page text)
+  contentView: "content.view",
+  contentManage: "content.manage",
+
   // administration
   usersView: "users.view",
   usersManage: "users.manage",
@@ -48,6 +52,7 @@ export const PERMISSION_GROUP_ORDER = [
   "requests",
   "taxonomy",
   "banners",
+  "content",
   "users",
   "roles",
   "settings",
