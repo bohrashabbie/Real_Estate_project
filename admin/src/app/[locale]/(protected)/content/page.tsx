@@ -307,7 +307,7 @@ function TextRow({
             <p className="truncate text-sm">{row.defaults.en}</p>
             <p className="text-sm text-muted-foreground">{t("inSettings")}</p>
           </div>
-          <Button variant="outline" size="sm" render={<Link href="/settings" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/settings" />}>
             <Settings className="size-4" />
             {t("openSettings")}
           </Button>
